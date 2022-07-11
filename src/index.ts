@@ -1,4 +1,4 @@
 export * from './client'
-export * from './contracts/abi'
+export * from './contracts'
 export * from './constants'
 export * from './supportedTokens'
