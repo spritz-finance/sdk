@@ -1,0 +1,37 @@
+{
+  "name": "@spritz-finance/sdk",
+  "version": "0.0.1",
+  "description": "🛠 An SDK for building applications on top of Spritz Finance.",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "browser": "dist/umd/index.js",
+  "files": [
+    "dist"
+  ],
+  "repository": "https://github.com/spritz-finance/sdk.git",
+  "author": "Laurence Davies <ljd.davies@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "spritz",
+    "spritz-finance",
+    "ethereum"
+  ],
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "prepare": "rollup -c",
+    "build": "rollup -c"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "@types/node": "^18.0.3",
+    "eslint": "^8.19.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.76.0",
+    "ts-node": "^10.8.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {}
+}
