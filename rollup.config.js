@@ -1,6 +1,7 @@
-import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
+import dts from 'rollup-plugin-dts'
 import pkg from './package.json'
 
 export default [
@@ -8,23 +9,12 @@ export default [
   {
     input: 'src/index.ts',
     output: {
-      name: 'myLib',
+      name: 'spritz',
       file: pkg.browser,
       format: 'umd',
     },
-    plugins: [
-      resolve(),
-      commonjs(),
-      typescript({ tsconfig: './tsconfig.json' }),
-    ],
+    plugins: [resolve(), commonjs(), typescript({ tsconfig: './tsconfig.json' })],
   },
-
-  // CommonJS (for Node) and ES module (for bundlers) build.
-  // (We could have three entries in the configuration array
-  // instead of two, but it's quicker to generate multiple
-  // builds from a single configuration where possible, using
-  // an array for the `output` option, where we can specify
-  // `file` and `format` for each target)
   {
     input: 'src/index.ts',
     output: [
@@ -32,5 +22,10 @@ export default [
       { file: pkg.module, format: 'es' },
     ],
     plugins: [typescript({ tsconfig: './tsconfig.json' })],
+  },
+  {
+    input: 'dist/es/types/index.d.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    plugins: [dts()],
   },
 ]
