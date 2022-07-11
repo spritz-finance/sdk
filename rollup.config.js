@@ -1,6 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs'
 import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
+import json from '@rollup/plugin-json'
 import dts from 'rollup-plugin-dts'
 import pkg from './package.json'
 
@@ -13,7 +14,7 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
-    plugins: [resolve(), commonjs(), typescript({ tsconfig: './tsconfig.json' })],
+    plugins: [resolve(), commonjs(), typescript({ tsconfig: './tsconfig.json' }), json()],
   },
   {
     input: 'src/index.ts',
@@ -21,7 +22,7 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
     ],
-    plugins: [typescript({ tsconfig: './tsconfig.json' })],
+    plugins: [typescript({ tsconfig: './tsconfig.json' }), json()],
   },
   {
     input: 'dist/es/types/index.d.ts',

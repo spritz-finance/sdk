@@ -4,3 +4,10 @@ export class UnsupportedChainError extends Error {
     this.name = 'UnsupportedChainError'
   }
 }
+
+export class UnsupportedPaymentTokenError extends Error {
+  constructor(message = 'Spritz does not yet support token for payments') {
+    super(message)
+    this.name = 'UnsupportedPaymentTokenError'
+  }
+}
