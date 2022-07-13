@@ -1,5 +1,5 @@
 import { Token } from '@uniswap/sdk-core'
-import { ethers } from 'ethers'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { SupportedChainId } from '../constants'
 import { UniswapQuoter } from '../quotes/uniswap'
 import { getPaymentToken, TokenData, toToken } from '../tokens'
@@ -13,14 +13,14 @@ type SpritzClientParams = {
 
 export class SpritzClient {
   private chainId: SupportedChainId
-  private provider: ethers.providers.JsonRpcProvider
+  private provider: JsonRpcProvider
   private outputToken: Token
 
   constructor({ chainId, rpcUrl, paymentTokenAddress }: SpritzClientParams) {
     validateChain(chainId)
     this.chainId = chainId
     this.outputToken = getPaymentToken(chainId, paymentTokenAddress)
-    this.provider = new ethers.providers.JsonRpcProvider(rpcUrl)
+    this.provider = new JsonRpcProvider(rpcUrl)
   }
 
   public async getTokenPaymentQuote(inputTokenData: TokenData, paymentAmount: number) {

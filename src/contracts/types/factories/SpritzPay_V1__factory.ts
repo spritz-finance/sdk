@@ -3,10 +3,8 @@
 /* eslint-disable */
 import { Signer, utils, Contract, ContractFactory, Overrides } from "ethers";
 import type { Provider, TransactionRequest } from "@ethersproject/providers";
-import type {
-  SpritzPay_V1,
-  SpritzPay_V1Interface,
-} from "../../contracts/SpritzPay_V1";
+import type { PromiseOrValue } from "../common";
+import type { SpritzPay_V1, SpritzPay_V1Interface } from "../SpritzPay_V1";
 
 const _abi = [
   {
@@ -322,12 +320,12 @@ export class SpritzPay_V1__factory extends ContractFactory {
   }
 
   override deploy(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<SpritzPay_V1> {
     return super.deploy(overrides || {}) as Promise<SpritzPay_V1>;
   }
   override getDeployTransaction(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): TransactionRequest {
     return super.getDeployTransaction(overrides || {});
   }

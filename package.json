@@ -1,11 +1,10 @@
 {
   "name": "@spritz-finance/sdk",
-  "version": "0.0.1",
+  "version": "0.0.18",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
   "main": "dist/cjs/index.js",
-  "module": "dist/es/index.js",
-  "browser": "dist/umd/index.js",
-  "types": "dist/index.d.ts",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "files": [
     "dist"
   ],
@@ -19,26 +18,31 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "prepare": "rollup -c",
-    "build": "rollup -c"
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
+    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
+    "prepublishOnly": "npm run build",
+    "typechain:generate": "yarn typechain --target=ethers-v5 ./src/contracts/**/abi/*.json --out-dir=./src/contracts/types"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.1",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-typescript": "^8.3.3",
+    "@nomiclabs/hardhat-ethers": "^2.1.0",
+    "@typechain/ethers-v5": "^10.1.0",
+    "@types/mocha": "^9.1.1",
     "@types/node": "^18.0.3",
     "eslint": "^8.19.0",
+    "hardhat": "^2.10.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.76.0",
     "rollup-plugin-dts": "^4.2.2",
     "ts-node": "^10.8.2",
     "tslib": "^2.4.0",
+    "typechain": "^8.1.0",
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@rollup/plugin-json": "^4.1.0",
+    "@ethersproject/providers": "^5.6.8",
     "@uniswap/sdk-core": "^3.0.1",
-    "@uniswap/smart-order-router": "^2.6.0",
+    "@uniswap/smart-order-router": "2.5.30",
     "ethers": "^5.6.9"
   }
 }

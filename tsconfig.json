@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
+    "outDir": "./dist/esm",
+    "rootDir": "./src",
     "target": "es6",
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "declaration": true,
-    "declarationDir": "types",
-    "emitDeclarationOnly": true
+    "declaration": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

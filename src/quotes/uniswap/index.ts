@@ -1,5 +1,6 @@
 import { Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter, CurrencyAmount, SwapRoute, V3Route } from '@uniswap/smart-order-router'
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { ethers } from 'ethers'
 import { SPRITZ_PAYMENT_WALLET } from '../../constants'
 import { roundNumber } from '../../utils/roundNumber'
@@ -24,7 +25,7 @@ export class UniswapQuoter {
   private router: AlphaRouter
   private paymentToken: Token
 
-  constructor(paymentToken: Token, provider: ethers.providers.JsonRpcProvider) {
+  constructor(paymentToken: Token, provider: JsonRpcProvider) {
     this.router = new AlphaRouter({
       chainId: paymentToken.chainId,
       provider,

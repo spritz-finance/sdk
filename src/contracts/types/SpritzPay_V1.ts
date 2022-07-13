@@ -25,7 +25,8 @@ import type {
   TypedEvent,
   TypedListener,
   OnEvent,
-} from "../common";
+  PromiseOrValue,
+} from "./common";
 
 export interface SpritzPay_V1Interface extends utils.Interface {
   functions: {
@@ -53,36 +54,41 @@ export interface SpritzPay_V1Interface extends utils.Interface {
 
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [string, string]
+    values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "payWithNative",
     values: [
-      string,
-      string,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "payWithSwap",
     values: [
-      string,
-      string,
-      string,
-      BigNumberish,
-      BigNumberish,
-      BytesLike,
-      BytesLike
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
     ]
   ): string;
   encodeFunctionData(
     functionFragment: "payWithToken",
-    values: [string, string, BigNumberish, BytesLike]
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -94,7 +100,7 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
-    values: [string]
+    values: [PromiseOrValue<string>]
   ): string;
 
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -195,140 +201,140 @@ export interface SpritzPay_V1 extends BaseContract {
 
   functions: {
     initialize(
-      _swapRouterAddress: string,
-      _wrappedEtherAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _swapRouterAddress: PromiseOrValue<string>,
+      _wrappedEtherAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     payWithNative(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     payWithSwap(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     payWithToken(
-      to: string,
-      paymentTokenAddress: string,
-      paymentTokenAmount: BigNumberish,
-      paymentReference: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      to: PromiseOrValue<string>,
+      paymentTokenAddress: PromiseOrValue<string>,
+      paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     swapRouter(overrides?: CallOverrides): Promise<[string]>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   initialize(
-    _swapRouterAddress: string,
-    _wrappedEtherAddress: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _swapRouterAddress: PromiseOrValue<string>,
+    _wrappedEtherAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
   payWithNative(
-    _to: string,
-    _sourceTokenAddress: string,
-    _paymentTokenAddress: string,
-    _paymentTokenAmount: BigNumberish,
-    _sourceTokenAmountMax: BigNumberish,
-    _path: BytesLike,
-    _paymentReference: BytesLike,
-    overrides?: PayableOverrides & { from?: string | Promise<string> }
+    _to: PromiseOrValue<string>,
+    _sourceTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+    _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+    _path: PromiseOrValue<BytesLike>,
+    _paymentReference: PromiseOrValue<BytesLike>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   payWithSwap(
-    _to: string,
-    _sourceTokenAddress: string,
-    _paymentTokenAddress: string,
-    _paymentTokenAmount: BigNumberish,
-    _sourceTokenAmountMax: BigNumberish,
-    _path: BytesLike,
-    _paymentReference: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    _to: PromiseOrValue<string>,
+    _sourceTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+    _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+    _path: PromiseOrValue<BytesLike>,
+    _paymentReference: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   payWithToken(
-    to: string,
-    paymentTokenAddress: string,
-    paymentTokenAmount: BigNumberish,
-    paymentReference: BytesLike,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    to: PromiseOrValue<string>,
+    paymentTokenAddress: PromiseOrValue<string>,
+    paymentTokenAmount: PromiseOrValue<BigNumberish>,
+    paymentReference: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   renounceOwnership(
-    overrides?: Overrides & { from?: string | Promise<string> }
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   swapRouter(overrides?: CallOverrides): Promise<string>;
 
   transferOwnership(
-    newOwner: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
+    newOwner: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     initialize(
-      _swapRouterAddress: string,
-      _wrappedEtherAddress: string,
+      _swapRouterAddress: PromiseOrValue<string>,
+      _wrappedEtherAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     payWithNative(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     payWithSwap(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     payWithToken(
-      to: string,
-      paymentTokenAddress: string,
-      paymentTokenAmount: BigNumberish,
-      paymentReference: BytesLike,
+      to: PromiseOrValue<string>,
+      paymentTokenAddress: PromiseOrValue<string>,
+      paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -337,7 +343,7 @@ export interface SpritzPay_V1 extends BaseContract {
     swapRouter(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
-      newOwner: string,
+      newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -347,12 +353,12 @@ export interface SpritzPay_V1 extends BaseContract {
     Initialized(version?: null): InitializedEventFilter;
 
     "OwnershipTransferred(address,address)"(
-      previousOwner?: string | null,
-      newOwner?: string | null
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
     OwnershipTransferred(
-      previousOwner?: string | null,
-      newOwner?: string | null
+      previousOwner?: PromiseOrValue<string> | null,
+      newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
 
     "Payment(address,address,address,uint256,address,uint256,bytes32)"(
@@ -377,103 +383,103 @@ export interface SpritzPay_V1 extends BaseContract {
 
   estimateGas: {
     initialize(
-      _swapRouterAddress: string,
-      _wrappedEtherAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _swapRouterAddress: PromiseOrValue<string>,
+      _wrappedEtherAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     payWithNative(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     payWithSwap(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     payWithToken(
-      to: string,
-      paymentTokenAddress: string,
-      paymentTokenAmount: BigNumberish,
-      paymentReference: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      to: PromiseOrValue<string>,
+      paymentTokenAddress: PromiseOrValue<string>,
+      paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     swapRouter(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     initialize(
-      _swapRouterAddress: string,
-      _wrappedEtherAddress: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _swapRouterAddress: PromiseOrValue<string>,
+      _wrappedEtherAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     payWithNative(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
-      overrides?: PayableOverrides & { from?: string | Promise<string> }
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     payWithSwap(
-      _to: string,
-      _sourceTokenAddress: string,
-      _paymentTokenAddress: string,
-      _paymentTokenAmount: BigNumberish,
-      _sourceTokenAmountMax: BigNumberish,
-      _path: BytesLike,
-      _paymentReference: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     payWithToken(
-      to: string,
-      paymentTokenAddress: string,
-      paymentTokenAmount: BigNumberish,
-      paymentReference: BytesLike,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      to: PromiseOrValue<string>,
+      paymentTokenAddress: PromiseOrValue<string>,
+      paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
-      overrides?: Overrides & { from?: string | Promise<string> }
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     swapRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
-      newOwner: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
+      newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }
