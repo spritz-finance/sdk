@@ -1,31 +1,30 @@
-import { Token } from '@uniswap/sdk-core'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { SupportedChainId } from '../constants'
+import { Token } from '@uniswap/sdk-core'
+import { SupportedNetwork, validateNetwork } from '../networks'
 import { UniswapQuoter } from '../quotes/uniswap'
 import { getPaymentToken, TokenData, toToken } from '../tokens'
-import { validateChain } from '../utils/supportedChains'
 
 type SpritzClientParams = {
-  chainId: SupportedChainId
+  network: SupportedNetwork
   rpcUrl: string
   paymentTokenAddress?: string
 }
 
 export class SpritzClient {
-  private chainId: SupportedChainId
+  private network: SupportedNetwork
   private provider: JsonRpcProvider
   private outputToken: Token
 
-  constructor({ chainId, rpcUrl, paymentTokenAddress }: SpritzClientParams) {
-    validateChain(chainId)
-    this.chainId = chainId
-    this.outputToken = getPaymentToken(chainId, paymentTokenAddress)
+  constructor({ network, rpcUrl, paymentTokenAddress }: SpritzClientParams) {
+    const validNetwork = validateNetwork(network)
+    this.network = validNetwork
+    this.outputToken = getPaymentToken(validNetwork, paymentTokenAddress)
     this.provider = new JsonRpcProvider(rpcUrl)
   }
 
   public async getTokenPaymentQuote(inputTokenData: TokenData, paymentAmount: number) {
-    const inputToken = toToken(inputTokenData, this.chainId)
-    const quoter = new UniswapQuoter(this.outputToken, this.provider)
-    return quoter.getPaymentQuote(inputToken, paymentAmount)
+    const inputToken = toToken(inputTokenData, this.network)
+    const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
+    return quoter.getTokenPaymentQuote(inputToken, paymentAmount)
   }
 }

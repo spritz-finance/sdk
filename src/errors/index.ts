@@ -1,7 +1,7 @@
-export class UnsupportedChainError extends Error {
-  constructor(message = 'Spritz does not yet support this chain') {
+export class UnsupportedNetworkError extends Error {
+  constructor(message = 'Spritz does not yet support this network') {
     super(message)
-    this.name = 'UnsupportedChainError'
+    this.name = 'UnsupportedNetworkError'
   }
 }
 
