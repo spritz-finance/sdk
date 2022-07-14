@@ -3,6 +3,7 @@ import { Token } from '@uniswap/sdk-core'
 import { SupportedNetwork, validateNetwork } from '../networks'
 import { UniswapQuoter } from '../quotes/uniswap'
 import { getPaymentToken, TokenData, toToken } from '../tokens'
+import { FiatValue } from '../utils/format'
 
 type QuoterParams = {
   network: SupportedNetwork
@@ -22,14 +23,14 @@ export class Quoter {
     this.provider = new JsonRpcProvider(rpcUrl)
   }
 
-  public async getTokenPaymentQuote(inputTokenData: TokenData, paymentAmount: number) {
+  public async getTokenPaymentQuote(inputTokenData: TokenData, fiatAmount: FiatValue) {
     const inputToken = toToken(inputTokenData, this.network)
     const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
-    return quoter.getTokenPaymentQuote(inputToken, paymentAmount)
+    return quoter.getTokenPaymentQuote(inputToken, fiatAmount)
   }
 
-  public async getNativePaymentQuote(paymentAmount: number) {
+  public async getNativePaymentQuote(fiatAmount: FiatValue) {
     const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
-    return quoter.getNativePaymentQuote(paymentAmount)
+    return quoter.getNativePaymentQuote(fiatAmount)
   }
 }

@@ -15,7 +15,7 @@ export type PayWithTokenArgs = SpritzPay_V1['functions']['payWithToken']
 export type PayWithSwapArgs = SpritzPay_V1['functions']['payWithSwap']
 export type PayWithNativeArgs = SpritzPay_V1['functions']['payWithNative']
 
-export class SprtizPay {
+export class SpritzPay {
   public static tokenPaymentArgs(
     tokenAddress: string,
     network: SupportedNetwork,

@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import { getPaymentWalletAddress } from '../../addresses'
 import { UniswapQuoteError } from '../../errors'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
-import { roundNumber } from '../../utils/format'
+import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { getWrappedNativeToken } from '../../wrappedNativeTokens'
 import { getSwapPath } from './path'
 
@@ -58,10 +58,10 @@ export class UniswapQuoter {
 
   public async getTokenPaymentQuote(
     inputToken: Token,
-    _amountOut: number,
+    fiatAmount: FiatValue,
     slippagePercentage = 5,
   ): Promise<TokenPaymentQuote> {
-    const { amountOut, deadline } = this.getQuoteParams(_amountOut)
+    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount))
 
     const routeData = await this.getSwapRoute({
       inputToken,
@@ -86,8 +86,8 @@ export class UniswapQuoter {
     }
   }
 
-  public async getNativePaymentQuote(_amountOut: number, slippagePercentage = 5): Promise<NativePaymentQuote> {
-    const { amountOut, deadline } = this.getQuoteParams(_amountOut)
+  public async getNativePaymentQuote(fiatAmount: FiatValue, slippagePercentage = 5): Promise<NativePaymentQuote> {
+    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount))
 
     const nativeToken = getWrappedNativeToken(this.network)
     const routeData = await this.getSwapRoute({
