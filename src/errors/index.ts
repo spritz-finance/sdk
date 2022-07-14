@@ -11,3 +11,10 @@ export class UnsupportedPaymentTokenError extends Error {
     this.name = 'UnsupportedPaymentTokenError'
   }
 }
+
+export class UniswapQuoteError extends Error {
+  constructor(message = 'Failed to get swap quote from Uniswap') {
+    super(message)
+    this.name = 'UniswapQuoteError'
+  }
+}

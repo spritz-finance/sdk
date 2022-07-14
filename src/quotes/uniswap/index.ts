@@ -3,8 +3,9 @@ import { Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter, CurrencyAmount, SwapRoute, V3Route } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
 import { getPaymentWalletAddress } from '../../addresses'
+import { UniswapQuoteError } from '../../errors'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
-import { roundNumber } from '../../utils/roundNumber'
+import { roundNumber } from '../../utils/format'
 import { getWrappedNativeToken } from '../../wrappedNativeTokens'
 import { getSwapPath } from './path'
 
@@ -15,6 +16,24 @@ type SwapRouteProps = {
   deadline: number
   amountOut: string
   slippagePercentage: number
+}
+
+export type TokenPaymentQuote = {
+  sourceTokenAddress: string
+  paymentTokenAddress: string
+  amountOut: string
+  amountInMax: string
+  path: string
+  to: string
+}
+
+export type NativePaymentQuote = {
+  sourceTokenAddress: string
+  paymentTokenAddress: string
+  amountOut: string
+  amountInMax: string
+  path: string
+  to: string
 }
 
 const getAmountInMax = (token: Token, routeData: SwapRoute) => {
@@ -37,7 +56,11 @@ export class UniswapQuoter {
     this.paymentToken = paymentToken
   }
 
-  public async getTokenPaymentQuote(inputToken: Token, _amountOut: number, slippagePercentage = 5) {
+  public async getTokenPaymentQuote(
+    inputToken: Token,
+    _amountOut: number,
+    slippagePercentage = 5,
+  ): Promise<TokenPaymentQuote> {
     const { amountOut, deadline } = this.getQuoteParams(_amountOut)
 
     const routeData = await this.getSwapRoute({
@@ -48,12 +71,13 @@ export class UniswapQuoter {
     })
 
     const route = (routeData?.route[0].route ?? null) as V3Route | null
-    if (!route || !routeData) return null
+    if (!route || !routeData) throw new UniswapQuoteError()
 
     const amountInMax = getAmountInMax(inputToken, routeData)
     const path = getSwapPath(route)
 
     return {
+      to: getPaymentWalletAddress(this.network),
       sourceTokenAddress: inputToken.address,
       paymentTokenAddress: this.paymentToken.address,
       amountOut,
@@ -62,7 +86,7 @@ export class UniswapQuoter {
     }
   }
 
-  public async getNativePaymentQuote(_amountOut: number, slippagePercentage = 5) {
+  public async getNativePaymentQuote(_amountOut: number, slippagePercentage = 5): Promise<NativePaymentQuote> {
     const { amountOut, deadline } = this.getQuoteParams(_amountOut)
 
     const nativeToken = getWrappedNativeToken(this.network)
@@ -74,12 +98,13 @@ export class UniswapQuoter {
     })
 
     const route = (routeData?.route[0].route ?? null) as V3Route | null
-    if (!route || !routeData) return null
+    if (!route || !routeData) throw new UniswapQuoteError()
 
     const amountInMax = getAmountInMax(nativeToken, routeData)
     const path = getSwapPath(route)
 
     return {
+      to: getPaymentWalletAddress(this.network),
       sourceTokenAddress: nativeToken.address,
       paymentTokenAddress: this.paymentToken.address,
       amountOut,
