@@ -8,8 +8,6 @@ import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { getWrappedNativeToken } from '../../wrappedNativeTokens'
 import { getSwapPath } from './path'
 
-const AMOUNT_IN_MAX_PADDING = 1.02
-
 type SwapRouteProps = {
   inputToken: Token
   deadline: number
@@ -36,9 +34,9 @@ export type NativePaymentQuote = {
 }
 
 const getAmountInMax = (token: Token, routeData: SwapRoute) => {
-  const amountString = routeData.quote.toFixed(token.decimals)
-  const amount = parseFloat(amountString) * 10 ** token.decimals * AMOUNT_IN_MAX_PADDING
-  return amount.toString()
+  const amountString = routeData.quote.toExact()
+  const parsedAmount = ethers.utils.parseUnits(amountString, token.decimals)
+  return parsedAmount.toString()
 }
 
 export class UniswapQuoter {
