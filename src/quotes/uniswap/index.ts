@@ -1,4 +1,3 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter, CurrencyAmount, SwapRoute, V3Route } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
@@ -47,7 +46,7 @@ export class UniswapQuoter {
   private network: SupportedNetwork
   private paymentToken: Token
 
-  constructor(paymentToken: Token, network: SupportedNetwork, provider: JsonRpcProvider) {
+  constructor(paymentToken: Token, network: SupportedNetwork, provider: ethers.providers.JsonRpcProvider) {
     this.network = network
     this.router = new AlphaRouter({
       chainId: NETWORK_TO_CHAIN_ID[network],

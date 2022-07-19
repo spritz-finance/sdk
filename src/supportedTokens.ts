@@ -9,3 +9,8 @@ export const MAI_POLYGON = { address: '0xa3fa99a148fa48d14ed51d610c367c61876997f
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON, USDT_POLYGON, DAI_POLYGON, MAI_POLYGON],
 }
+
+export const isAcceptedPaymentToken = (tokenAddress: string, network: SupportedNetwork) => {
+  const addresses = ACCEPTED_PAYMENT_TOKENS[network].map((token) => token.address)
+  return addresses.includes(tokenAddress)
+}

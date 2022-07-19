@@ -1,5 +1,5 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
 import { Token } from '@uniswap/sdk-core'
+import { ethers } from 'ethers'
 import { SupportedNetwork, validateNetwork } from '../networks'
 import { UniswapQuoter } from '../quotes/uniswap'
 import { getPaymentToken, TokenData, toToken } from '../tokens'
@@ -7,20 +7,20 @@ import { FiatValue } from '../utils/format'
 
 type QuoterParams = {
   network: SupportedNetwork
-  rpcUrl: string
+  provider: ethers.providers.JsonRpcProvider
   paymentTokenAddress?: string
 }
 
 export class Quoter {
   private network: SupportedNetwork
-  private provider: JsonRpcProvider
+  private provider: ethers.providers.JsonRpcProvider
   private outputToken: Token
 
-  constructor({ network, rpcUrl, paymentTokenAddress }: QuoterParams) {
+  constructor({ network, provider, paymentTokenAddress }: QuoterParams) {
     const validNetwork = validateNetwork(network)
     this.network = validNetwork
     this.outputToken = getPaymentToken(validNetwork, paymentTokenAddress)
-    this.provider = new JsonRpcProvider(rpcUrl)
+    this.provider = provider
   }
 
   public async getTokenPaymentQuote(inputTokenData: TokenData, fiatAmount: FiatValue) {
