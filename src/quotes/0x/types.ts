@@ -1,19 +1,3 @@
-import { BigNumber } from 'ethers'
-
-export interface GetQuoteParams {
-  buyAmount: BigNumber
-  isNative: boolean
-  sourceTokenAddress: string
-}
-
-export interface GetSwapParamsParams {
-  buyAmount: BigNumber
-  isNative: boolean
-  sourceTokenAddress: string
-  sourceTokenDecimals: number
-  paymentReference: any
-}
-
 interface Source {
   name: string
   proportion: string
