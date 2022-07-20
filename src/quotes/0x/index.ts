@@ -2,7 +2,7 @@ import { Token } from '@uniswap/sdk-core'
 import axios from 'axios'
 import { BigNumber } from 'ethers'
 import { getPaymentWalletAddress } from '../../addresses'
-import { PayWithSwapV2Args } from '../../contracts'
+import { PayWithAggregatedSwapArgs } from '../../contracts'
 import { Network, SupportedNetwork } from '../../networks'
 import { isNativeAddress } from '../../tokens'
 import { fiatString, FiatValue, fiatValueToBigNumber } from '../../utils/format'
@@ -22,13 +22,13 @@ export class ZeroExQuoter {
     sourceTokenAddress: string,
     paymentAmount: FiatValue,
     paymentReference: string,
-  ): Promise<PayWithSwapV2Args> {
+  ): Promise<PayWithAggregatedSwapArgs> {
     const data = await this.getQuote(paymentAmount, sourceTokenAddress)
 
     //TODO: figure out how much to actually transfer
     const guaranteedSellAmount = BigNumber.from(data.sellAmount).div(100).mul(102).toString()
 
-    const args: PayWithSwapV2Args = [
+    const args: PayWithAggregatedSwapArgs = [
       getPaymentWalletAddress(this.network),
       sourceTokenAddress,
       guaranteedSellAmount,

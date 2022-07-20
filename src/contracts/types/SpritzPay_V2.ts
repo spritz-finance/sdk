@@ -32,7 +32,9 @@ export interface SpritzPay_V2Interface extends utils.Interface {
   functions: {
     "initialize(address,address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "payWithSwap(address,address,uint256,address,uint256,address,address,bytes,bytes32)": FunctionFragment;
+    "payWithAggregatedSwap(address,address,uint256,address,uint256,address,address,bytes,bytes32)": FunctionFragment;
+    "payWithNative(address,address,address,uint256,uint256,bytes,bytes32)": FunctionFragment;
+    "payWithSwap(address,address,address,uint256,uint256,bytes,bytes32)": FunctionFragment;
     "payWithToken(address,address,uint256,bytes32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "swapRouter()": FunctionFragment;
@@ -43,6 +45,8 @@ export interface SpritzPay_V2Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "initialize"
       | "owner"
+      | "payWithAggregatedSwap"
+      | "payWithNative"
       | "payWithSwap"
       | "payWithToken"
       | "renounceOwnership"
@@ -56,7 +60,7 @@ export interface SpritzPay_V2Interface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "payWithSwap",
+    functionFragment: "payWithAggregatedSwap",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
@@ -65,6 +69,30 @@ export interface SpritzPay_V2Interface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "payWithNative",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "payWithSwap",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BytesLike>
     ]
@@ -93,6 +121,14 @@ export interface SpritzPay_V2Interface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "payWithAggregatedSwap",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "payWithNative",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "payWithSwap",
     data: BytesLike
@@ -192,7 +228,7 @@ export interface SpritzPay_V2 extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    payWithSwap(
+    payWithAggregatedSwap(
       to: PromiseOrValue<string>,
       sourceTokenAddress: PromiseOrValue<string>,
       sourceTokenAmount: PromiseOrValue<BigNumberish>,
@@ -203,6 +239,28 @@ export interface SpritzPay_V2 extends BaseContract {
       swapCallData: PromiseOrValue<BytesLike>,
       paymentReference: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    payWithNative(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    payWithSwap(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     payWithToken(
@@ -233,7 +291,7 @@ export interface SpritzPay_V2 extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  payWithSwap(
+  payWithAggregatedSwap(
     to: PromiseOrValue<string>,
     sourceTokenAddress: PromiseOrValue<string>,
     sourceTokenAmount: PromiseOrValue<BigNumberish>,
@@ -244,6 +302,28 @@ export interface SpritzPay_V2 extends BaseContract {
     swapCallData: PromiseOrValue<BytesLike>,
     paymentReference: PromiseOrValue<BytesLike>,
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  payWithNative(
+    _to: PromiseOrValue<string>,
+    _sourceTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+    _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+    _path: PromiseOrValue<BytesLike>,
+    _paymentReference: PromiseOrValue<BytesLike>,
+    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  payWithSwap(
+    _to: PromiseOrValue<string>,
+    _sourceTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAddress: PromiseOrValue<string>,
+    _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+    _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+    _path: PromiseOrValue<BytesLike>,
+    _paymentReference: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   payWithToken(
@@ -274,7 +354,7 @@ export interface SpritzPay_V2 extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    payWithSwap(
+    payWithAggregatedSwap(
       to: PromiseOrValue<string>,
       sourceTokenAddress: PromiseOrValue<string>,
       sourceTokenAmount: PromiseOrValue<BigNumberish>,
@@ -286,6 +366,28 @@ export interface SpritzPay_V2 extends BaseContract {
       paymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    payWithNative(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    payWithSwap(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     payWithToken(
       to: PromiseOrValue<string>,
@@ -347,7 +449,7 @@ export interface SpritzPay_V2 extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    payWithSwap(
+    payWithAggregatedSwap(
       to: PromiseOrValue<string>,
       sourceTokenAddress: PromiseOrValue<string>,
       sourceTokenAmount: PromiseOrValue<BigNumberish>,
@@ -358,6 +460,28 @@ export interface SpritzPay_V2 extends BaseContract {
       swapCallData: PromiseOrValue<BytesLike>,
       paymentReference: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    payWithNative(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    payWithSwap(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     payWithToken(
@@ -389,7 +513,7 @@ export interface SpritzPay_V2 extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    payWithSwap(
+    payWithAggregatedSwap(
       to: PromiseOrValue<string>,
       sourceTokenAddress: PromiseOrValue<string>,
       sourceTokenAmount: PromiseOrValue<BigNumberish>,
@@ -400,6 +524,28 @@ export interface SpritzPay_V2 extends BaseContract {
       swapCallData: PromiseOrValue<BytesLike>,
       paymentReference: PromiseOrValue<BytesLike>,
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    payWithNative(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    payWithSwap(
+      _to: PromiseOrValue<string>,
+      _sourceTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAddress: PromiseOrValue<string>,
+      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
+      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
+      _path: PromiseOrValue<BytesLike>,
+      _paymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     payWithToken(
