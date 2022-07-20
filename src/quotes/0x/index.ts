@@ -20,10 +20,10 @@ export class ZeroExQuoter {
 
   public async getAggregatedSwapQuote(
     sourceTokenAddress: string,
-    buyAmount: FiatValue,
+    paymentAmount: FiatValue,
     paymentReference: string,
   ): Promise<PayWithSwapV2Args> {
-    const data = await this.getQuote(buyAmount, sourceTokenAddress)
+    const data = await this.getQuote(paymentAmount, sourceTokenAddress)
 
     //TODO: figure out how much to actually transfer
     const guaranteedSellAmount = BigNumber.from(data.sellAmount).div(100).mul(102).toString()
@@ -44,19 +44,6 @@ export class ZeroExQuoter {
         // gasLimit: ethers.BigNumber.from(data.gas).mul(50).div(10).toString(),
       },
     ]
-
-    console.table({
-      to: args[0],
-      sourceTokenAddress: args[1],
-      sourceTokenAmount: args[2],
-      paymentTokenAddress: args[3],
-      paymentTokenAmount: args[4],
-      allowanceTarget: args[5],
-      swapTarget: args[6],
-      callData: args[7],
-      paymentReference: args[8],
-      overrides: args[9],
-    })
 
     return args
   }
@@ -87,8 +74,6 @@ export class ZeroExQuoter {
         sellToken: isNative ? nativeToken : sourceTokenAddress,
       },
     })
-
-    console.log('0x API response:', data)
 
     return data
   }
