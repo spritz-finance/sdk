@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { SpritzPay_V1__factory } from "./SpritzPay_V1__factory";
+export { SpritzPay_V2__factory } from "./SpritzPay_V2__factory";

@@ -1,6 +1,6 @@
 {
   "name": "@spritz-finance/sdk",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
   "main": "dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -43,6 +43,7 @@
     "@ethersproject/providers": "^5.6.8",
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/smart-order-router": "2.5.30",
+    "axios": "^0.27.2",
     "ethers": "^5.6.9"
   }
 }

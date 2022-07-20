@@ -1,6 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
 import { SupportedNetwork, validateNetwork } from '../networks'
+import { ZeroExQuoter } from '../quotes/0x'
 import { UniswapQuoter } from '../quotes/uniswap'
 import { getPaymentToken, TokenData, toToken } from '../tokens'
 import { FiatValue } from '../utils/format'
@@ -32,5 +33,10 @@ export class Quoter {
   public async getNativePaymentQuote(fiatAmount: FiatValue) {
     const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
     return quoter.getNativePaymentQuote(fiatAmount)
+  }
+
+  public async getAggregatedSwapQuote(inputTokenAddress: string, fiatAmount: FiatValue, reference: string) {
+    const quoter = new ZeroExQuoter(this.outputToken, this.network)
+    return quoter.getAggregatedSwapQuote(inputTokenAddress, fiatAmount, reference)
   }
 }
