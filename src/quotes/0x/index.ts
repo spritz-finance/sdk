@@ -54,17 +54,25 @@ export class ZeroExQuoter {
     const buyAmount = fiatValueToBigNumber(fiatString(fiatAmount), this.paymentToken.decimals)
     const isNative = isNativeAddress(sourceTokenAddress)
 
+    //https://docs.0x.org/introduction/0x-cheat-sheet
     switch (this.network) {
       case Network.Polygon:
         nativeToken = 'MATIC'
         domain = 'polygon'
         break
-      // case ChainId.Ropsten:
-      //   domain = 'ropsten'
+      // case Network.Ethereum:
+      //   domain = 'api'
       //   break
-      //   case Network.Ethereum:
-      //     domain = 'api'
-      //     break
+      // case Network.Optimism:
+      //   domain = 'optimism'
+      //   break
+      // case Network.Binance:
+      //   domain = 'bsc'
+      //   nativeToken = 'BNB'
+      //   break
+      // case Network.Avalanche:
+      //   domain = 'avalanche'
+      //   nativeToken = 'AVAX'
     }
 
     const { data } = await axios.get<ZeroExQuoteResponse>(`https://${domain}.api.0x.org/swap/v1/quote`, {
