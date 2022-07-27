@@ -2,7 +2,7 @@ import { Token } from '@uniswap/sdk-core'
 import axios from 'axios'
 import { BigNumber } from 'ethers'
 import { getPaymentWalletAddress } from '../../addresses'
-import { PayWithAggregatedSwapArgs } from '../../contracts'
+// import { PayWithAggregatedSwapArgs } from '../../contracts'
 import { Network, SupportedNetwork } from '../../networks'
 import { isNativeAddress } from '../../tokens'
 import { fiatString, FiatValue, fiatValueToBigNumber } from '../../utils/format'
@@ -18,35 +18,35 @@ export class ZeroExQuoter {
     this.paymentToken = paymentToken
   }
 
-  public async getAggregatedSwapQuote(
-    sourceTokenAddress: string,
-    paymentAmount: FiatValue,
-    paymentReference: string,
-  ): Promise<PayWithAggregatedSwapArgs> {
-    const data = await this.getQuote(paymentAmount, sourceTokenAddress)
+  // public async getAggregatedSwapQuote(
+  //   sourceTokenAddress: string,
+  //   paymentAmount: FiatValue,
+  //   paymentReference: string,
+  // ): Promise<PayWithAggregatedSwapArgs> {
+  //   const data = await this.getQuote(paymentAmount, sourceTokenAddress)
 
-    //TODO: figure out how much to actually transfer
-    const guaranteedSellAmount = BigNumber.from(data.sellAmount).div(100).mul(102).toString()
+  //   //TODO: figure out how much to actually transfer
+  //   const guaranteedSellAmount = BigNumber.from(data.sellAmount).div(100).mul(102).toString()
 
-    const args: PayWithAggregatedSwapArgs = [
-      getPaymentWalletAddress(this.network),
-      sourceTokenAddress,
-      guaranteedSellAmount,
-      this.paymentToken.address,
-      data.buyAmount,
-      data.allowanceTarget,
-      data.to,
-      data.data,
-      formatPaymentReference(paymentReference),
-      {
-        gasPrice: data.gasPrice as string,
-        value: data.value,
-        // gasLimit: ethers.BigNumber.from(data.gas).mul(50).div(10).toString(),
-      },
-    ]
+  //   const args: PayWithAggregatedSwapArgs = [
+  //     getPaymentWalletAddress(this.network),
+  //     sourceTokenAddress,
+  //     guaranteedSellAmount,
+  //     this.paymentToken.address,
+  //     data.buyAmount,
+  //     data.allowanceTarget,
+  //     data.to,
+  //     data.data,
+  //     formatPaymentReference(paymentReference),
+  //     {
+  //       gasPrice: data.gasPrice as string,
+  //       value: data.value,
+  //       // gasLimit: ethers.BigNumber.from(data.gas).mul(50).div(10).toString(),
+  //     },
+  //   ]
 
-    return args
-  }
+  //   return args
+  // }
 
   private async getQuote(fiatAmount: FiatValue, sourceTokenAddress: string) {
     let nativeToken = 'ETH'

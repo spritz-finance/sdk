@@ -37,8 +37,8 @@ export class Quoter {
     return quoter.getNativePaymentQuote(paymentAmount)
   }
 
-  public async getAggregatedSwapQuote(inputTokenAddress: string, paymentAmount: FiatValue, reference: string) {
-    const quoter = new ZeroExQuoter(this.outputToken, this.network)
-    return quoter.getAggregatedSwapQuote(inputTokenAddress, paymentAmount, reference)
-  }
+  // public async getAggregatedSwapQuote(inputTokenAddress: string, paymentAmount: FiatValue, reference: string) {
+  //   const quoter = new ZeroExQuoter(this.outputToken, this.network)
+  //   return quoter.getAggregatedSwapQuote(inputTokenAddress, paymentAmount, reference)
+  // }
 }
