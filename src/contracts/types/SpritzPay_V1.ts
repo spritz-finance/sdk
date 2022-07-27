@@ -9,7 +9,6 @@ import type {
   CallOverrides,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -32,24 +31,32 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   functions: {
     "initialize(address,address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "payWithNative(address,address,address,uint256,uint256,bytes,bytes32)": FunctionFragment;
-    "payWithSwap(address,address,address,uint256,uint256,bytes,bytes32)": FunctionFragment;
-    "payWithToken(address,address,uint256,bytes32)": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
+    "payWithToken(address,uint256,bytes32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "swapRouter()": FunctionFragment;
+    "setPaymentRecipient(address)": FunctionFragment;
+    "setV2Router(address)": FunctionFragment;
+    "setV3Router(address)": FunctionFragment;
+    "setWETHAddress(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "unpause()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "initialize"
       | "owner"
-      | "payWithNative"
-      | "payWithSwap"
+      | "pause"
+      | "paused"
       | "payWithToken"
       | "renounceOwnership"
-      | "swapRouter"
+      | "setPaymentRecipient"
+      | "setV2Router"
+      | "setV3Router"
+      | "setWETHAddress"
       | "transferOwnership"
+      | "unpause"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -57,34 +64,11 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "payWithNative",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "payWithSwap",
-    values: [
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BytesLike>
-    ]
-  ): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "payWithToken",
     values: [
-      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>
@@ -95,24 +79,31 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "swapRouter",
-    values?: undefined
+    functionFragment: "setPaymentRecipient",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setV2Router",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setV3Router",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setWETHAddress",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "payWithNative",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "payWithSwap",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "payWithToken",
     data: BytesLike
@@ -121,21 +112,45 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "swapRouter", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setPaymentRecipient",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setV2Router",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setV3Router",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setWETHAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 
   events: {
     "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "Paused(address)": EventFragment;
     "Payment(address,address,address,uint256,address,uint256,bytes32)": EventFragment;
+    "PaymentRecipientChanged(address,address)": EventFragment;
+    "Unpaused(address)": EventFragment;
+    "UpdateWETHAddress(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Payment"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentRecipientChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdateWETHAddress"): EventFragment;
 }
 
 export interface InitializedEventObject {
@@ -157,6 +172,13 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
 
+export interface PausedEventObject {
+  account: string;
+}
+export type PausedEvent = TypedEvent<[string], PausedEventObject>;
+
+export type PausedEventFilter = TypedEventFilter<PausedEvent>;
+
 export interface PaymentEventObject {
   to: string;
   from: string;
@@ -172,6 +194,36 @@ export type PaymentEvent = TypedEvent<
 >;
 
 export type PaymentEventFilter = TypedEventFilter<PaymentEvent>;
+
+export interface PaymentRecipientChangedEventObject {
+  recipient: string;
+  sender: string;
+}
+export type PaymentRecipientChangedEvent = TypedEvent<
+  [string, string],
+  PaymentRecipientChangedEventObject
+>;
+
+export type PaymentRecipientChangedEventFilter =
+  TypedEventFilter<PaymentRecipientChangedEvent>;
+
+export interface UnpausedEventObject {
+  account: string;
+}
+export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
+
+export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
+
+export interface UpdateWETHAddressEventObject {
+  account: string;
+}
+export type UpdateWETHAddressEvent = TypedEvent<
+  [string],
+  UpdateWETHAddressEventObject
+>;
+
+export type UpdateWETHAddressEventFilter =
+  TypedEventFilter<UpdateWETHAddressEvent>;
 
 export interface SpritzPay_V1 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -201,37 +253,20 @@ export interface SpritzPay_V1 extends BaseContract {
 
   functions: {
     initialize(
-      _swapRouterAddress: PromiseOrValue<string>,
-      _wrappedEtherAddress: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _wethAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    payWithNative(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    payWithSwap(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
+    pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
     payWithToken(
-      to: PromiseOrValue<string>,
       paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
@@ -242,46 +277,51 @@ export interface SpritzPay_V1 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    swapRouter(overrides?: CallOverrides): Promise<[string]>;
+    setPaymentRecipient(
+      newPaymentRecipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setV2Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setV3Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    setWETHAddress(
+      newWETHAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    unpause(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   initialize(
-    _swapRouterAddress: PromiseOrValue<string>,
-    _wrappedEtherAddress: PromiseOrValue<string>,
+    _paymentRecipient: PromiseOrValue<string>,
+    _wethAddress: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  payWithNative(
-    _to: PromiseOrValue<string>,
-    _sourceTokenAddress: PromiseOrValue<string>,
-    _paymentTokenAddress: PromiseOrValue<string>,
-    _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-    _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-    _path: PromiseOrValue<BytesLike>,
-    _paymentReference: PromiseOrValue<BytesLike>,
-    overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  payWithSwap(
-    _to: PromiseOrValue<string>,
-    _sourceTokenAddress: PromiseOrValue<string>,
-    _paymentTokenAddress: PromiseOrValue<string>,
-    _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-    _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-    _path: PromiseOrValue<BytesLike>,
-    _paymentReference: PromiseOrValue<BytesLike>,
+  pause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
   payWithToken(
-    to: PromiseOrValue<string>,
     paymentTokenAddress: PromiseOrValue<string>,
     paymentTokenAmount: PromiseOrValue<BigNumberish>,
     paymentReference: PromiseOrValue<BytesLike>,
@@ -292,46 +332,49 @@ export interface SpritzPay_V1 extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  swapRouter(overrides?: CallOverrides): Promise<string>;
+  setPaymentRecipient(
+    newPaymentRecipient: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setV2Router(
+    newRouterAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setV3Router(
+    newRouterAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  setWETHAddress(
+    newWETHAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  unpause(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     initialize(
-      _swapRouterAddress: PromiseOrValue<string>,
-      _wrappedEtherAddress: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _wethAddress: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    payWithNative(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<void>;
+    pause(overrides?: CallOverrides): Promise<void>;
 
-    payWithSwap(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    paused(overrides?: CallOverrides): Promise<boolean>;
 
     payWithToken(
-      to: PromiseOrValue<string>,
       paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
@@ -340,12 +383,32 @@ export interface SpritzPay_V1 extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    swapRouter(overrides?: CallOverrides): Promise<string>;
+    setPaymentRecipient(
+      newPaymentRecipient: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setV2Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setV3Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setWETHAddress(
+      newWETHAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -361,10 +424,13 @@ export interface SpritzPay_V1 extends BaseContract {
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
 
+    "Paused(address)"(account?: null): PausedEventFilter;
+    Paused(account?: null): PausedEventFilter;
+
     "Payment(address,address,address,uint256,address,uint256,bytes32)"(
       to?: null,
-      from?: null,
-      sourceToken?: null,
+      from?: PromiseOrValue<string> | null,
+      sourceToken?: PromiseOrValue<string> | null,
       sourceTokenAmount?: null,
       paymentToken?: null,
       paymentTokenAmount?: null,
@@ -372,48 +438,46 @@ export interface SpritzPay_V1 extends BaseContract {
     ): PaymentEventFilter;
     Payment(
       to?: null,
-      from?: null,
-      sourceToken?: null,
+      from?: PromiseOrValue<string> | null,
+      sourceToken?: PromiseOrValue<string> | null,
       sourceTokenAmount?: null,
       paymentToken?: null,
       paymentTokenAmount?: null,
       paymentReference?: null
     ): PaymentEventFilter;
+
+    "PaymentRecipientChanged(address,address)"(
+      recipient?: null,
+      sender?: null
+    ): PaymentRecipientChangedEventFilter;
+    PaymentRecipientChanged(
+      recipient?: null,
+      sender?: null
+    ): PaymentRecipientChangedEventFilter;
+
+    "Unpaused(address)"(account?: null): UnpausedEventFilter;
+    Unpaused(account?: null): UnpausedEventFilter;
+
+    "UpdateWETHAddress(address)"(account?: null): UpdateWETHAddressEventFilter;
+    UpdateWETHAddress(account?: null): UpdateWETHAddressEventFilter;
   };
 
   estimateGas: {
     initialize(
-      _swapRouterAddress: PromiseOrValue<string>,
-      _wrappedEtherAddress: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _wethAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    payWithNative(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    payWithSwap(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
+    pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
     payWithToken(
-      to: PromiseOrValue<string>,
       paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
@@ -424,47 +488,52 @@ export interface SpritzPay_V1 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    swapRouter(overrides?: CallOverrides): Promise<BigNumber>;
+    setPaymentRecipient(
+      newPaymentRecipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setV2Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setV3Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    setWETHAddress(
+      newWETHAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     initialize(
-      _swapRouterAddress: PromiseOrValue<string>,
-      _wrappedEtherAddress: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _wethAddress: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    payWithNative(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
-      overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    payWithSwap(
-      _to: PromiseOrValue<string>,
-      _sourceTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAddress: PromiseOrValue<string>,
-      _paymentTokenAmount: PromiseOrValue<BigNumberish>,
-      _sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      _path: PromiseOrValue<BytesLike>,
-      _paymentReference: PromiseOrValue<BytesLike>,
+    pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     payWithToken(
-      to: PromiseOrValue<string>,
       paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
@@ -475,10 +544,32 @@ export interface SpritzPay_V1 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    swapRouter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    setPaymentRecipient(
+      newPaymentRecipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setV2Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setV3Router(
+      newRouterAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setWETHAddress(
+      newWETHAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
