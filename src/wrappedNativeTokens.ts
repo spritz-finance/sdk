@@ -9,9 +9,9 @@ export const WETH_OPTIMISM = { address: '0x4200000000000000000000000000000000000
 
 const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Polygon]: WMATIC_POLYGON,
+  [Network.Optimism]: WETH_OPTIMISM,
   //   [Network.Ethereum]: WETH_MAINNET,
   //   [Network.Arbitrum]: WETH_ARBITRUM,
-  //   [Network.Optimism]: WETH_OPTIMISM,
 }
 
 export const getWrappedNativeToken = (network: SupportedNetwork) => {

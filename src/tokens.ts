@@ -25,7 +25,9 @@ export const toToken = (data: TokenData, network: SupportedNetwork) => {
 }
 
 export const getPaymentToken = (network: SupportedNetwork, paymentTokenAddress: string = USDC_POLYGON.address) => {
-  const token = ACCEPTED_PAYMENT_TOKENS[network]?.find((token: TokenData) => token.address === paymentTokenAddress)
+  const token = ACCEPTED_PAYMENT_TOKENS[network]?.find(
+    (token: TokenData) => token.address.toLowerCase() === paymentTokenAddress.toLowerCase(),
+  )
 
   if (!token) throw new UnsupportedPaymentTokenError()
 

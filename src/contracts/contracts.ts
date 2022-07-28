@@ -22,3 +22,6 @@ export type SpritzPayMethod = Exclude<
   keyof SpritzPay_V1['functions'],
   'pause' | 'paused' | 'setPaymentRecipient' | 'setV2Router' | 'setV3Router' | 'setWETHAddress' | 'unpause'
 >
+
+export { SpritzPay_Legacy__factory } from './types'
+export { SpritzPay_V1__factory } from './types'
