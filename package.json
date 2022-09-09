@@ -2,7 +2,7 @@
   "name": "@spritz-finance/sdk",
   "version": "0.0.36",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
-  "main": "dist/cjs/index.js",
+  "main": "dist/esm/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/esm/index.d.ts",
   "files": [
@@ -18,9 +18,8 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm run build:esm && npm run build:cjs",
+    "build": "npm run build:esm",
     "build:esm": "tsc",
-    "build:cjs": "tsc --module commonjs --outDir dist/cjs",
     "prepublishOnly": "npm run build",
     "typechain:generate": "yarn typechain --target=ethers-v5 ./src/contracts/**/abi/*.json --out-dir=./src/contracts/types"
   },

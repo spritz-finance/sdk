@@ -1,15 +1,7 @@
 import { Token } from '@uniswap/sdk-core'
 import { UnsupportedPaymentTokenError } from './errors'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
-import { ACCEPTED_PAYMENT_TOKENS, USDC_POLYGON } from './supportedTokens'
-
-/**
- * Returned by Zapper API as the "contract address" signifying native token (MATIC) balance.
- */
-export const NATIVE_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-
-//wat
-export const NATIVE_ADDRESS_OTHER = '0x0000000000000000000000000000000000001010'
+import { ACCEPTED_PAYMENT_TOKENS, NATIVE_ADDRESS_OTHER, NATIVE_ZERO_ADDRESS, USDC_POLYGON } from './supportedTokens'
 
 export const isNativeAddress = (address: string) => [NATIVE_ZERO_ADDRESS, NATIVE_ADDRESS_OTHER].includes(address)
 

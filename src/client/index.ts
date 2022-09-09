@@ -1,44 +1,56 @@
-import { Token } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
-import { SupportedNetwork, validateNetwork } from '../networks'
-import { ZeroExQuoter } from '../quotes/0x'
-import { UniswapQuoter } from '../quotes/uniswap'
-import { getPaymentToken, TokenData, toToken } from '../tokens'
-import { FiatValue } from '../utils/format'
+import { SupportedNetwork } from '../networks'
+import { isAcceptedPaymentToken, USDC_POLYGON } from '../supportedTokens'
+import { getPaymentToken } from '../tokens'
+import { fiatString } from '../utils/format'
+import { formatPaymentReference } from '../utils/reference'
+import { UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
+import { SpritzPayMethod } from '../contracts/contracts'
 
-type QuoterParams = {
-  network: SupportedNetwork
-  provider?: ethers.providers.JsonRpcProvider
-  paymentTokenAddress?: string
-}
+export class SpritzPaySDK {
+  constructor(public network: SupportedNetwork, public provider: ethers.providers.BaseProvider) {}
 
-export class Quoter {
-  private network: SupportedNetwork
-  private provider?: ethers.providers.JsonRpcProvider
-  private outputToken: Token
-
-  constructor({ network, provider, paymentTokenAddress }: QuoterParams) {
-    const validNetwork = validateNetwork(network)
-    this.network = validNetwork
-    this.outputToken = getPaymentToken(validNetwork, paymentTokenAddress)
-    this.provider = provider
+  public contractMethod(tokenAddress: string): SpritzPayMethod {
+    if (isAcceptedPaymentToken(tokenAddress, this.network)) return 'payWithToken'
+    return 'payWithSwap'
   }
 
-  public async getTokenPaymentQuote(inputTokenData: TokenData, paymentAmount: FiatValue) {
-    if (!this.provider) throw new Error('getTokenPaymentQuote requires a provider')
-    const inputToken = toToken(inputTokenData, this.network)
-    const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
-    return quoter.getTokenPaymentQuote(inputToken, paymentAmount)
+  public tokenPaymentArgs(tokenAddress: string, fiatAmount: string | number, reference: string): any {
+    const token = getPaymentToken(this.network, tokenAddress)
+    const amount = ethers.utils.parseUnits(fiatString(fiatAmount), token.decimals)
+    return [tokenAddress, amount, formatPaymentReference(reference)]
   }
 
-  public async getNativePaymentQuote(paymentAmount: FiatValue) {
-    if (!this.provider) throw new Error('getTokenPaymentQuote requires a provider')
-    const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
-    return quoter.getNativePaymentQuote(paymentAmount)
+  public async swapPaymentArgs(
+    sourceTokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+  ): Promise<any> {
+    const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
+    const result = await uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount)
+    return result
   }
 
-  // public async getAggregatedSwapQuote(inputTokenAddress: string, paymentAmount: FiatValue, reference: string) {
-  //   const quoter = new ZeroExQuoter(this.outputToken, this.network)
-  //   return quoter.getAggregatedSwapQuote(inputTokenAddress, paymentAmount, reference)
-  // }
+  public async getPaymentArgs(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+  ): Promise<{ method: any; args: any }> {
+    const method = this.contractMethod(tokenAddress)
+
+    let args
+
+    if (method == 'payWithToken') {
+      args = this.tokenPaymentArgs(tokenAddress, fiatAmount, reference)
+    } else if (method === 'payWithSwap') {
+      args = await this.swapPaymentArgs(tokenAddress, fiatAmount, reference)
+    } else {
+      throw new Error('cant')
+    }
+
+    return {
+      method,
+      args,
+    }
+  }
 }

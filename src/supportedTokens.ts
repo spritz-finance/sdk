@@ -1,6 +1,12 @@
 import { Network, SupportedNetwork } from './networks'
 import { TokenData } from './tokens'
 
+/**
+ * Returned by Zapper API as the "contract address" signifying native token (MATIC) balance.
+ */
+export const NATIVE_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+export const NATIVE_ADDRESS_OTHER = '0x0000000000000000000000000000000000001010' //wat
+
 export const USDT_POLYGON = { address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f', decimals: 6, symbol: 'USDT' }
 export const USDC_POLYGON = { address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', decimals: 6, symbol: 'USDC' }
 export const DAI_POLYGON = { address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063', decimals: 18, symbol: 'DAI' }

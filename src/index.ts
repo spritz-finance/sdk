@@ -1,6 +1,6 @@
 export * from './networks'
 export * from './addresses'
+export * from './tokens'
 export * from './supportedTokens'
-export * from './contracts'
 export * from './contracts/contracts'
 export * from './client'
