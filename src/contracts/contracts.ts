@@ -1,8 +1,8 @@
 import { Contract, ethers } from 'ethers'
 import { getContractAddress } from '../addresses'
 import { Network, SupportedNetwork } from '../networks'
-import { SpritzPay_V1_ABI, SpritzPay_Legacy_ABI } from './abi'
-import { SpritzPay_V1 as Contract_V1, SpritzPay_Legacy as Contract_Legacy } from './types'
+import { SpritzPay_Legacy_ABI, SpritzPay_V1_ABI } from './abi'
+import { SpritzPay_Legacy as Contract_Legacy, SpritzPay_V1 as Contract_V1 } from './types'
 
 export type SpritzPay_V1 = Contract_V1
 export type SpritzPay_Legacy = Contract_Legacy

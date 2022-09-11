@@ -1,12 +1,12 @@
 import { Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter, CurrencyAmount, SwapRoute, V3Route } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
-import { getPaymentWalletAddress } from '../../addresses'
 import { UniswapQuoteError } from '../../errors'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { getWrappedNativeToken } from '../../wrappedNativeTokens'
 import { getSwapPath } from './path'
+import { NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
 
 type SwapRouteProps = {
   inputToken: Token
@@ -21,7 +21,6 @@ export type TokenPaymentQuote = {
   amountOut: string
   amountInMax: string
   path: string
-  to: string
 }
 
 export type NativePaymentQuote = {
@@ -30,7 +29,6 @@ export type NativePaymentQuote = {
   amountOut: string
   amountInMax: string
   path: string
-  to: string
 }
 
 const getAmountInMax = (token: Token, routeData: SwapRoute) => {
@@ -74,7 +72,6 @@ export class UniswapQuoter {
     const path = getSwapPath(route)
 
     return {
-      to: getPaymentWalletAddress(this.network),
       sourceTokenAddress: inputToken.address,
       paymentTokenAddress: this.paymentToken.address,
       amountOut,
@@ -86,7 +83,7 @@ export class UniswapQuoter {
   public async getNativePaymentQuote(fiatAmount: FiatValue, slippagePercentage = 5): Promise<NativePaymentQuote> {
     const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount))
 
-    const nativeToken = getWrappedNativeToken(this.network)
+    const nativeToken = getWrappedNativeToken(this.network) as Token
     const routeData = await this.getSwapRoute({
       inputToken: nativeToken,
       deadline,
@@ -101,7 +98,6 @@ export class UniswapQuoter {
     const path = getSwapPath(route)
 
     return {
-      to: getPaymentWalletAddress(this.network),
       sourceTokenAddress: nativeToken.address,
       paymentTokenAddress: this.paymentToken.address,
       amountOut,
@@ -116,7 +112,7 @@ export class UniswapQuoter {
       inputToken,
       TradeType.EXACT_OUTPUT,
       {
-        recipient: getPaymentWalletAddress(this.network),
+        recipient: NATIVE_ZERO_ADDRESS,
         slippageTolerance: new Percent(slippagePercentage, 100),
         deadline,
       },

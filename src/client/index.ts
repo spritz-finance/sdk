@@ -1,16 +1,41 @@
 import { ethers } from 'ethers'
 import { SupportedNetwork } from '../networks'
-import { isAcceptedPaymentToken, USDC_POLYGON } from '../supportedTokens'
+import { isAcceptedPaymentToken } from '../supportedTokens'
 import { getPaymentToken } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
 import { UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
-import { SpritzPayMethod } from '../contracts/contracts'
+import { getSpritzContract, SpritzPayMethod } from '../contracts/contracts'
+import { getContractAddress } from '../addresses'
+
+interface SpritzPaySDKConstructorArgs {
+  network: SupportedNetwork
+  provider: ethers.providers.BaseProvider
+  staging: boolean
+}
 
 export class SpritzPaySDK {
-  constructor(public network: SupportedNetwork, public provider: ethers.providers.BaseProvider) {}
+  private network: SupportedNetwork
+  provider: ethers.providers.BaseProvider
+  staging: boolean
 
-  public contractMethod(tokenAddress: string): SpritzPayMethod {
+  constructor({ network, provider, staging = false }: SpritzPaySDKConstructorArgs) {
+    if (!network) throw new Error(`Network must be provided`)
+    if (!provider) throw new Error(`Provider missing`)
+    this.network = network
+    this.provider = provider
+    this.staging = staging
+  }
+
+  public getContractAddress(): string {
+    return getContractAddress(this.network, this.staging)
+  }
+
+  public getContract() {
+    return getSpritzContract(this.network, this.staging)
+  }
+
+  public getContractMethodForPayment(tokenAddress: string): SpritzPayMethod {
     if (isAcceptedPaymentToken(tokenAddress, this.network)) return 'payWithToken'
     return 'payWithSwap'
   }
@@ -27,7 +52,7 @@ export class SpritzPaySDK {
     reference: string,
   ): Promise<any> {
     const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
-    const result = await uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount)
+    const result = await uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
     return result
   }
 
@@ -36,7 +61,7 @@ export class SpritzPaySDK {
     fiatAmount: string | number,
     reference: string,
   ): Promise<{ method: any; args: any }> {
-    const method = this.contractMethod(tokenAddress)
+    const method = this.getContractMethodForPayment(tokenAddress)
 
     let args
 
@@ -45,7 +70,7 @@ export class SpritzPaySDK {
     } else if (method === 'payWithSwap') {
       args = await this.swapPaymentArgs(tokenAddress, fiatAmount, reference)
     } else {
-      throw new Error('cant')
+      throw new Error('Unable to construct payment call')
     }
 
     return {
