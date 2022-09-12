@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/esm",
-    "rootDir": "./src",
-    "target": "es6",
-    "module": "esnext",
+    "lib": ["es2017"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "target": "es5",
     "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,

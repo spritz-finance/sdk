@@ -21,14 +21,13 @@ export class UniswapV2Quoter {
       trade.path[1],
       trade.amountOut,
       formatPaymentReference(reference),
-      new Date().getTime() / 1000 + 120,
+      Math.round(Date.now() / 1000) + 120,
     ]
     if (native) {
       args.push({
         value: args[1],
       })
     }
-
     return args
   }
 
