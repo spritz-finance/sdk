@@ -3,16 +3,33 @@ import { ACCEPTED_PAYMENT_TOKENS } from '../../supportedTokens'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { ethers } from 'ethers'
 import { formatPaymentReference } from '../../utils/reference'
-import { getFullToken } from '../../tokens'
+import { getFullToken, isNativeAddress } from '../../tokens'
+import { SpritzPay_V1 } from '../../contracts/types'
 
 export class UniswapV2Quoter {
   constructor(public network: SupportedNetwork, public provider: ethers.providers.BaseProvider) {}
 
   async getPayWithSwapArgs(tokenAddress: string, fiatAmount: string | number, reference: string) {
+    const native = isNativeAddress(tokenAddress)
+    console.log('getPayWithSwapArgs', { tokenAddress, fiatAmount })
     const token = await getFullToken(tokenAddress, this.provider)
     //@ts-ignore
     const trade = await this.getBestStablecoinTradeForToken(token, fiatAmount)
-    return [trade.path[0], trade.amountInMax, trade.path[1], trade.amountOut, formatPaymentReference(reference)]
+    const args: Parameters<SpritzPay_V1['functions']['payWithSwap']> = [
+      trade.path[0],
+      trade.amountInMax,
+      trade.path[1],
+      trade.amountOut,
+      formatPaymentReference(reference),
+      new Date().getTime() / 1000 + 120,
+    ]
+    if (native) {
+      args.push({
+        value: args[1],
+      })
+    }
+
+    return args
   }
 
   async getPairData(tokenA: Token, tokenB: Token) {
