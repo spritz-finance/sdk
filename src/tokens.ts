@@ -1,4 +1,4 @@
-import { Token } from 'quickswap-sdk'
+import { Token } from './quotes/uniswap/uniswap-v2-sdk'
 import { UnsupportedPaymentTokenError } from './errors'
 import { CHAIN_ID_TO_NETWORK, NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
 import { ACCEPTED_PAYMENT_TOKENS, NATIVE_ADDRESS_OTHER, NATIVE_ZERO_ADDRESS, USDC_POLYGON } from './supportedTokens'

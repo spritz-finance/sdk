@@ -1,4 +1,4 @@
-import { Token } from 'quickswap-sdk'
+import { Token } from './quotes/uniswap/uniswap-v2-sdk'
 import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
 import { TokenData } from './tokens'
 

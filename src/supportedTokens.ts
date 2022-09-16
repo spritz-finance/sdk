@@ -7,10 +7,10 @@ import { TokenData } from './tokens'
 export const NATIVE_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const NATIVE_ADDRESS_OTHER = '0x0000000000000000000000000000000000001010' //wat
 
-export const USDT_POLYGON = { address: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f', decimals: 6, symbol: 'USDT' }
-export const USDC_POLYGON = { address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174', decimals: 6, symbol: 'USDC' }
-export const DAI_POLYGON = { address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063', decimals: 18, symbol: 'DAI' }
-export const MAI_POLYGON = { address: '0xa3fa99a148fa48d14ed51d610c367c61876997f1', decimals: 18, symbol: 'miMATIC' }
+export const USDT_POLYGON = { address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', decimals: 6, symbol: 'USDT' }
+export const USDC_POLYGON = { address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6, symbol: 'USDC' }
+export const DAI_POLYGON = { address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18, symbol: 'DAI' }
+export const MAI_POLYGON = { address: '0xa3Fa99A148fA48D14Ed51d610c367C61876997F1', decimals: 18, symbol: 'miMATIC' }
 
 export const USDT_OPTIMISM = { address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6, symbol: 'USDT' }
 export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6, symbol: 'USDC' }
