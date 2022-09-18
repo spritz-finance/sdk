@@ -4,7 +4,7 @@ import { isAcceptedPaymentToken } from '../supportedTokens'
 import { getPaymentToken } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
-import { UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
+import { PayWithSwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
 import { getSpritzContract, SpritzPayMethod } from '../contracts/contracts'
 import { getContractAddress } from '../addresses'
 
@@ -40,42 +40,41 @@ export class SpritzPaySDK {
     return 'payWithSwap'
   }
 
-  public tokenPaymentArgs(tokenAddress: string, fiatAmount: string | number, reference: string): any {
+  public getTokenPaymentData(tokenAddress: string, fiatAmount: string | number, reference: string): any {
     const token = getPaymentToken(this.network, tokenAddress)
     const amount = ethers.utils.parseUnits(fiatString(fiatAmount), token.decimals)
-    return [tokenAddress, amount, formatPaymentReference(reference)]
+    return { args: [tokenAddress, amount, formatPaymentReference(reference)] }
   }
 
-  public async swapPaymentArgs(
+  public getSwapPaymentData(
     sourceTokenAddress: string,
     fiatAmount: string | number,
     reference: string,
-  ): Promise<any> {
+  ): Promise<PayWithSwapArgsResult> {
     const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
-    const result = await uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
-    return result
+    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
   }
 
   public async getPaymentArgs(
     tokenAddress: string,
     fiatAmount: string | number,
     reference: string,
-  ): Promise<{ method: any; args: any }> {
-    const method = this.getContractMethodForPayment(tokenAddress)
+  ): Promise<{ method: SpritzPayMethod; args: any[]; data?: any }> {
+    let result: { method: SpritzPayMethod; args: any[]; data?: any } = {
+      method: this.getContractMethodForPayment(tokenAddress),
+      args: [],
+    }
 
-    let args
-
-    if (method == 'payWithToken') {
-      args = this.tokenPaymentArgs(tokenAddress, fiatAmount, reference)
-    } else if (method === 'payWithSwap') {
-      args = await this.swapPaymentArgs(tokenAddress, fiatAmount, reference)
+    if (result.method == 'payWithToken') {
+      const data = this.getTokenPaymentData(tokenAddress, fiatAmount, reference)
+      result = { ...result, ...data }
+    } else if (result.method === 'payWithSwap') {
+      const data = await this.getSwapPaymentData(tokenAddress, fiatAmount, reference)
+      result = { ...result, ...data }
     } else {
       throw new Error('Unable to construct payment call')
     }
 
-    return {
-      method,
-      args,
-    }
+    return result
   }
 }

@@ -80,20 +80,14 @@ export abstract class Fetcher {
     tokenA: Token,
     tokenB: Token,
     provider = getDefaultProvider(getNetwork(tokenA.chainId)),
-    cache: Record<string, Pair>,
   ): Promise<Pair> {
     invariant(tokenA.chainId === tokenB.chainId, 'CHAIN_ID')
     const address = Pair.getAddress(tokenA, tokenB)
-
-    if (cache[address]) {
-      return cache[address]
-    }
 
     console.log(`getReserves ${tokenA.symbol} ${tokenB.symbol}`)
     const [reserves0, reserves1] = await new Contract(address, IUniswapV2Pair.abi, provider).getReserves()
     const balances = tokenA.sortsBefore(tokenB) ? [reserves0, reserves1] : [reserves1, reserves0]
     const pair = new Pair(new TokenAmount(tokenA, balances[0]), new TokenAmount(tokenB, balances[1]))
-    cache[address] = pair
 
     return pair
   }

@@ -4,6 +4,7 @@ import { ethers } from 'ethers'
 
 import { config as dotenvConfig } from 'dotenv'
 import { resolve } from 'path'
+import { NATIVE_ZERO_ADDRESS } from '../supportedTokens'
 
 dotenvConfig({ path: resolve(__dirname, '../.env') })
 
@@ -21,12 +22,17 @@ describe('SpritzPaySDK', () => {
   })
 
   it('should provide swap quote', async () => {
-    const args = await sdk.getPaymentArgs(WBTC_POLYGON_ADDRESS, 20.35, 'abcdef1234')
+    const args = await sdk.getPaymentArgs(WBTC_POLYGON_ADDRESS, 100, 'abcdef1234')
     console.log(args)
   })
 
   it('should provide multihop swap quote', async () => {
-    const args = await sdk.getPaymentArgs(AAVE_POLYGON_ADDRESS, 20.35, 'abcdef1234')
+    const args = await sdk.getPaymentArgs(AAVE_POLYGON_ADDRESS, 100, 'abcdef1234')
+    console.log(args)
+  })
+
+  it('should provide native swap quote', async () => {
+    const args = await sdk.getPaymentArgs(NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
     console.log(args)
   })
 })

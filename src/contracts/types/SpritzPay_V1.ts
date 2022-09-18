@@ -37,20 +37,17 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     "getRoleMemberCount(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "initialize(address,address,address)": FunctionFragment;
-    "owner()": FunctionFragment;
+    "initialize(address,address,address,address)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
-    "payWithSwap(address,uint256,address,uint256,bytes32,uint256)": FunctionFragment;
+    "payWithSwap(address[],uint256,uint256,bytes32,uint256)": FunctionFragment;
     "payWithToken(address,uint256,bytes32)": FunctionFragment;
     "paymentRecipient()": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setPaymentRecipient(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "swapTarget()": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
     "unpause()": FunctionFragment;
   };
 
@@ -64,19 +61,16 @@ export interface SpritzPay_V1Interface extends utils.Interface {
       | "grantRole"
       | "hasRole"
       | "initialize"
-      | "owner"
       | "pause"
       | "paused"
       | "payWithSwap"
       | "payWithToken"
       | "paymentRecipient"
-      | "renounceOwnership"
       | "renounceRole"
       | "revokeRole"
       | "setPaymentRecipient"
       | "supportsInterface"
       | "swapTarget"
-      | "transferOwnership"
       | "unpause"
   ): FunctionFragment;
 
@@ -113,18 +107,17 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
+      PromiseOrValue<string>,
       PromiseOrValue<string>
     ]
   ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
   encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "payWithSwap",
     values: [
-      PromiseOrValue<string>,
+      PromiseOrValue<string>[],
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>,
       PromiseOrValue<BigNumberish>
@@ -140,10 +133,6 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "paymentRecipient",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -165,10 +154,6 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "swapTarget",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
@@ -195,7 +180,6 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
@@ -208,10 +192,6 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "paymentRecipient",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -228,15 +208,10 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "swapTarget", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 
   events: {
     "Initialized(uint8)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Payment(address,address,address,uint256,address,uint256,bytes32)": EventFragment;
     "PaymentRecipientChanged(address,address)": EventFragment;
@@ -247,7 +222,6 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   };
 
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Payment"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentRecipientChanged"): EventFragment;
@@ -263,18 +237,6 @@ export interface InitializedEventObject {
 export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
-}
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
-
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface PausedEventObject {
   account: string;
@@ -415,13 +377,12 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<[boolean]>;
 
     initialize(
-      __paymentRecipient: PromiseOrValue<string>,
-      __swapTarget: PromiseOrValue<string>,
-      __wrappedNative: PromiseOrValue<string>,
+      _admin: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _swapTarget: PromiseOrValue<string>,
+      _wrappedNative: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
 
     pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -430,9 +391,8 @@ export interface SpritzPay_V1 extends BaseContract {
     paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     payWithSwap(
-      sourceTokenAddress: PromiseOrValue<string>,
+      path: PromiseOrValue<string>[],
       sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       deadline: PromiseOrValue<BigNumberish>,
@@ -447,10 +407,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<[string]>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -475,11 +431,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<[boolean]>;
 
     swapTarget(overrides?: CallOverrides): Promise<[string]>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
 
     unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -519,13 +470,12 @@ export interface SpritzPay_V1 extends BaseContract {
   ): Promise<boolean>;
 
   initialize(
-    __paymentRecipient: PromiseOrValue<string>,
-    __swapTarget: PromiseOrValue<string>,
-    __wrappedNative: PromiseOrValue<string>,
+    _admin: PromiseOrValue<string>,
+    _paymentRecipient: PromiseOrValue<string>,
+    _swapTarget: PromiseOrValue<string>,
+    _wrappedNative: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
 
   pause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -534,9 +484,8 @@ export interface SpritzPay_V1 extends BaseContract {
   paused(overrides?: CallOverrides): Promise<boolean>;
 
   payWithSwap(
-    sourceTokenAddress: PromiseOrValue<string>,
+    path: PromiseOrValue<string>[],
     sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-    paymentTokenAddress: PromiseOrValue<string>,
     paymentTokenAmount: PromiseOrValue<BigNumberish>,
     paymentReference: PromiseOrValue<BytesLike>,
     deadline: PromiseOrValue<BigNumberish>,
@@ -551,10 +500,6 @@ export interface SpritzPay_V1 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   paymentRecipient(overrides?: CallOverrides): Promise<string>;
-
-  renounceOwnership(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   renounceRole(
     role: PromiseOrValue<BytesLike>,
@@ -579,11 +524,6 @@ export interface SpritzPay_V1 extends BaseContract {
   ): Promise<boolean>;
 
   swapTarget(overrides?: CallOverrides): Promise<string>;
-
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
 
   unpause(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -623,22 +563,20 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<boolean>;
 
     initialize(
-      __paymentRecipient: PromiseOrValue<string>,
-      __swapTarget: PromiseOrValue<string>,
-      __wrappedNative: PromiseOrValue<string>,
+      _admin: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _swapTarget: PromiseOrValue<string>,
+      _wrappedNative: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
 
     pause(overrides?: CallOverrides): Promise<void>;
 
     paused(overrides?: CallOverrides): Promise<boolean>;
 
     payWithSwap(
-      sourceTokenAddress: PromiseOrValue<string>,
+      path: PromiseOrValue<string>[],
       sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       deadline: PromiseOrValue<BigNumberish>,
@@ -653,8 +591,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<void>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -680,26 +616,12 @@ export interface SpritzPay_V1 extends BaseContract {
 
     swapTarget(overrides?: CallOverrides): Promise<string>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     unpause(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
-
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
 
     "Paused(address)"(account?: null): PausedEventFilter;
     Paused(account?: null): PausedEventFilter;
@@ -803,13 +725,12 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<BigNumber>;
 
     initialize(
-      __paymentRecipient: PromiseOrValue<string>,
-      __swapTarget: PromiseOrValue<string>,
-      __wrappedNative: PromiseOrValue<string>,
+      _admin: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _swapTarget: PromiseOrValue<string>,
+      _wrappedNative: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -818,9 +739,8 @@ export interface SpritzPay_V1 extends BaseContract {
     paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     payWithSwap(
-      sourceTokenAddress: PromiseOrValue<string>,
+      path: PromiseOrValue<string>[],
       sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       deadline: PromiseOrValue<BigNumberish>,
@@ -835,10 +755,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<BigNumber>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<BigNumber>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -863,11 +779,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<BigNumber>;
 
     swapTarget(overrides?: CallOverrides): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
 
     unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -910,13 +821,12 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      __paymentRecipient: PromiseOrValue<string>,
-      __swapTarget: PromiseOrValue<string>,
-      __wrappedNative: PromiseOrValue<string>,
+      _admin: PromiseOrValue<string>,
+      _paymentRecipient: PromiseOrValue<string>,
+      _swapTarget: PromiseOrValue<string>,
+      _wrappedNative: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -925,9 +835,8 @@ export interface SpritzPay_V1 extends BaseContract {
     paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     payWithSwap(
-      sourceTokenAddress: PromiseOrValue<string>,
+      path: PromiseOrValue<string>[],
       sourceTokenAmountMax: PromiseOrValue<BigNumberish>,
-      paymentTokenAddress: PromiseOrValue<string>,
       paymentTokenAmount: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       deadline: PromiseOrValue<BigNumberish>,
@@ -942,10 +851,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -970,11 +875,6 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     swapTarget(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
 
     unpause(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
