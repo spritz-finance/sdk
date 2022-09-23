@@ -5,13 +5,13 @@ import { getPaymentToken } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
 import { PayWithSwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
-import { getSpritzContract, SpritzPayMethod } from '../contracts/contracts'
+import { getSpritzContract, SpritzPayMethod } from '../contracts'
 import { getContractAddress } from '../addresses'
 
 interface SpritzPaySDKConstructorArgs {
   network: SupportedNetwork
   provider: ethers.providers.BaseProvider
-  staging: boolean
+  staging?: boolean
 }
 
 export class SpritzPaySDK {

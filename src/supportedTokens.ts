@@ -1,9 +1,6 @@
 import { Network, SupportedNetwork } from './networks'
 import { TokenData } from './tokens'
 
-/**
- * Returned by Zapper API as the "contract address" signifying native token (MATIC) balance.
- */
 export const NATIVE_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const NATIVE_ADDRESS_OTHER = '0x0000000000000000000000000000000000001010' //wat
 
