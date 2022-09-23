@@ -32,17 +32,20 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "PAUSER_ROLE()": FunctionFragment;
+    "addPaymentToken(address)": FunctionFragment;
+    "getAcceptedPaymentTokens()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
-    "initialize(address,address,address,address)": FunctionFragment;
+    "initialize(address,address,address,address,address[])": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "payWithSwap(address[],uint256,uint256,bytes32,uint256)": FunctionFragment;
     "payWithToken(address,uint256,bytes32)": FunctionFragment;
     "paymentRecipient()": FunctionFragment;
+    "removePaymentToken(address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setPaymentRecipient(address)": FunctionFragment;
@@ -55,6 +58,8 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "DEFAULT_ADMIN_ROLE"
       | "PAUSER_ROLE"
+      | "addPaymentToken"
+      | "getAcceptedPaymentTokens"
       | "getRoleAdmin"
       | "getRoleMember"
       | "getRoleMemberCount"
@@ -66,6 +71,7 @@ export interface SpritzPay_V1Interface extends utils.Interface {
       | "payWithSwap"
       | "payWithToken"
       | "paymentRecipient"
+      | "removePaymentToken"
       | "renounceRole"
       | "revokeRole"
       | "setPaymentRecipient"
@@ -80,6 +86,14 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "PAUSER_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addPaymentToken",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getAcceptedPaymentTokens",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -108,7 +122,8 @@ export interface SpritzPay_V1Interface extends utils.Interface {
       PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<string>
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
     ]
   ): string;
   encodeFunctionData(functionFragment: "pause", values?: undefined): string;
@@ -134,6 +149,10 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "paymentRecipient",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removePaymentToken",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceRole",
@@ -166,6 +185,14 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "addPaymentToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getAcceptedPaymentTokens",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
@@ -195,6 +222,10 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "removePaymentToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "renounceRole",
     data: BytesLike
   ): Result;
@@ -215,6 +246,8 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     "Paused(address)": EventFragment;
     "Payment(address,address,address,uint256,address,uint256,bytes32)": EventFragment;
     "PaymentRecipientChanged(address,address)": EventFragment;
+    "PaymentTokenAdded(address)": EventFragment;
+    "PaymentTokenRemoved(address)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
     "RoleRevoked(bytes32,address,address)": EventFragment;
@@ -225,6 +258,8 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Payment"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentRecipientChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentTokenAdded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentTokenRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
@@ -272,6 +307,28 @@ export type PaymentRecipientChangedEvent = TypedEvent<
 
 export type PaymentRecipientChangedEventFilter =
   TypedEventFilter<PaymentRecipientChangedEvent>;
+
+export interface PaymentTokenAddedEventObject {
+  token: string;
+}
+export type PaymentTokenAddedEvent = TypedEvent<
+  [string],
+  PaymentTokenAddedEventObject
+>;
+
+export type PaymentTokenAddedEventFilter =
+  TypedEventFilter<PaymentTokenAddedEvent>;
+
+export interface PaymentTokenRemovedEventObject {
+  token: string;
+}
+export type PaymentTokenRemovedEvent = TypedEvent<
+  [string],
+  PaymentTokenRemovedEventObject
+>;
+
+export type PaymentTokenRemovedEventFilter =
+  TypedEventFilter<PaymentTokenRemovedEvent>;
 
 export interface RoleAdminChangedEventObject {
   role: string;
@@ -348,6 +405,13 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
+    addPaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<[string[]]>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -381,6 +445,7 @@ export interface SpritzPay_V1 extends BaseContract {
       _paymentRecipient: PromiseOrValue<string>,
       _swapTarget: PromiseOrValue<string>,
       _wrappedNative: PromiseOrValue<string>,
+      _acceptedTokens: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -407,6 +472,11 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<[string]>;
+
+    removePaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -441,6 +511,13 @@ export interface SpritzPay_V1 extends BaseContract {
 
   PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
 
+  addPaymentToken(
+    newToken: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<string[]>;
+
   getRoleAdmin(
     role: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -474,6 +551,7 @@ export interface SpritzPay_V1 extends BaseContract {
     _paymentRecipient: PromiseOrValue<string>,
     _swapTarget: PromiseOrValue<string>,
     _wrappedNative: PromiseOrValue<string>,
+    _acceptedTokens: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -500,6 +578,11 @@ export interface SpritzPay_V1 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   paymentRecipient(overrides?: CallOverrides): Promise<string>;
+
+  removePaymentToken(
+    newToken: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   renounceRole(
     role: PromiseOrValue<BytesLike>,
@@ -534,6 +617,13 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
 
+    addPaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<string[]>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -567,6 +657,7 @@ export interface SpritzPay_V1 extends BaseContract {
       _paymentRecipient: PromiseOrValue<string>,
       _swapTarget: PromiseOrValue<string>,
       _wrappedNative: PromiseOrValue<string>,
+      _acceptedTokens: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -591,6 +682,11 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<void>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<string>;
+
+    removePaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -633,7 +729,7 @@ export interface SpritzPay_V1 extends BaseContract {
       sourceTokenAmount?: null,
       paymentToken?: null,
       paymentTokenAmount?: null,
-      paymentReference?: null
+      paymentReference?: PromiseOrValue<BytesLike> | null
     ): PaymentEventFilter;
     Payment(
       to?: null,
@@ -642,7 +738,7 @@ export interface SpritzPay_V1 extends BaseContract {
       sourceTokenAmount?: null,
       paymentToken?: null,
       paymentTokenAmount?: null,
-      paymentReference?: null
+      paymentReference?: PromiseOrValue<BytesLike> | null
     ): PaymentEventFilter;
 
     "PaymentRecipientChanged(address,address)"(
@@ -653,6 +749,14 @@ export interface SpritzPay_V1 extends BaseContract {
       recipient?: null,
       sender?: null
     ): PaymentRecipientChangedEventFilter;
+
+    "PaymentTokenAdded(address)"(token?: null): PaymentTokenAddedEventFilter;
+    PaymentTokenAdded(token?: null): PaymentTokenAddedEventFilter;
+
+    "PaymentTokenRemoved(address)"(
+      token?: null
+    ): PaymentTokenRemovedEventFilter;
+    PaymentTokenRemoved(token?: null): PaymentTokenRemovedEventFilter;
 
     "RoleAdminChanged(bytes32,bytes32,bytes32)"(
       role?: PromiseOrValue<BytesLike> | null,
@@ -696,6 +800,13 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    addPaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -729,6 +840,7 @@ export interface SpritzPay_V1 extends BaseContract {
       _paymentRecipient: PromiseOrValue<string>,
       _swapTarget: PromiseOrValue<string>,
       _wrappedNative: PromiseOrValue<string>,
+      _acceptedTokens: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -755,6 +867,11 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<BigNumber>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<BigNumber>;
+
+    removePaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
@@ -792,6 +909,15 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    addPaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getAcceptedPaymentTokens(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -825,6 +951,7 @@ export interface SpritzPay_V1 extends BaseContract {
       _paymentRecipient: PromiseOrValue<string>,
       _swapTarget: PromiseOrValue<string>,
       _wrappedNative: PromiseOrValue<string>,
+      _acceptedTokens: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -851,6 +978,11 @@ export interface SpritzPay_V1 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     paymentRecipient(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    removePaymentToken(
+      newToken: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
 
     renounceRole(
       role: PromiseOrValue<BytesLike>,
