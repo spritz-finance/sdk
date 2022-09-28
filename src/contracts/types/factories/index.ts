@@ -2,5 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { ERC20__factory } from "./ERC20__factory";
-export { SpritzPay_Legacy__factory } from "./SpritzPay_Legacy__factory";
 export { SpritzPay_V1__factory } from "./SpritzPay_V1__factory";

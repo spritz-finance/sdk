@@ -32,8 +32,8 @@ export interface SpritzPay_V1Interface extends utils.Interface {
   functions: {
     "DEFAULT_ADMIN_ROLE()": FunctionFragment;
     "PAUSER_ROLE()": FunctionFragment;
+    "acceptedPaymentTokens()": FunctionFragment;
     "addPaymentToken(address)": FunctionFragment;
-    "getAcceptedPaymentTokens()": FunctionFragment;
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
@@ -58,8 +58,8 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "DEFAULT_ADMIN_ROLE"
       | "PAUSER_ROLE"
+      | "acceptedPaymentTokens"
       | "addPaymentToken"
-      | "getAcceptedPaymentTokens"
       | "getRoleAdmin"
       | "getRoleMember"
       | "getRoleMemberCount"
@@ -89,12 +89,12 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "addPaymentToken",
-    values: [PromiseOrValue<string>]
+    functionFragment: "acceptedPaymentTokens",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getAcceptedPaymentTokens",
-    values?: undefined
+    functionFragment: "addPaymentToken",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "getRoleAdmin",
@@ -185,11 +185,11 @@ export interface SpritzPay_V1Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "addPaymentToken",
+    functionFragment: "acceptedPaymentTokens",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getAcceptedPaymentTokens",
+    functionFragment: "addPaymentToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -405,12 +405,12 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<[string]>;
 
+    acceptedPaymentTokens(overrides?: CallOverrides): Promise<[string[]]>;
+
     addPaymentToken(
       newToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<[string[]]>;
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
@@ -511,12 +511,12 @@ export interface SpritzPay_V1 extends BaseContract {
 
   PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
 
+  acceptedPaymentTokens(overrides?: CallOverrides): Promise<string[]>;
+
   addPaymentToken(
     newToken: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<string[]>;
 
   getRoleAdmin(
     role: PromiseOrValue<BytesLike>,
@@ -617,12 +617,12 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<string>;
 
+    acceptedPaymentTokens(overrides?: CallOverrides): Promise<string[]>;
+
     addPaymentToken(
       newToken: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<string[]>;
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
@@ -800,12 +800,12 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
 
+    acceptedPaymentTokens(overrides?: CallOverrides): Promise<BigNumber>;
+
     addPaymentToken(
       newToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    getAcceptedPaymentTokens(overrides?: CallOverrides): Promise<BigNumber>;
 
     getRoleAdmin(
       role: PromiseOrValue<BytesLike>,
@@ -909,13 +909,13 @@ export interface SpritzPay_V1 extends BaseContract {
 
     PAUSER_ROLE(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    acceptedPaymentTokens(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     addPaymentToken(
       newToken: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    getAcceptedPaymentTokens(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getRoleAdmin(
