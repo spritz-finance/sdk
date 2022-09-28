@@ -29,9 +29,23 @@ export const NETWORK_TO_CHAIN_ID: Record<Network, number> = {
   [Network.Moonriver]: 1285,
 }
 
+export const NETWORK_TO_CHAIN_ID_STRING: Record<Network, string> = {
+  [Network.Ethereum]: '0x1',
+  [Network.Polygon]: '0x89',
+  [Network.Optimism]: '0xa',
+  [Network.Arbitrum]: '0xa4b1',
+  [Network.Avalanche]: '0xa86a',
+  [Network.Binance]: '0x38',
+  [Network.Gnosis]: '0x64',
+  [Network.Fantom]: '0xfa',
+  [Network.Celo]: 'a4ec',
+  [Network.Harmony]: '0x63564c40',
+  [Network.Moonriver]: '0x505',
+}
+
 export const CHAIN_ID_TO_NETWORK = invert<Network, number>(NETWORK_TO_CHAIN_ID)
 
-export const SUPPORTED_NETWORKS = [Network.Polygon] as const
+export const SUPPORTED_NETWORKS = [Network.Polygon, Network.Optimism] as const
 const SUPPORTED_CHAIN_IDS = SUPPORTED_NETWORKS.map((network) => NETWORK_TO_CHAIN_ID[network])
 export type SupportedNetwork = typeof SUPPORTED_NETWORKS[number]
 
@@ -52,4 +66,8 @@ export const validateNetwork = (network: SupportedNetwork | string): SupportedNe
   if (!network) throw new UnsupportedNetworkError()
   if (!isSupportedNetwork(network as SupportedNetwork)) throw new UnsupportedNetworkError()
   return network as SupportedNetwork
+}
+
+export const chainIdHexString = (network: Network) => {
+  return NETWORK_TO_CHAIN_ID_STRING[network]
 }

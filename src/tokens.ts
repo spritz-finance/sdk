@@ -1,15 +1,10 @@
-import { Token } from '@uniswap/sdk-core'
+import { Token } from './quotes/uniswap/uniswap-v2-sdk'
 import { UnsupportedPaymentTokenError } from './errors'
-import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
-import { ACCEPTED_PAYMENT_TOKENS, USDC_POLYGON } from './supportedTokens'
-
-/**
- * Returned by Zapper API as the "contract address" signifying native token (MATIC) balance.
- */
-export const NATIVE_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
-
-//wat
-export const NATIVE_ADDRESS_OTHER = '0x0000000000000000000000000000000000001010'
+import { CHAIN_ID_TO_NETWORK, NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
+import { ACCEPTED_PAYMENT_TOKENS, NATIVE_ADDRESS_OTHER, NATIVE_ZERO_ADDRESS, USDC_POLYGON } from './supportedTokens'
+import { ethers } from 'ethers'
+import { ERC20__factory } from './contracts/types'
+import { getWrappedNativeToken } from './wrappedNativeTokens'
 
 export const isNativeAddress = (address: string) => [NATIVE_ZERO_ADDRESS, NATIVE_ADDRESS_OTHER].includes(address)
 
@@ -17,6 +12,7 @@ export type TokenData = {
   address: string
   decimals: number
   symbol: string
+  name?: string
 }
 
 export const toToken = (data: TokenData, network: SupportedNetwork) => {
@@ -25,9 +21,25 @@ export const toToken = (data: TokenData, network: SupportedNetwork) => {
 }
 
 export const getPaymentToken = (network: SupportedNetwork, paymentTokenAddress: string = USDC_POLYGON.address) => {
-  const token = ACCEPTED_PAYMENT_TOKENS[network]?.find((token: TokenData) => token.address === paymentTokenAddress)
+  const token = ACCEPTED_PAYMENT_TOKENS[network]?.find(
+    (token: TokenData) => token.address.toLowerCase() === paymentTokenAddress.toLowerCase(),
+  )
 
   if (!token) throw new UnsupportedPaymentTokenError()
 
   return toToken(token, network)
+}
+
+export const getFullToken = async (address: string, provider: ethers.providers.BaseProvider): Promise<Token> => {
+  const chainId = provider.network.chainId
+
+  if (isNativeAddress(address)) {
+    return getWrappedNativeToken(CHAIN_ID_TO_NETWORK[chainId] as SupportedNetwork)
+  }
+
+  const contract = ERC20__factory.connect(address, provider)
+
+  const [decimals, symbol, name] = await Promise.all([contract.decimals(), contract.symbol(), contract.name()])
+
+  return new Token(chainId, address, decimals, symbol, name)
 }

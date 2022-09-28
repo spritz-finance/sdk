@@ -1,36 +1,80 @@
-import { Token } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
-import { SupportedNetwork, validateNetwork } from '../networks'
-import { UniswapQuoter } from '../quotes/uniswap'
-import { getPaymentToken, TokenData, toToken } from '../tokens'
-import { FiatValue } from '../utils/format'
+import { SupportedNetwork } from '../networks'
+import { isAcceptedPaymentToken } from '../supportedTokens'
+import { getPaymentToken } from '../tokens'
+import { fiatString } from '../utils/format'
+import { formatPaymentReference } from '../utils/reference'
+import { PayWithSwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
+import { getSpritzContract, SpritzPayMethod } from '../contracts'
+import { getContractAddress } from '../addresses'
 
-type QuoterParams = {
+interface SpritzPaySDKConstructorArgs {
   network: SupportedNetwork
-  provider: ethers.providers.JsonRpcProvider
-  paymentTokenAddress?: string
+  provider: ethers.providers.BaseProvider
+  staging?: boolean
 }
 
-export class Quoter {
+export class SpritzPaySDK {
   private network: SupportedNetwork
-  private provider: ethers.providers.JsonRpcProvider
-  private outputToken: Token
+  provider: ethers.providers.BaseProvider
+  staging: boolean
 
-  constructor({ network, provider, paymentTokenAddress }: QuoterParams) {
-    const validNetwork = validateNetwork(network)
-    this.network = validNetwork
-    this.outputToken = getPaymentToken(validNetwork, paymentTokenAddress)
+  constructor({ network, provider, staging = false }: SpritzPaySDKConstructorArgs) {
+    if (!network) throw new Error(`Network must be provided`)
+    if (!provider) throw new Error(`Provider missing`)
+    this.network = network
     this.provider = provider
+    this.staging = staging
   }
 
-  public async getTokenPaymentQuote(inputTokenData: TokenData, fiatAmount: FiatValue) {
-    const inputToken = toToken(inputTokenData, this.network)
-    const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
-    return quoter.getTokenPaymentQuote(inputToken, fiatAmount)
+  public getContractAddress(): string {
+    return getContractAddress(this.network, this.staging)
   }
 
-  public async getNativePaymentQuote(fiatAmount: FiatValue) {
-    const quoter = new UniswapQuoter(this.outputToken, this.network, this.provider)
-    return quoter.getNativePaymentQuote(fiatAmount)
+  public getContract() {
+    return getSpritzContract(this.network, this.staging)
+  }
+
+  public getContractMethodForPayment(tokenAddress: string): SpritzPayMethod {
+    if (isAcceptedPaymentToken(tokenAddress, this.network)) return 'payWithToken'
+    return 'payWithSwap'
+  }
+
+  public getTokenPaymentData(tokenAddress: string, fiatAmount: string | number, reference: string): any {
+    const token = getPaymentToken(this.network, tokenAddress)
+    const amount = ethers.utils.parseUnits(fiatString(fiatAmount), token.decimals)
+    return { args: [tokenAddress, amount, formatPaymentReference(reference)] }
+  }
+
+  public getSwapPaymentData(
+    sourceTokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+  ): Promise<PayWithSwapArgsResult> {
+    const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
+    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
+  }
+
+  public async getPaymentArgs(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+  ): Promise<{ method: SpritzPayMethod; args: any[]; data?: any }> {
+    let result: { method: SpritzPayMethod; args: any[]; data?: any } = {
+      method: this.getContractMethodForPayment(tokenAddress),
+      args: [],
+    }
+
+    if (result.method == 'payWithToken') {
+      const data = this.getTokenPaymentData(tokenAddress, fiatAmount, reference)
+      result = { ...result, ...data }
+    } else if (result.method === 'payWithSwap') {
+      const data = await this.getSwapPaymentData(tokenAddress, fiatAmount, reference)
+      result = { ...result, ...data }
+    } else {
+      throw new Error('Unable to construct payment call')
+    }
+
+    return result
   }
 }
