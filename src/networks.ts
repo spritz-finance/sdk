@@ -45,7 +45,7 @@ export const NETWORK_TO_CHAIN_ID_STRING: Record<Network, string> = {
 
 export const CHAIN_ID_TO_NETWORK = invert<Network, number>(NETWORK_TO_CHAIN_ID)
 
-export const SUPPORTED_NETWORKS = [Network.Polygon, Network.Optimism] as const
+export const SUPPORTED_NETWORKS = [Network.Polygon, Network.Binance] as const
 const SUPPORTED_CHAIN_IDS = SUPPORTED_NETWORKS.map((network) => NETWORK_TO_CHAIN_ID[network])
 export type SupportedNetwork = typeof SUPPORTED_NETWORKS[number]
 
