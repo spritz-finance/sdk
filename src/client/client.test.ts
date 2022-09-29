@@ -7,7 +7,7 @@ import { resolve } from 'path'
 import { NATIVE_ZERO_ADDRESS } from '../supportedTokens'
 import { ChainId } from '../quotes/uniswap/uniswap-v2-sdk'
 
-dotenvConfig({ path: resolve(__dirname, '../.env') })
+dotenvConfig({ path: resolve(__dirname, '../../.env') })
 
 describe('SpritzPaySDK', () => {
   describe('Polygon', () => {
