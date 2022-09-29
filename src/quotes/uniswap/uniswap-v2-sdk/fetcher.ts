@@ -1,16 +1,13 @@
 import { Contract } from '@ethersproject/contracts'
 import { getNetwork } from '@ethersproject/networks'
 import { getDefaultProvider } from '@ethersproject/providers'
-import { TokenAmount } from './entities/fractions/tokenAmount'
-import { Pair } from './entities/pair'
+import { Pair, Token, TokenAmount } from './entities'
 import IUniswapV2Pair from '@uniswap/v2-core/build/IUniswapV2Pair.json'
 import invariant from 'tiny-invariant'
-import { Multicall, ContractCallResults, ContractCallContext } from 'ethereum-multicall'
+import { ContractCallContext, Multicall } from 'ethereum-multicall'
 
 import { ChainId } from './constants'
-import { Token } from './entities/token'
 import { ERC20_ABI } from '../../../contracts/abi'
-import { ethers } from 'ethers'
 
 let TOKEN_DECIMALS_CACHE: { [chainId: number]: { [address: string]: number } } = {
   [ChainId.MAINNET]: {
@@ -20,13 +17,22 @@ let TOKEN_DECIMALS_CACHE: { [chainId: number]: { [address: string]: number } } =
 
 let BASE_TOKENS: { [chainId: number]: Token[] } = {
   [ChainId.POLYGON]: [
-    new Token(137, '0xC6d54D2f624bc83815b49d9c2203b1330B841cA0', 18, 'SAND', 'The Sandbox'),
-    new Token(137, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD//C'),
-    new Token(137, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD'),
-    new Token(137, '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', 18, 'WMATIC', 'Wrapped MATIC'),
-    new Token(137, '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619', 18, 'WETH', 'Wrapped ETHER'),
-    new Token(137, '0x831753DD7087CaC61aB5644b308642cc1c33Dc13', 18, 'QUICK', 'Quickswap'),
-    new Token(137, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'Dai Stablecoin'),
+    new Token(ChainId.POLYGON, '0xC6d54D2f624bc83815b49d9c2203b1330B841cA0', 18, 'SAND', 'The Sandbox'),
+    new Token(ChainId.POLYGON, '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', 6, 'USDC', 'USD//C'),
+    new Token(ChainId.POLYGON, '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', 6, 'USDT', 'Tether USD'),
+    new Token(ChainId.POLYGON, '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270', 18, 'WMATIC', 'Wrapped MATIC'),
+    new Token(ChainId.POLYGON, '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619', 18, 'WETH', 'Wrapped ETHER'),
+    new Token(ChainId.POLYGON, '0x831753DD7087CaC61aB5644b308642cc1c33Dc13', 18, 'QUICK', 'Quickswap'),
+    new Token(ChainId.POLYGON, '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', 18, 'DAI', 'Dai Stablecoin'),
+  ],
+  [ChainId.BINANCE]: [
+    new Token(ChainId.BINANCE, '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 18, 'BUSD', 'BUSD Token'),
+    new Token(ChainId.BINANCE, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'WBNB', 'Wrapped BNB'),
+    new Token(ChainId.BINANCE, '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', 6, 'USDC', 'USD Coin'),
+    new Token(ChainId.BINANCE, '0x69bAb60997A2f5CbeE668E5087Dd9F91437206Bb', 6, 'USDT', 'Tether USD'),
+    new Token(ChainId.BINANCE, '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', 18, 'DAI', 'Dai Stablecoin'),
+    new Token(ChainId.BINANCE, '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', 18, 'CAKE', 'PancakeSwap Token'),
+    new Token(ChainId.BINANCE, '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', 18, 'ETH', 'Ethereum Token'),
   ],
 }
 
