@@ -36,7 +36,7 @@ export const WBNB_BSC = {
 const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Polygon]: WMATIC_POLYGON,
   [Network.Binance]: WBNB_BSC,
-  //   [Network.Ethereum]: WETH_MAINNET,
+  [Network.Ethereum]: WETH_MAINNET,
   //   [Network.Arbitrum]: WETH_ARBITRUM,
 }
 

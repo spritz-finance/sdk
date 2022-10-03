@@ -61,4 +61,27 @@ describe('SpritzPaySDK', () => {
       console.log(args)
     })
   })
+
+  describe('Mainnet', () => {
+    const WBTC_ADDRESS = '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599'
+
+    const sdk = new SpritzPaySDK({
+      network: Network.Ethereum,
+      provider: new ethers.providers.JsonRpcProvider(
+        `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_MAINNET_KEY}`,
+        ChainId.MAINNET,
+      ),
+      staging: true,
+    })
+
+    it('should provide swap quote', async () => {
+      const args = await sdk.getPaymentArgs(WBTC_ADDRESS, 100, 'abcdef1234')
+      console.log(args)
+    })
+
+    it('should provide native swap quote', async () => {
+      const args = await sdk.getPaymentArgs(NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      console.log(args)
+    })
+  })
 })
