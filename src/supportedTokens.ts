@@ -9,9 +9,9 @@ export const USDT_POLYGON = { address: '0xc2132D05D31c914a87C6611C10748AEb04B58e
 export const USDC_POLYGON = { address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6, symbol: 'USDC' }
 export const DAI_POLYGON = { address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18, symbol: 'DAI' }
 
+export const BUSD_BSC = { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18, symbol: 'BUSD' }
+export const USDT_BSC = { address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18, symbol: 'USDT' }
 export const USDC_BSC = { address: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', decimals: 18, symbol: 'USDC' }
-export const DAI_BSC = { address: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', decimals: 18, symbol: 'DAI' }
-export const BUSD_BSC = { address: '0x55d398326f99059fF775485246999027B3197955', decimals: 18, symbol: 'BUSD' }
 
 export const USDC_MAINNET = { address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', decimals: 6, symbol: 'USDC' }
 export const USDT_MAINNET = { address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', decimals: 6, symbol: 'USDT' }
@@ -20,7 +20,7 @@ export const BUSD_MAINNET = { address: '0x4Fabb145d64652a948d72533023f6E7A623C7C
 
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON, USDT_POLYGON, DAI_POLYGON],
-  [Network.Binance]: [USDC_BSC, BUSD_BSC, DAI_BSC],
+  [Network.Binance]: [BUSD_BSC, USDT_BSC, USDC_BSC],
   [Network.Ethereum]: [USDC_MAINNET, USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
 }
 
@@ -36,9 +36,9 @@ export const BASE_TOKENS: { [chainId: number]: Token[] } = {
   ],
   [ChainId.BINANCE]: [
     new Token(ChainId.BINANCE, '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', 18, 'BUSD', 'BUSD Token'),
+    new Token(ChainId.BINANCE, '0x55d398326f99059fF775485246999027B3197955', 18, 'USDT', 'Tether USD'),
+    new Token(ChainId.BINANCE, '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', 18, 'USDC', 'USD Coin'),
     new Token(ChainId.BINANCE, '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', 18, 'WBNB', 'Wrapped BNB'),
-    new Token(ChainId.BINANCE, '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', 6, 'USDC', 'USD Coin'),
-    new Token(ChainId.BINANCE, '0x69bAb60997A2f5CbeE668E5087Dd9F91437206Bb', 6, 'USDT', 'Tether USD'),
     new Token(ChainId.BINANCE, '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3', 18, 'DAI', 'Dai Stablecoin'),
     new Token(ChainId.BINANCE, '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82', 18, 'CAKE', 'PancakeSwap Token'),
     new Token(ChainId.BINANCE, '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', 18, 'ETH', 'Ethereum Token'),
