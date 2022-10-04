@@ -5,6 +5,7 @@ export type BigintIsh = JSBI | bigint | string
 
 export enum ChainId {
   MAINNET = 1,
+  BINANCE = 56,
   POLYGON = 137,
 }
 
@@ -21,10 +22,14 @@ export enum Rounding {
 
 export const FACTORY_ADDRESS: { [key: string]: string } = {
   [ChainId.POLYGON]: '0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32',
+  [ChainId.BINANCE]: '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73',
+  [ChainId.MAINNET]: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
 }
 
 export const INIT_CODE_HASH: { [key: string]: string } = {
   [ChainId.POLYGON]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
+  [ChainId.BINANCE]: '0x00fb7f630766e6a796048ea87d01acd3068e8ff67d078148a3fa3f4a84f69bd5',
+  [ChainId.MAINNET]: '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f',
 }
 
 export const MINIMUM_LIQUIDITY = JSBI.BigInt(1000)

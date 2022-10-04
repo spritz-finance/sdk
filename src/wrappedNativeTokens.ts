@@ -26,11 +26,17 @@ export const WETH_OPTIMISM = {
   symbol: 'WETH',
   name: 'Wrapped ETH',
 }
+export const WBNB_BSC = {
+  address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
+  decimals: 18,
+  symbol: 'WBNB',
+  name: 'Wrapped BNB',
+}
 
 const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Polygon]: WMATIC_POLYGON,
-  [Network.Optimism]: WETH_OPTIMISM,
-  //   [Network.Ethereum]: WETH_MAINNET,
+  [Network.Binance]: WBNB_BSC,
+  [Network.Ethereum]: WETH_MAINNET,
   //   [Network.Arbitrum]: WETH_ARBITRUM,
 }
 
