@@ -59,6 +59,6 @@ const CHAIN_INFO: Record<SupportedNetwork, ChainInfo> = {
   },
 }
 
-export function getChainInfo(network: SupportedNetwork): ChainInfo | undefined {
-  return CHAIN_INFO[network] ?? undefined
+export function getChainInfo(network: SupportedNetwork): ChainInfo {
+  return CHAIN_INFO[network]
 }
