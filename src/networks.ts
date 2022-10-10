@@ -47,7 +47,7 @@ export const NETWORK_TO_CHAIN_ID_STRING: Record<Network, string> = {
   [Network.Moonriver]: '0x505',
 }
 
-export const SUPPORTED_NETWORKS = [Network.Polygon, Network.Binance, Network.Ethereum] as const
+export const SUPPORTED_NETWORKS = [Network.Ethereum, Network.Polygon, Network.Binance] as const
 export const CHAIN_ID_TO_NETWORK = invert<Network, number>(NETWORK_TO_CHAIN_ID)
 
 const SUPPORTED_CHAIN_IDS = SUPPORTED_NETWORKS.map((network) => NETWORK_TO_CHAIN_ID[network])
