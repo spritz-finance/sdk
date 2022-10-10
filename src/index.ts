@@ -1,4 +1,5 @@
 export * from './networks'
+export * from './chainInfo'
 export * from './addresses'
 export * from './tokens'
 export * from './supportedTokens'
