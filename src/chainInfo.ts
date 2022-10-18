@@ -52,7 +52,7 @@ const CHAIN_INFO: Record<SupportedNetwork, ChainInfo> = {
   [Network.Binance]: {
     chainId: getChainId(Network.Binance),
     blockExplorerUrl: 'https://bscscan.com/',
-    name: 'Binance Smart Chain',
+    name: 'BNB Chain',
     nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
     getExplorerAddressLink: (address: string) => `https://bscscan.com/address/${address}`,
     getExplorerTransactionLink: (tx: string) => `https://bscscan.com/tx/${tx}`,
