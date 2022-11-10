@@ -24,6 +24,12 @@ export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Ethereum]: [USDC_MAINNET, USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
 }
 
+export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
+  [Network.Polygon]: [USDC_POLYGON],
+  [Network.Binance]: [BUSD_BSC],
+  [Network.Ethereum]: [USDC_MAINNET],
+}
+
 export const BASE_TOKENS: { [chainId: number]: Token[] } = {
   [ChainId.POLYGON]: [
     new Token(ChainId.POLYGON, '0xC6d54D2f624bc83815b49d9c2203b1330B841cA0', 18, 'SAND', 'The Sandbox'),
