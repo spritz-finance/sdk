@@ -1,5 +1,5 @@
 import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
-import { ACCEPTED_PAYMENT_TOKENS } from '../../supportedTokens'
+import { ACCEPTED_PAYMENT_TOKENS, ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { ethers } from 'ethers'
 import { getFullToken, isNativeAddress } from '../../tokens'
@@ -56,7 +56,7 @@ export class UniswapV2Quoter {
   }
 
   async getStablecoinPairsForToken(tokenA: Token): Promise<Pair[]> {
-    const acceptedTokens = ACCEPTED_PAYMENT_TOKENS[this.network].map(
+    const acceptedTokens = ACCEPTED_SWAP_OUTPUTS[this.network].map(
       (t) => new Token(NETWORK_TO_CHAIN_ID[this.network], t.address, t.decimals, t.symbol, t.symbol),
     )
     const pairs = await Promise.all(acceptedTokens.map((tokenB) => this.getPairData(tokenA, tokenB)))
