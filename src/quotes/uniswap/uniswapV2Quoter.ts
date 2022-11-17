@@ -100,7 +100,7 @@ export class UniswapV2Quoter {
 
   getBestStablecoinTradeForToken = async (tokenA: Token, fiatAmount: number | string) => {
     //get accepted stablecoins
-    const stablecoins = ACCEPTED_PAYMENT_TOKENS[this.network].map(
+    const stablecoins = ACCEPTED_SWAP_OUTPUTS[this.network].map(
       (t) => new Token(NETWORK_TO_CHAIN_ID[this.network], t.address, t.decimals, t.symbol, t.symbol),
     )
 
