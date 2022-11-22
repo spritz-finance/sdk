@@ -37,7 +37,8 @@ const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Polygon]: WMATIC_POLYGON,
   [Network.Binance]: WBNB_BSC,
   [Network.Ethereum]: WETH_MAINNET,
-  //   [Network.Arbitrum]: WETH_ARBITRUM,
+  [Network.Arbitrum]: WETH_ARBITRUM,
+  [Network.Optimism]: WETH_OPTIMISM,
 }
 
 export const getWrappedNativeToken = (network: SupportedNetwork) => {

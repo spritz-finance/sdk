@@ -19,12 +19,12 @@ export const SUPPORTED_NETWORK_CHAIN_ID: Record<SupportedNetwork, number> = {
   [Network.Ethereum]: 1,
   [Network.Polygon]: 137,
   [Network.Binance]: 56,
+  [Network.Optimism]: 10,
+  [Network.Arbitrum]: 42161,
 }
 
 export const NETWORK_TO_CHAIN_ID: Record<Network, number> = {
   ...SUPPORTED_NETWORK_CHAIN_ID,
-  [Network.Optimism]: 10,
-  [Network.Arbitrum]: 42161,
   [Network.Avalanche]: 43114,
   [Network.Gnosis]: 100,
   [Network.Fantom]: 250,
@@ -42,12 +42,18 @@ export const NETWORK_TO_CHAIN_ID_STRING: Record<Network, string> = {
   [Network.Binance]: '0x38',
   [Network.Gnosis]: '0x64',
   [Network.Fantom]: '0xfa',
-  [Network.Celo]: 'a4ec',
+  [Network.Celo]: '0xa4ec',
   [Network.Harmony]: '0x63564c40',
   [Network.Moonriver]: '0x505',
 }
 
-export const SUPPORTED_NETWORKS = [Network.Ethereum, Network.Polygon, Network.Binance] as const
+export const SUPPORTED_NETWORKS = [
+  Network.Ethereum,
+  Network.Polygon,
+  Network.Binance,
+  Network.Optimism,
+  Network.Arbitrum,
+] as const
 export const CHAIN_ID_TO_NETWORK = invert<Network, number>(NETWORK_TO_CHAIN_ID)
 
 const SUPPORTED_CHAIN_IDS = SUPPORTED_NETWORKS.map((network) => NETWORK_TO_CHAIN_ID[network])

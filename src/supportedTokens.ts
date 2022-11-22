@@ -18,16 +18,26 @@ export const USDT_MAINNET = { address: '0xdAC17F958D2ee523a2206206994597C13D831e
 export const DAI_MAINNET = { address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', decimals: 18, symbol: 'DAI' }
 export const BUSD_MAINNET = { address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53', decimals: 18, symbol: 'BUSD' }
 
+export const USDC_ARBITRUM = { address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', decimals: 6, symbol: 'USDC' }
+
+export const USDC_AVALANCHE = { address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', decimals: 6, symbol: 'USDC' }
+
+export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6, symbol: 'USDC' }
+
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON, USDT_POLYGON, DAI_POLYGON],
   [Network.Binance]: [BUSD_BSC, USDT_BSC, USDC_BSC],
   [Network.Ethereum]: [USDC_MAINNET, USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
+  [Network.Arbitrum]: [USDC_ARBITRUM],
+  [Network.Optimism]: [USDC_OPTIMISM],
 }
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
   [Network.Binance]: [BUSD_BSC],
   [Network.Ethereum]: [USDC_MAINNET],
+  [Network.Arbitrum]: [USDC_ARBITRUM],
+  [Network.Optimism]: [USDC_OPTIMISM],
 }
 
 export const BASE_TOKENS: { [chainId: number]: Token[] } = {
