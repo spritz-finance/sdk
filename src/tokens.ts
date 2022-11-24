@@ -1,9 +1,16 @@
-import { Token } from './quotes/uniswap/uniswap-v2-sdk'
-import { UnsupportedPaymentTokenError } from './errors'
-import { CHAIN_ID_TO_NETWORK, NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
-import { ACCEPTED_PAYMENT_TOKENS, NATIVE_ADDRESS_OTHER, NATIVE_ZERO_ADDRESS, USDC_POLYGON } from './supportedTokens'
+import { Token } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
 import { ERC20__factory } from './contracts/types'
+import { UnsupportedPaymentTokenError } from './errors'
+import { getChainId, SupportedNetwork } from './networks'
+import { Token as V2Token } from './quotes/uniswap/uniswap-v2-sdk'
+import {
+  ACCEPTED_PAYMENT_TOKENS,
+  ACCEPTED_SWAP_OUTPUTS,
+  NATIVE_ADDRESS_OTHER,
+  NATIVE_ZERO_ADDRESS,
+  USDC_POLYGON,
+} from './supportedTokens'
 import { getWrappedNativeToken } from './wrappedNativeTokens'
 
 export const isNativeAddress = (address: string) => [NATIVE_ZERO_ADDRESS, NATIVE_ADDRESS_OTHER].includes(address)
@@ -15,8 +22,13 @@ export type TokenData = {
   name?: string
 }
 
+export const acceptedOutputTokenFor = (network: SupportedNetwork) => {
+  const outputToken = ACCEPTED_SWAP_OUTPUTS[network][0]
+  return toToken(outputToken, network)
+}
+
 export const toToken = (data: TokenData, network: SupportedNetwork) => {
-  const chainId = NETWORK_TO_CHAIN_ID[network]
+  const chainId = getChainId(network)
   return new Token(chainId, data.address, data.decimals, data.symbol)
 }
 
@@ -30,11 +42,25 @@ export const getPaymentToken = (network: SupportedNetwork, paymentTokenAddress: 
   return toToken(token, network)
 }
 
-export const getFullToken = async (address: string, provider: ethers.providers.BaseProvider): Promise<Token> => {
-  const chainId = provider.network.chainId
+export const getFullToken = async (
+  address: string,
+  network: SupportedNetwork,
+  provider: ethers.providers.BaseProvider,
+): Promise<Token> => {
+  return (await tokenFromAddress(address, network, provider)) as Token
+}
+
+export const toV2Token = (token: Token) => new V2Token(token.chainId, token.address, token.decimals, token.symbol)
+
+const tokenFromAddress = async (
+  address: string,
+  network: SupportedNetwork,
+  provider: ethers.providers.BaseProvider,
+) => {
+  const chainId = getChainId(network)
 
   if (isNativeAddress(address)) {
-    return getWrappedNativeToken(CHAIN_ID_TO_NETWORK[chainId] as SupportedNetwork)
+    return getWrappedNativeToken(network)
   }
 
   const contract = ERC20__factory.connect(address, provider)

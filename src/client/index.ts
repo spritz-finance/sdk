@@ -1,12 +1,13 @@
 import { ethers } from 'ethers'
+import { getContractAddress } from '../addresses'
+import { getSpritzContract, SpritzPayMethod } from '../contracts'
 import { SupportedNetwork } from '../networks'
+import { PayWithSwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
+import { UniswapV3Quoter } from '../quotes/uniswapv3'
 import { isAcceptedPaymentToken } from '../supportedTokens'
 import { getPaymentToken } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
-import { PayWithSwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
-import { getSpritzContract, SpritzPayMethod } from '../contracts'
-import { getContractAddress } from '../addresses'
 
 interface SpritzPaySDKConstructorArgs {
   network: SupportedNetwork
@@ -37,6 +38,7 @@ export class SpritzPaySDK {
 
   public getContractMethodForPayment(tokenAddress: string): SpritzPayMethod {
     if (isAcceptedPaymentToken(tokenAddress, this.network)) return 'payWithToken'
+    // if (isV3SwapNetwork(this.network)) return 'payWithV3Swap'
     return 'payWithSwap'
   }
 
@@ -52,6 +54,11 @@ export class SpritzPaySDK {
     reference: string,
   ): Promise<PayWithSwapArgsResult> {
     const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
+    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
+  }
+
+  public getV3SwapPaymentData(sourceTokenAddress: string, fiatAmount: string | number, reference: string) {
+    const uniswapQuoter = new UniswapV3Quoter(this.network, this.provider)
     return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
   }
 

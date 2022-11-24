@@ -1,4 +1,3 @@
-import { Contract } from '@ethersproject/contracts'
 import { getNetwork } from '@ethersproject/networks'
 import { getDefaultProvider } from '@ethersproject/providers'
 import { Pair, Token, TokenAmount } from './entities'
@@ -9,6 +8,7 @@ import { ContractCallContext, Multicall } from 'ethereum-multicall'
 import { ChainId } from './constants'
 import { ERC20_ABI } from '../../../contracts/abi'
 import { BASE_TOKENS } from '../../../supportedTokens'
+import { Contract } from 'ethers'
 
 let TOKEN_DECIMALS_CACHE: { [chainId: number]: { [address: string]: number } } = {
   [ChainId.MAINNET]: {

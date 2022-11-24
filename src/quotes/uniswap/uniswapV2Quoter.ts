@@ -1,8 +1,8 @@
 import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
-import { ACCEPTED_PAYMENT_TOKENS, ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
+import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { ethers } from 'ethers'
-import { getFullToken, isNativeAddress } from '../../tokens'
+import { getFullToken, isNativeAddress, toV2Token } from '../../tokens'
 import { SpritzPay_V1 } from '../../contracts/types'
 import { formatPaymentReference } from '../../utils/reference'
 
@@ -23,9 +23,9 @@ export class UniswapV2Quoter {
   ): Promise<PayWithSwapArgsResult> {
     const isNativeSwap = isNativeAddress(tokenAddress)
 
-    const token = await getFullToken(tokenAddress, this.provider)
+    const token = await getFullToken(tokenAddress, this.network, this.provider)
 
-    const data = await this.getBestStablecoinTradeForToken(token, fiatAmount)
+    const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount)
 
     const args: Parameters<SpritzPay_V1['functions']['payWithSwap']> = [
       data.path,
