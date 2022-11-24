@@ -19,9 +19,9 @@ export const DAI_MAINNET = { address: '0x6B175474E89094C44Da98b954EedeAC495271d0
 export const BUSD_MAINNET = { address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53', decimals: 18, symbol: 'BUSD' }
 
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
-  [Network.Polygon]: [USDC_POLYGON, USDT_POLYGON, DAI_POLYGON],
-  [Network.Binance]: [BUSD_BSC, USDT_BSC, USDC_BSC],
-  [Network.Ethereum]: [USDC_MAINNET, USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
+  [Network.Polygon]: [USDC_POLYGON],
+  [Network.Binance]: [BUSD_BSC],
+  [Network.Ethereum]: [USDC_MAINNET],
 }
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
