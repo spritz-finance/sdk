@@ -25,9 +25,9 @@ export const USDC_AVALANCHE = { address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c4
 export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6, symbol: 'USDC' }
 
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
-  [Network.Polygon]: [USDC_POLYGON, USDT_POLYGON, DAI_POLYGON],
-  [Network.Binance]: [BUSD_BSC, USDT_BSC, USDC_BSC],
-  [Network.Ethereum]: [USDC_MAINNET, USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
+  [Network.Polygon]: [USDC_POLYGON],
+  [Network.Binance]: [BUSD_BSC],
+  [Network.Ethereum]: [USDC_MAINNET],
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
 }
