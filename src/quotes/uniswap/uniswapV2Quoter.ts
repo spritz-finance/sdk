@@ -3,11 +3,11 @@ import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
 import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { ethers } from 'ethers'
 import { getFullToken, isNativeAddress, toV2Token } from '../../tokens'
-import { SpritzPay_V1 } from '../../contracts/types'
+import { SpritzPayV2 } from '../../contracts/types'
 import { formatPaymentReference } from '../../utils/reference'
 
-export type PayWithSwapArgsResult = {
-  args: Parameters<SpritzPay_V1['functions']['payWithSwap']>
+export type PayWithV2SwapArgsResult = {
+  args: Parameters<SpritzPayV2['functions']['payWithSwap']>
   data: { path: string[]; trade: Trade; amountOut: string; amountInMax: string }
 }
 
@@ -20,14 +20,14 @@ export class UniswapV2Quoter {
     tokenAddress: string,
     fiatAmount: string | number,
     reference: string,
-  ): Promise<PayWithSwapArgsResult> {
+  ): Promise<PayWithV2SwapArgsResult> {
     const isNativeSwap = isNativeAddress(tokenAddress)
 
     const token = await getFullToken(tokenAddress, this.network, this.provider)
 
     const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount)
 
-    const args: Parameters<SpritzPay_V1['functions']['payWithSwap']> = [
+    const args: Parameters<SpritzPayV2['functions']['payWithSwap']> = [
       data.path,
       data.amountInMax,
       data.amountOut,

@@ -1,6 +1,7 @@
 import { Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter, CurrencyAmount, SwapRoute, SwapType, V3Route } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
+import { SpritzPayV2 } from '../../contracts/types'
 import { UniswapQuoteError } from '../../errors'
 import { getChainId, SupportedNetwork } from '../../networks'
 import { NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
@@ -8,6 +9,11 @@ import { acceptedOutputTokenFor, getFullToken, isNativeAddress } from '../../tok
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { formatPaymentReference } from '../../utils/reference'
 import { getSwapPath } from './path'
+
+export type PayWithV3SwapArgsResult = {
+  args: Parameters<SpritzPayV2['functions']['payWithV3Swap']>
+  data: PaymentQuote
+}
 
 type SwapRouteProps = {
   inputToken: Token
@@ -47,13 +53,17 @@ export class UniswapV3Quoter {
     this.paymentToken = acceptedOutputTokenFor(network)
   }
 
-  public async getPayWithSwapArgs(tokenAddress: string, fiatAmount: string | number, reference: string) {
+  public async getPayWithSwapArgs(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+  ): Promise<PayWithV3SwapArgsResult> {
     const isNativeSwap = isNativeAddress(tokenAddress)
 
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
     const data = await this.getTokenPaymentQuote(inputToken, fiatAmount)
-    const args = [
+    const args: Parameters<SpritzPayV2['functions']['payWithV3Swap']> = [
       data.path,
       inputToken.address,
       data.sourceTokenAmountMax,
@@ -61,7 +71,7 @@ export class UniswapV3Quoter {
       data.paymentTokenAmount,
       formatPaymentReference(reference),
       data.deadline,
-    ] as any[]
+    ]
 
     if (isNativeSwap) {
       args.push({
