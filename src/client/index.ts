@@ -3,7 +3,7 @@ import { getContractAddress } from '../addresses'
 import { getSpritzContract, SpritzPayMethod } from '../contracts'
 import { SpritzPayV2 } from '../contracts/types'
 import { SupportedNetwork } from '../networks'
-import { PayWithV2SwapArgsResult } from '../quotes/uniswap/uniswapV2Quoter'
+import { PayWithV2SwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
 import { PayWithV3SwapArgsResult, UniswapV3Quoter } from '../quotes/uniswapv3'
 import { isAcceptedPaymentToken } from '../supportedTokens'
 import { isV3SwapNetwork } from '../swaps'
@@ -73,7 +73,7 @@ export class SpritzPaySDK {
     reference: string,
   ): ConditionalSwapArgs<Method> {
     if (method === 'payWithSwap')
-      return this.getSwapPaymentData(
+      return this.getV2SwapPaymentData(
         sourceTokenAddress,
         fiatAmount,
         reference,
@@ -88,8 +88,8 @@ export class SpritzPaySDK {
     return this.getTokenPaymentData(sourceTokenAddress, fiatAmount, reference) as unknown as ConditionalSwapArgs<Method>
   }
 
-  public getSwapPaymentData(sourceTokenAddress: string, fiatAmount: string | number, reference: string) {
-    const uniswapQuoter = new UniswapV3Quoter(this.network, this.provider)
+  public getV2SwapPaymentData(sourceTokenAddress: string, fiatAmount: string | number, reference: string) {
+    const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
     return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
   }
 
