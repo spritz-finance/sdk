@@ -72,6 +72,14 @@ const CHAIN_INFO: Record<SupportedNetwork, ChainInfo> = {
     getExplorerAddressLink: (address: string) => `https://arbiscan.io/address/${address}`,
     getExplorerTransactionLink: (tx: string) => `https://arbiscan.io/tx/${tx}`,
   },
+  [Network.Avalanche]: {
+    chainId: getChainId(Network.Avalanche),
+    blockExplorerUrl: 'https://snowtrace.io/',
+    name: 'Avalanche C-Chain',
+    nativeCurrency: { name: 'Avalanche', symbol: 'AVAX', decimals: 18 },
+    getExplorerAddressLink: (address: string) => `https://snowtrace.io/address/${address}`,
+    getExplorerTransactionLink: (tx: string) => `https://snowtrace.io/tx/${tx}`,
+  },
 }
 
 export function getChainInfo(network: SupportedNetwork): ChainInfo {

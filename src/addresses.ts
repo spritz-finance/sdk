@@ -20,12 +20,17 @@ export const SPRITZPAY_STAGING_OPTIMISM_ADDRESS = '0x0'
 export const SPRITZPAY_ARBITRUM_ADDRESS = '0x0'
 export const SPRITZPAY_STAGING_ARBITRUM_ADDRESS = '0x0'
 
+// Avalanche
+export const SPRITZPAY_AVALANCHE_ADDRESS = '0x0'
+export const SPRITZPAY_STAGING_AVALANCHE_ADDRESS = '0x0'
+
 const SPRITZ_PAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Polygon]: SPRITZPAY_STAGING_POLYGON_ADDRESS,
   [Network.Binance]: SPRITZPAY_STAGING_BSC_ADDRESS,
   [Network.Ethereum]: SPRITZPAY_STAGING_MAINNET_ADDRESS,
   [Network.Arbitrum]: SPRITZPAY_STAGING_ARBITRUM_ADDRESS,
   [Network.Optimism]: SPRITZPAY_STAGING_OPTIMISM_ADDRESS,
+  [Network.Avalanche]: SPRITZPAY_STAGING_AVALANCHE_ADDRESS,
 }
 
 const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
@@ -34,6 +39,7 @@ const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Ethereum]: SPRITZPAY_MAINNET_ADDRESS,
   [Network.Optimism]: SPRITZPAY_ARBITRUM_ADDRESS,
   [Network.Arbitrum]: SPRITZPAY_OPTIMISM_ADDRESS,
+  [Network.Avalanche]: SPRITZPAY_AVALANCHE_ADDRESS,
 }
 
 export const getContractAddress = (network: SupportedNetwork, staging = false) => {
