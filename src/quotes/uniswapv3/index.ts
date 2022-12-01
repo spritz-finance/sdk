@@ -133,7 +133,7 @@ export class UniswapV3Quoter {
     const usdPaymentAmount = roundNumber(_amountOut).toString()
     const amountOut = ethers.utils.parseUnits(usdPaymentAmount, this.paymentToken.decimals).toString()
 
-    const deadline = Math.floor(Date.now() / 1000 + 1800)
+    const deadline = Math.floor(Date.now() / 1000 + 1800) // 30 minutes
     return { amountOut, deadline }
   }
 }

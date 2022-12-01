@@ -32,7 +32,7 @@ export class UniswapV2Quoter {
       data.amountInMax,
       data.amountOut,
       formatPaymentReference(reference),
-      Math.round(Date.now() / 1000) + 120,
+      Math.floor(Date.now() / 1000 + 1800), // 30 minutes
     ]
     if (isNativeSwap) {
       args.push({
