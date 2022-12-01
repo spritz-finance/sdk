@@ -1,12 +1,19 @@
 import { Percent, Token, TradeType } from '@uniswap/sdk-core'
-import { AlphaRouter, CurrencyAmount, SwapRoute, V3Route } from '@uniswap/smart-order-router'
+import { AlphaRouter, CurrencyAmount, SwapRoute, SwapType, V3Route } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
+import { SpritzPayV2 } from '../../contracts/types'
 import { UniswapQuoteError } from '../../errors'
-import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
-import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
-import { getWrappedNativeToken } from '../../wrappedNativeTokens'
-import { getSwapPath } from './path'
+import { getChainId, SupportedNetwork } from '../../networks'
 import { NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
+import { acceptedOutputTokenFor, getFullToken, isNativeAddress } from '../../tokens'
+import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
+import { formatPaymentReference } from '../../utils/reference'
+import { getSwapPath } from './path'
+
+export type PayWithV3SwapArgsResult = {
+  args: Parameters<SpritzPayV2['functions']['payWithV3Swap']>
+  data: PaymentQuote
+}
 
 type SwapRouteProps = {
   inputToken: Token
@@ -15,20 +22,13 @@ type SwapRouteProps = {
   slippagePercentage: number
 }
 
-export type TokenPaymentQuote = {
-  sourceTokenAddress: string
-  paymentTokenAddress: string
-  amountOut: string
-  amountInMax: string
+export type PaymentQuote = {
   path: string
-}
-
-export type NativePaymentQuote = {
   sourceTokenAddress: string
+  sourceTokenAmountMax: string
   paymentTokenAddress: string
-  amountOut: string
-  amountInMax: string
-  path: string
+  paymentTokenAmount: string
+  deadline: number
 }
 
 const getAmountInMax = (token: Token, routeData: SwapRoute) => {
@@ -37,26 +37,62 @@ const getAmountInMax = (token: Token, routeData: SwapRoute) => {
   return parsedAmount.toString()
 }
 
-export class UniswapQuoter {
+export class UniswapV3Quoter {
   private router: AlphaRouter
-  private network: SupportedNetwork
   private paymentToken: Token
+  private network: SupportedNetwork
+  private provider: ethers.providers.BaseProvider
 
-  constructor(paymentToken: Token, network: SupportedNetwork, provider: ethers.providers.JsonRpcProvider) {
+  constructor(network: SupportedNetwork, provider: ethers.providers.BaseProvider) {
+    this.provider = provider
     this.network = network
     this.router = new AlphaRouter({
-      chainId: NETWORK_TO_CHAIN_ID[network],
+      chainId: getChainId(network),
       provider,
     })
-    this.paymentToken = paymentToken
+    this.paymentToken = acceptedOutputTokenFor(network)
   }
 
-  public async getTokenPaymentQuote(
+  public async getPayWithSwapArgs(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+    currentTime = Math.floor(Date.now() / 1000),
+  ): Promise<PayWithV3SwapArgsResult> {
+    const isNativeSwap = isNativeAddress(tokenAddress)
+
+    const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
+
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, 1, currentTime)
+    const args: Parameters<SpritzPayV2['functions']['payWithV3Swap']> = [
+      data.path,
+      inputToken.address,
+      data.sourceTokenAmountMax,
+      data.paymentTokenAddress,
+      data.paymentTokenAmount,
+      formatPaymentReference(reference),
+      data.deadline,
+    ]
+
+    if (isNativeSwap) {
+      args.push({
+        value: data.sourceTokenAmountMax,
+      })
+    }
+
+    return {
+      args,
+      data,
+    }
+  }
+
+  private async getTokenPaymentQuote(
     inputToken: Token,
     fiatAmount: FiatValue,
-    slippagePercentage = 5,
-  ): Promise<TokenPaymentQuote> {
-    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount))
+    slippagePercentage = 1,
+    currentTime: number,
+  ): Promise<PaymentQuote> {
+    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount), currentTime)
 
     const routeData = await this.getSwapRoute({
       inputToken,
@@ -72,60 +108,34 @@ export class UniswapQuoter {
     const path = getSwapPath(route)
 
     return {
+      path,
       sourceTokenAddress: inputToken.address,
+      sourceTokenAmountMax: amountInMax,
       paymentTokenAddress: this.paymentToken.address,
-      amountOut,
-      amountInMax,
-      path,
-    }
-  }
-
-  public async getNativePaymentQuote(fiatAmount: FiatValue, slippagePercentage = 5): Promise<NativePaymentQuote> {
-    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount))
-
-    const nativeToken = getWrappedNativeToken(this.network) as Token
-    const routeData = await this.getSwapRoute({
-      inputToken: nativeToken,
+      paymentTokenAmount: amountOut,
       deadline,
-      amountOut,
-      slippagePercentage,
-    })
-
-    const route = (routeData?.route[0].route ?? null) as V3Route | null
-    if (!route || !routeData) throw new UniswapQuoteError()
-
-    const amountInMax = getAmountInMax(nativeToken, routeData)
-    const path = getSwapPath(route)
-
-    return {
-      sourceTokenAddress: nativeToken.address,
-      paymentTokenAddress: this.paymentToken.address,
-      amountOut,
-      amountInMax,
-      path,
     }
   }
 
   private async getSwapRoute({ inputToken, deadline, amountOut, slippagePercentage }: SwapRouteProps) {
-    const data = await this.router.route(
+    return this.router.route(
       CurrencyAmount.fromRawAmount(this.paymentToken, amountOut.toString()),
       inputToken,
       TradeType.EXACT_OUTPUT,
       {
+        type: SwapType.SWAP_ROUTER_02,
         recipient: NATIVE_ZERO_ADDRESS,
         slippageTolerance: new Percent(slippagePercentage, 100),
         deadline,
       },
     )
-
-    return data
   }
 
-  private getQuoteParams(_amountOut: number) {
+  private getQuoteParams(_amountOut: number, currentTime: number) {
     const usdPaymentAmount = roundNumber(_amountOut).toString()
     const amountOut = ethers.utils.parseUnits(usdPaymentAmount, this.paymentToken.decimals).toString()
 
-    const deadline = Math.floor(Date.now() / 1000 + 1800)
-    return { usdPaymentAmount, amountOut, deadline }
+    const deadline = currentTime + 1800 // 30 minutes
+    return { amountOut, deadline }
   }
 }

@@ -18,16 +18,28 @@ export const USDT_MAINNET = { address: '0xdAC17F958D2ee523a2206206994597C13D831e
 export const DAI_MAINNET = { address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', decimals: 18, symbol: 'DAI' }
 export const BUSD_MAINNET = { address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53', decimals: 18, symbol: 'BUSD' }
 
+export const USDC_ARBITRUM = { address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', decimals: 6, symbol: 'USDC' }
+
+export const USDC_AVALANCHE = { address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', decimals: 6, symbol: 'USDC' }
+
+export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6, symbol: 'USDC' }
+
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
   [Network.Binance]: [BUSD_BSC],
   [Network.Ethereum]: [USDC_MAINNET],
+  [Network.Arbitrum]: [USDC_ARBITRUM],
+  [Network.Optimism]: [USDC_OPTIMISM],
+  [Network.Avalanche]: [USDC_AVALANCHE],
 }
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
   [Network.Binance]: [BUSD_BSC],
   [Network.Ethereum]: [USDC_MAINNET],
+  [Network.Arbitrum]: [USDC_ARBITRUM],
+  [Network.Optimism]: [USDC_OPTIMISM],
+  [Network.Avalanche]: [USDC_AVALANCHE],
 }
 
 export const BASE_TOKENS: { [chainId: number]: Token[] } = {
@@ -55,6 +67,14 @@ export const BASE_TOKENS: { [chainId: number]: Token[] } = {
     new Token(ChainId.MAINNET, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin'),
     new Token(ChainId.MAINNET, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 18, 'WETH', 'Wrapped ETHER'),
     new Token(ChainId.MAINNET, '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', 8, 'WBTC', 'Wrapped Bitcoin'),
+  ],
+  [ChainId.AVALANCHE]: [
+    new Token(ChainId.AVALANCHE, '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', 6, 'USDC', 'USD Coin'),
+    new Token(ChainId.AVALANCHE, '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', 18, 'WAVAX', 'Wrapped AVAX'),
+    new Token(ChainId.AVALANCHE, '0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664', 6, 'USDC.e', 'USDC.e'),
+    new Token(ChainId.AVALANCHE, '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB', 18, 'WETH.e', 'Wrapped Ether'),
+    new Token(ChainId.AVALANCHE, '0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd', 18, 'JOE', 'JoeToken'),
+    new Token(ChainId.AVALANCHE, '0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7', 6, 'USDT', 'TetherToken'),
   ],
 }
 

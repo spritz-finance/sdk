@@ -24,17 +24,17 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide swap quote', async () => {
-      const args = await sdk.getPaymentArgs(WBTC_POLYGON_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', WBTC_POLYGON_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
 
     it('should provide multihop swap quote', async () => {
-      const args = await sdk.getPaymentArgs(AAVE_POLYGON_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', AAVE_POLYGON_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs(NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })
@@ -52,12 +52,12 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide multihop swap quote', async () => {
-      const args = await sdk.getPaymentArgs(CAKE_BSC_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', CAKE_BSC_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs(NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })
@@ -75,12 +75,45 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide swap quote', async () => {
-      const args = await sdk.getPaymentArgs(WBTC_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', WBTC_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs(NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      console.log(args)
+    })
+  })
+
+  describe('Avalanche', () => {
+    const EGG_AVALANCHE_ADDRESS = '0x7761e2338b35bceb6bda6ce477ef012bde7ae611'
+
+    const sdk = new SpritzPaySDK({
+      network: Network.Avalanche,
+      provider: new ethers.providers.JsonRpcProvider(
+        `https://avalanche-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
+        ChainId.AVALANCHE,
+      ),
+      staging: true,
+    })
+
+    it('should provide swap quote', async () => {
+      const args = await sdk.getPaymentArgs('payWithSwap', EGG_AVALANCHE_ADDRESS, 100, 'abcdef1234')
+      console.log(args)
+    })
+
+    it('should provide multihop swap quote', async () => {
+      const args = await sdk.getPaymentArgs(
+        'payWithSwap',
+        '0x130966628846bfd36ff31a822705796e8cb8c18d',
+        100,
+        'abcdef1234',
+      )
+      console.log(args)
+    })
+
+    it('should provide native swap quote', async () => {
+      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })

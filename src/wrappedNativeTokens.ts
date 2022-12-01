@@ -1,4 +1,4 @@
-import { Token } from './quotes/uniswap/uniswap-v2-sdk'
+import { Token } from '@uniswap/sdk-core'
 import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from './networks'
 import { TokenData } from './tokens'
 
@@ -32,12 +32,20 @@ export const WBNB_BSC = {
   symbol: 'WBNB',
   name: 'Wrapped BNB',
 }
+export const WAVAX_AVALANCHE = {
+  address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7',
+  decimals: 18,
+  symbol: 'WAVAX',
+  name: 'Wrapped AVAX',
+}
 
 const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Polygon]: WMATIC_POLYGON,
   [Network.Binance]: WBNB_BSC,
   [Network.Ethereum]: WETH_MAINNET,
-  //   [Network.Arbitrum]: WETH_ARBITRUM,
+  [Network.Arbitrum]: WETH_ARBITRUM,
+  [Network.Optimism]: WETH_OPTIMISM,
+  [Network.Avalanche]: WAVAX_AVALANCHE,
 }
 
 export const getWrappedNativeToken = (network: SupportedNetwork) => {

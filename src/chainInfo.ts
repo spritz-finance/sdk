@@ -48,7 +48,6 @@ const CHAIN_INFO: Record<SupportedNetwork, ChainInfo> = {
     getExplorerAddressLink: (address: string) => `https://polygonscan.com/address/${address}`,
     getExplorerTransactionLink: (tx: string) => `https://polygonscan.com/tx/${tx}`,
   },
-
   [Network.Binance]: {
     chainId: getChainId(Network.Binance),
     blockExplorerUrl: 'https://bscscan.com/',
@@ -56,6 +55,30 @@ const CHAIN_INFO: Record<SupportedNetwork, ChainInfo> = {
     nativeCurrency: { name: 'Binance Coin', symbol: 'BNB', decimals: 18 },
     getExplorerAddressLink: (address: string) => `https://bscscan.com/address/${address}`,
     getExplorerTransactionLink: (tx: string) => `https://bscscan.com/tx/${tx}`,
+  },
+  [Network.Optimism]: {
+    chainId: getChainId(Network.Optimism),
+    blockExplorerUrl: 'https://optimistic.etherscan.io/',
+    name: 'Optimism',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    getExplorerAddressLink: (address: string) => `https://optimistic.etherscan.io/address/${address}`,
+    getExplorerTransactionLink: (tx: string) => `https://optimistic.etherscan.io/tx/${tx}`,
+  },
+  [Network.Arbitrum]: {
+    chainId: getChainId(Network.Arbitrum),
+    blockExplorerUrl: 'https://arbiscan.io/',
+    name: 'Arbitrum One',
+    nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
+    getExplorerAddressLink: (address: string) => `https://arbiscan.io/address/${address}`,
+    getExplorerTransactionLink: (tx: string) => `https://arbiscan.io/tx/${tx}`,
+  },
+  [Network.Avalanche]: {
+    chainId: getChainId(Network.Avalanche),
+    blockExplorerUrl: 'https://snowtrace.io/',
+    name: 'Avalanche C-Chain',
+    nativeCurrency: { name: 'Avalanche', symbol: 'AVAX', decimals: 18 },
+    getExplorerAddressLink: (address: string) => `https://snowtrace.io/address/${address}`,
+    getExplorerTransactionLink: (tx: string) => `https://snowtrace.io/tx/${tx}`,
   },
 }
 
