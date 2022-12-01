@@ -1,6 +1,6 @@
 import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
 import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
-import { NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
+import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { ethers } from 'ethers'
 import { getFullToken, isNativeAddress, toV2Token } from '../../tokens'
 import { SpritzPayV2 } from '../../contracts/types'
@@ -12,14 +12,22 @@ export type PayWithV2SwapArgsResult = {
 }
 
 const slippageTolerance = new Percent('50', '10000') // 50 bips, or 0.50%
+const slippageToleranceOnePercent = new Percent('100', '10000') // 100 bips, or 1%
 
 export class UniswapV2Quoter {
-  constructor(public network: SupportedNetwork, public provider: ethers.providers.BaseProvider) {}
+  public slippage: Percent = slippageTolerance
+
+  constructor(public network: SupportedNetwork, public provider: ethers.providers.BaseProvider) {
+    if (network === Network.Binance) {
+      this.slippage = slippageToleranceOnePercent
+    }
+  }
 
   async getPayWithSwapArgs(
     tokenAddress: string,
     fiatAmount: string | number,
     reference: string,
+    currentTime = Math.floor(Date.now() / 1000),
   ): Promise<PayWithV2SwapArgsResult> {
     const isNativeSwap = isNativeAddress(tokenAddress)
 
@@ -32,13 +40,15 @@ export class UniswapV2Quoter {
       data.amountInMax,
       data.amountOut,
       formatPaymentReference(reference),
-      Math.floor(Date.now() / 1000 + 1800), // 30 minutes
+      currentTime + 1800, // +30 minutes
     ]
+
     if (isNativeSwap) {
       args.push({
         value: args[1],
       })
     }
+
     return {
       args,
       data,
@@ -115,7 +125,7 @@ export class UniswapV2Quoter {
 
     //Compare all the stablecoin trades, and pick the best one
     const tradesWithArgs = trades.map((trade) => {
-      const amountInMax = trade.maximumAmountIn(slippageTolerance).raw.toString()
+      const amountInMax = trade.maximumAmountIn(this.slippage).raw.toString()
       const amountOut = trade.outputAmount.raw.toString()
       const path = trade.route.path.map((t) => t.address)
       return {

@@ -57,12 +57,13 @@ export class UniswapV3Quoter {
     tokenAddress: string,
     fiatAmount: string | number,
     reference: string,
+    currentTime = Math.floor(Date.now() / 1000),
   ): Promise<PayWithV3SwapArgsResult> {
     const isNativeSwap = isNativeAddress(tokenAddress)
 
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
-    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount)
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, 1, currentTime)
     const args: Parameters<SpritzPayV2['functions']['payWithV3Swap']> = [
       data.path,
       inputToken.address,
@@ -88,9 +89,10 @@ export class UniswapV3Quoter {
   private async getTokenPaymentQuote(
     inputToken: Token,
     fiatAmount: FiatValue,
-    slippagePercentage = 5,
+    slippagePercentage = 1,
+    currentTime: number,
   ): Promise<PaymentQuote> {
-    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount))
+    const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount), currentTime)
 
     const routeData = await this.getSwapRoute({
       inputToken,
@@ -129,11 +131,11 @@ export class UniswapV3Quoter {
     )
   }
 
-  private getQuoteParams(_amountOut: number) {
+  private getQuoteParams(_amountOut: number, currentTime: number) {
     const usdPaymentAmount = roundNumber(_amountOut).toString()
     const amountOut = ethers.utils.parseUnits(usdPaymentAmount, this.paymentToken.decimals).toString()
 
-    const deadline = Math.floor(Date.now() / 1000 + 1800) // 30 minutes
+    const deadline = currentTime + 1800 // 30 minutes
     return { amountOut, deadline }
   }
 }

@@ -71,30 +71,43 @@ export class SpritzPaySDK {
     sourceTokenAddress: string,
     fiatAmount: string | number,
     reference: string,
+    currentTime = Math.floor(Date.now() / 1000),
   ): ConditionalSwapArgs<Method> {
     if (method === 'payWithSwap')
       return this.getV2SwapPaymentData(
         sourceTokenAddress,
         fiatAmount,
         reference,
+        currentTime,
       ) as unknown as ConditionalSwapArgs<Method>
     if (method === 'payWithV3Swap')
       return this.getV3SwapPaymentData(
         sourceTokenAddress,
         fiatAmount,
         reference,
+        currentTime,
       ) as unknown as ConditionalSwapArgs<Method>
 
     return this.getTokenPaymentData(sourceTokenAddress, fiatAmount, reference) as unknown as ConditionalSwapArgs<Method>
   }
 
-  public getV2SwapPaymentData(sourceTokenAddress: string, fiatAmount: string | number, reference: string) {
+  public getV2SwapPaymentData(
+    sourceTokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+    currentTime: number,
+  ) {
     const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
-    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
+    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
 
-  public getV3SwapPaymentData(sourceTokenAddress: string, fiatAmount: string | number, reference: string) {
+  public getV3SwapPaymentData(
+    sourceTokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+    currentTime: number,
+  ) {
     const uniswapQuoter = new UniswapV3Quoter(this.network, this.provider)
-    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
+    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
 }
