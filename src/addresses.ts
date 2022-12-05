@@ -37,8 +37,8 @@ const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Polygon]: SPRITZPAY_POLYGON_ADDRESS,
   [Network.Binance]: SPRITZPAY_BSC_ADDRESS,
   [Network.Ethereum]: SPRITZPAY_MAINNET_ADDRESS,
-  [Network.Optimism]: SPRITZPAY_ARBITRUM_ADDRESS,
-  [Network.Arbitrum]: SPRITZPAY_OPTIMISM_ADDRESS,
+  [Network.Optimism]: SPRITZPAY_OPTIMISM_ADDRESS,
+  [Network.Arbitrum]: SPRITZPAY_ARBITRUM_ADDRESS,
   [Network.Avalanche]: SPRITZPAY_AVALANCHE_ADDRESS,
 }
 
