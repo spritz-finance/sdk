@@ -15,6 +15,7 @@ export type PayWithTokenArgsResult = {
   args: Parameters<SpritzPayV2['functions']['payWithToken']>
   data: { tokenAddress: string; amount: ethers.BigNumber; reference: string }
   additionalHops: number
+  requiredTokenInput: ethers.BigNumber
 }
 
 export type ConditionalSwapArgs<T extends 'payWithV3Swap' | 'payWithSwap' | 'payWithToken'> = T extends 'payWithV3Swap'
@@ -64,7 +65,12 @@ export class SpritzPaySDK {
     const token = getPaymentToken(this.network, tokenAddress)
     const amount = ethers.utils.parseUnits(fiatString(fiatAmount), token.decimals)
     const reference = formatPaymentReference(_reference)
-    return { args: [tokenAddress, amount, reference], data: { tokenAddress, amount, reference }, additionalHops: 0 }
+    return {
+      args: [tokenAddress, amount, reference],
+      data: { tokenAddress, amount, reference },
+      additionalHops: 0,
+      requiredTokenInput: amount,
+    }
   }
 
   public getPaymentArgs<Method extends 'payWithV3Swap' | 'payWithSwap' | 'payWithToken'>(
