@@ -15,5 +15,7 @@ export const getSwapPath = (route: V3Route) => {
     valueArray.push(poolFees[index], tokenAddresses[index + 1])
   }
 
-  return ethers.utils.solidityPack(typeArray, valueArray)
+  const additionalHops = tokenAddresses.length > 2 ? tokenAddresses.length - 2 : 0
+
+  return { path: ethers.utils.solidityPack(typeArray, valueArray), additionalHops }
 }

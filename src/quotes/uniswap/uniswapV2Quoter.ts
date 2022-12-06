@@ -9,6 +9,7 @@ import { formatPaymentReference } from '../../utils/reference'
 export type PayWithV2SwapArgsResult = {
   args: Parameters<SpritzPayV2['functions']['payWithSwap']>
   data: { path: string[]; trade: Trade; amountOut: string; amountInMax: string }
+  additionalHops: number
 }
 
 const slippageTolerance = new Percent('50', '10000') // 50 bips, or 0.50%
@@ -49,9 +50,12 @@ export class UniswapV2Quoter {
       })
     }
 
+    const additionalHops = data.path.length > 2 ? data.path.length - 2 : 0
+
     return {
       args,
       data,
+      additionalHops,
     }
   }
 
