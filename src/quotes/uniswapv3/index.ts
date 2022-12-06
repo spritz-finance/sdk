@@ -1,6 +1,6 @@
 import { Percent, Token, TradeType } from '@uniswap/sdk-core'
 import { AlphaRouter, CurrencyAmount, SwapRoute, SwapType, V3Route } from '@uniswap/smart-order-router'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { SpritzPayV2 } from '../../contracts/types'
 import { UniswapQuoteError } from '../../errors'
 import { getChainId, SupportedNetwork } from '../../networks'
@@ -14,6 +14,7 @@ export type PayWithV3SwapArgsResult = {
   args: Parameters<SpritzPayV2['functions']['payWithV3Swap']>
   data: PaymentQuote
   additionalHops: number
+  requiredTokenInput: BigNumber
 }
 
 type SwapRouteProps = {
@@ -86,6 +87,7 @@ export class UniswapV3Quoter {
       args,
       data,
       additionalHops: data.additionalHops,
+      requiredTokenInput: BigNumber.from(data.sourceTokenAmountMax),
     }
   }
 

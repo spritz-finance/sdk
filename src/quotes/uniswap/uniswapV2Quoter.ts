@@ -1,7 +1,7 @@
 import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
 import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
 import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
-import { ethers } from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 import { getFullToken, isNativeAddress, toV2Token } from '../../tokens'
 import { SpritzPayV2 } from '../../contracts/types'
 import { formatPaymentReference } from '../../utils/reference'
@@ -10,6 +10,7 @@ export type PayWithV2SwapArgsResult = {
   args: Parameters<SpritzPayV2['functions']['payWithSwap']>
   data: { path: string[]; trade: Trade; amountOut: string; amountInMax: string }
   additionalHops: number
+  requiredTokenInput: BigNumber
 }
 
 const slippageTolerance = new Percent('50', '10000') // 50 bips, or 0.50%
@@ -56,6 +57,7 @@ export class UniswapV2Quoter {
       args,
       data,
       additionalHops,
+      requiredTokenInput: BigNumber.from(data.amountInMax),
     }
   }
 
