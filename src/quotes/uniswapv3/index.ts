@@ -13,6 +13,7 @@ import { getSwapPath } from './path'
 export type PayWithV3SwapArgsResult = {
   args: Parameters<SpritzPayV2['functions']['payWithV3Swap']>
   data: PaymentQuote
+  additionalHops: number
 }
 
 type SwapRouteProps = {
@@ -29,6 +30,7 @@ export type PaymentQuote = {
   paymentTokenAddress: string
   paymentTokenAmount: string
   deadline: number
+  additionalHops: number
 }
 
 const getAmountInMax = (token: Token, routeData: SwapRoute) => {
@@ -83,6 +85,7 @@ export class UniswapV3Quoter {
     return {
       args,
       data,
+      additionalHops: data.additionalHops,
     }
   }
 
@@ -105,7 +108,7 @@ export class UniswapV3Quoter {
     if (!route || !routeData) throw new UniswapQuoteError()
 
     const amountInMax = getAmountInMax(inputToken, routeData)
-    const path = getSwapPath(route)
+    const { path, additionalHops } = getSwapPath(route)
 
     return {
       path,
@@ -114,6 +117,7 @@ export class UniswapV3Quoter {
       paymentTokenAddress: this.paymentToken.address,
       paymentTokenAmount: amountOut,
       deadline,
+      additionalHops,
     }
   }
 
