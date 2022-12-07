@@ -3,7 +3,7 @@ import { AlphaRouter, CurrencyAmount, SwapRoute, SwapType, V3Route } from '@unis
 import { BigNumber, ethers } from 'ethers'
 import { SpritzPayV2 } from '../../contracts/types'
 import { UniswapQuoteError } from '../../errors'
-import { getChainId, SupportedNetwork } from '../../networks'
+import { getChainId, Network, SupportedNetwork } from '../../networks'
 import { NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
 import { acceptedOutputTokenFor, getFullToken, isNativeAddress } from '../../tokens'
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
@@ -66,7 +66,9 @@ export class UniswapV3Quoter {
 
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
-    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, 1, currentTime)
+    const slippagePercentage = this.network === Network.Ethereum ? 2 : 1
+
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, slippagePercentage, currentTime)
     const args: Parameters<SpritzPayV2['functions']['payWithV3Swap']> = [
       data.path,
       inputToken.address,
