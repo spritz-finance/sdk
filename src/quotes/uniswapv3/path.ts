@@ -8,7 +8,7 @@ export const getSwapPath = (route: V3Route) => {
 
   const dataLength = poolFees.length + tokenAddresses.length
 
-  const typeArray = Array.from({ length: dataLength }, (_, i) => (i % 2 === 0 ? 'address' : 'int24'))
+  const typeArray = Array.from({ length: dataLength }, (_, i) => (i % 2 === 0 ? 'address' : 'uint24'))
 
   const valueArray: (number | string)[] = [tokenAddresses[0]]
   for (let index = 0; index < poolFees.length; index++) {
@@ -16,6 +16,6 @@ export const getSwapPath = (route: V3Route) => {
   }
 
   const additionalHops = tokenAddresses.length > 2 ? tokenAddresses.length - 2 : 0
-
+  console.log({ typeArray, valueArray })
   return { path: ethers.utils.solidityPack(typeArray, valueArray), additionalHops }
 }
