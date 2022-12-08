@@ -1,5 +1,6 @@
-import { Percent, Token, TradeType } from '@uniswap/sdk-core'
-import { AlphaRouter, CurrencyAmount, SwapRoute, SwapType, V3Route } from '@uniswap/smart-order-router'
+import { Percent, Token, TradeType, Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Protocol } from '@uniswap/router-sdk'
+import { AlphaRouter, SwapRoute, SwapType, V3Route } from '@uniswap/smart-order-router'
 import { BigNumber, ethers } from 'ethers'
 import { SpritzPayV2 } from '../../contracts/types'
 import { UniswapQuoteError } from '../../errors'
@@ -8,7 +9,9 @@ import { NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
 import { acceptedOutputTokenFor, getFullToken, isNativeAddress } from '../../tokens'
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { formatPaymentReference } from '../../utils/reference'
+import { computeRoutes, transformRoutesToTrade } from './bestRoute'
 import { getSwapPath } from './path'
+import { transformQuote } from './transformQuote'
 
 export type PayWithV3SwapArgsResult = {
   args: Parameters<SpritzPayV2['functions']['payWithV3Swap']>
@@ -19,9 +22,7 @@ export type PayWithV3SwapArgsResult = {
 
 type SwapRouteProps = {
   inputToken: Token
-  deadline: number
-  amountOut: string
-  slippagePercentage: number
+  currencyOut: CurrencyAmount<Currency>
 }
 
 export type PaymentQuote = {
@@ -34,11 +35,7 @@ export type PaymentQuote = {
   additionalHops: number
 }
 
-const getAmountInMax = (token: Token, routeData: SwapRoute) => {
-  const amountString = routeData.quote.toExact()
-  const parsedAmount = ethers.utils.parseUnits(amountString, token.decimals)
-  return parsedAmount.toString()
-}
+const SLIPPAGE_TOLERANCE = new Percent(100, 10_000)
 
 export class UniswapV3Quoter {
   private router: AlphaRouter
@@ -66,9 +63,7 @@ export class UniswapV3Quoter {
 
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
-    const slippagePercentage = this.network === Network.Ethereum ? 2 : 1
-
-    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, slippagePercentage, currentTime)
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime)
     const args: Parameters<SpritzPayV2['functions']['payWithV3Swap']> = [
       data.path,
       inputToken.address,
@@ -96,28 +91,29 @@ export class UniswapV3Quoter {
   private async getTokenPaymentQuote(
     inputToken: Token,
     fiatAmount: FiatValue,
-    slippagePercentage = 1,
     currentTime: number,
   ): Promise<PaymentQuote> {
     const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount), currentTime)
 
+    const currencyOut = CurrencyAmount.fromRawAmount(this.paymentToken, amountOut.toString())
+
     const routeData = await this.getSwapRoute({
       inputToken,
-      deadline,
-      amountOut,
-      slippagePercentage,
+      currencyOut,
     })
 
-    const route = (routeData?.route[0].route ?? null) as V3Route | null
-    if (!route || !routeData) throw new UniswapQuoteError()
+    if (!routeData) throw new UniswapQuoteError()
+    const transformedRoute = transformQuote(currencyOut, routeData)
 
-    const amountInMax = getAmountInMax(inputToken, routeData)
-    const { path, additionalHops } = getSwapPath(route)
+    const route = computeRoutes(inputToken, currencyOut.currency, transformedRoute)
+    const trade = transformRoutesToTrade(route, TradeType.EXACT_OUTPUT, transformedRoute?.blockNumber)
+
+    const { path, additionalHops } = getSwapPath(trade.routes[0] as unknown as V3Route)
 
     return {
       path,
       sourceTokenAddress: inputToken.address,
-      sourceTokenAmountMax: amountInMax,
+      sourceTokenAmountMax: trade.maximumAmountIn(SLIPPAGE_TOLERANCE).quotient.toString(),
       paymentTokenAddress: this.paymentToken.address,
       paymentTokenAmount: amountOut,
       deadline,
@@ -125,18 +121,10 @@ export class UniswapV3Quoter {
     }
   }
 
-  private async getSwapRoute({ inputToken, deadline, amountOut, slippagePercentage }: SwapRouteProps) {
-    return this.router.route(
-      CurrencyAmount.fromRawAmount(this.paymentToken, amountOut.toString()),
-      inputToken,
-      TradeType.EXACT_OUTPUT,
-      {
-        type: SwapType.SWAP_ROUTER_02,
-        recipient: NATIVE_ZERO_ADDRESS,
-        slippageTolerance: new Percent(slippagePercentage, 100),
-        deadline,
-      },
-    )
+  private async getSwapRoute({ inputToken, currencyOut }: SwapRouteProps) {
+    return this.router.route(currencyOut, inputToken, TradeType.EXACT_OUTPUT, undefined, {
+      protocols: [Protocol.V3],
+    })
   }
 
   private getQuoteParams(_amountOut: number, currentTime: number) {
