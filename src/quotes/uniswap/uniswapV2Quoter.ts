@@ -30,7 +30,11 @@ export class UniswapV2Quoter {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
+    slippagePercentage?: number,
   ): Promise<PayWithV2SwapArgsResult> {
+    if (slippagePercentage && slippagePercentage > 0) {
+      this.slippage = new Percent(`${slippagePercentage * 100}`, '10000')
+    }
     const isNativeSwap = isNativeAddress(tokenAddress)
 
     const token = await getFullToken(tokenAddress, this.network, this.provider)
