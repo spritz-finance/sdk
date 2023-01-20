@@ -1,28 +1,28 @@
 import { ethers } from 'ethers'
 import { getContractAddress } from '../addresses'
-import { getSpritzContract, SpritzPayMethod } from '../contracts'
-import { SpritzPayV2 } from '../contracts/types'
+import { getSpritzContract, SpritzPayMethod } from '../contracts-updated'
+import { SpritzPayV3 } from '../contracts-updated/types'
 import { SupportedNetwork } from '../networks'
-import { PayWithV2SwapArgsResult, UniswapV2Quoter } from '../quotes/uniswap/uniswapV2Quoter'
-import { PayWithV3SwapArgsResult, UniswapV3Quoter } from '../quotes/uniswapv3'
+import { UniswapV2Quoter } from '../quotes-updated/uniswap/uniswapV2Quoter'
+import { PayWithNativeSwapArgsResult, PayWithSwapArgsResult, UniswapV3Quoter } from '../quotes-updated/uniswapv3'
 import { isAcceptedPaymentToken } from '../supportedTokens'
 import { isV3SwapNetwork } from '../swaps'
-import { getPaymentToken } from '../tokens'
+import { getPaymentToken, isNativeAddress } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
 
 export type PayWithTokenArgsResult = {
-  args: Parameters<SpritzPayV2['functions']['payWithToken']>
+  args: Parameters<SpritzPayV3['functions']['payWithToken']>
   data: { tokenAddress: string; amount: ethers.BigNumber; reference: string }
   additionalHops: number
   requiredTokenInput: ethers.BigNumber
 }
 
 export type ConditionalSwapArgs<T extends 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'> =
-  T extends 'payWithV3Swap'
-    ? Promise<PayWithV3SwapArgsResult>
+  T extends 'payWithNativeSwap'
+    ? Promise<PayWithNativeSwapArgsResult>
     : T extends 'payWithSwap'
-    ? Promise<PayWithV2SwapArgsResult>
+    ? Promise<PayWithSwapArgsResult>
     : Promise<PayWithTokenArgsResult>
 
 interface SpritzPaySDKConstructorArgs {
@@ -31,7 +31,7 @@ interface SpritzPaySDKConstructorArgs {
   staging?: boolean
 }
 
-export class SpritzPaySDK {
+export class SpritzPayV3SDK {
   private network: SupportedNetwork
   provider: ethers.providers.BaseProvider
   staging: boolean
@@ -54,7 +54,7 @@ export class SpritzPaySDK {
 
   public getContractMethodForPayment(tokenAddress: string): SpritzPayMethod {
     if (isAcceptedPaymentToken(tokenAddress, this.network)) return 'payWithToken'
-    if (isV3SwapNetwork(this.network)) return 'payWithV3Swap'
+    if (isNativeAddress(tokenAddress)) return 'payWithNativeSwap'
     return 'payWithSwap'
   }
 
@@ -74,7 +74,7 @@ export class SpritzPaySDK {
     }
   }
 
-  public getPaymentArgs<Method extends 'payWithV3Swap' | 'payWithSwap' | 'payWithToken'>(
+  public getPaymentArgs<Method extends 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'>(
     method: Method,
     sourceTokenAddress: string,
     fiatAmount: string | number,
@@ -83,15 +83,15 @@ export class SpritzPaySDK {
     slippagePercentage?: number,
   ): ConditionalSwapArgs<Method> {
     if (method === 'payWithSwap')
-      return this.getV2SwapPaymentData(
+      return this.getSwapPaymentData(
         sourceTokenAddress,
         fiatAmount,
         reference,
         currentTime,
         slippagePercentage,
       ) as unknown as ConditionalSwapArgs<Method>
-    if (method === 'payWithV3Swap')
-      return this.getV3SwapPaymentData(
+    if (method === 'payWithNativeSwap')
+      return this.getNativeSwapPaymentData(
         sourceTokenAddress,
         fiatAmount,
         reference,
@@ -101,24 +101,28 @@ export class SpritzPaySDK {
     return this.getTokenPaymentData(sourceTokenAddress, fiatAmount, reference) as unknown as ConditionalSwapArgs<Method>
   }
 
-  public getV2SwapPaymentData(
+  public getSwapPaymentData(
     sourceTokenAddress: string,
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
     slippagePercentage?: number,
   ) {
-    const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
+    const v3 = isV3SwapNetwork(this.network)
+    const Quoter = v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const uniswapQuoter = new Quoter(this.network, this.provider)
     return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime, slippagePercentage)
   }
 
-  public getV3SwapPaymentData(
+  public getNativeSwapPaymentData(
     sourceTokenAddress: string,
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
   ) {
-    const uniswapQuoter = new UniswapV3Quoter(this.network, this.provider)
-    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
+    const v3 = isV3SwapNetwork(this.network)
+    const Quoter = v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const uniswapQuoter = new Quoter(this.network, this.provider)
+    return uniswapQuoter.getPayWithNativeSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
 }

@@ -1,20 +1,42 @@
-import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
-import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
+import { BigNumber, ethers, Overrides } from 'ethers'
 import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
-import { BigNumber, ethers } from 'ethers'
-import { getFullToken, isNativeAddress, toV2Token } from '../../tokens'
-import { SpritzPayV2 } from '../../contracts/types'
+import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
+import { getFullToken, toV2Token } from '../../tokens'
 import { formatPaymentReference } from '../../utils/reference'
-
-export type PayWithV2SwapArgsResult = {
-  args: Parameters<SpritzPayV2['functions']['payWithSwap']>
-  data: { path: string[]; trade: Trade; amountOut: string; amountInMax: string }
-  additionalHops: number
-  requiredTokenInput: BigNumber
-}
+import { PayWithNativeSwapArgs, PayWithSwapArgs, SwapQuote } from '../types'
+import { PayWithNativeSwapArgsResult, PayWithSwapArgsResult } from '../uniswapv3'
+import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
 
 const slippageTolerance = new Percent('50', '10000') // 50 bips, or 0.50%
 const slippageToleranceOnePercent = new Percent('100', '10000') // 100 bips, or 1%
+
+const mergeBytesString = (string: string[]) => {
+  return string.reduce((acc, curr, index) => {
+    if (index === 0) return curr
+    return `${acc}${curr.substring(2)}`
+  }, '')
+}
+
+const toSwapQuote = (bestTrade: {
+  trade: Trade
+  amountInMax: string
+  amountOut: string
+  inputTokenAddress: string
+  path: string
+  outputTokenAddress: string
+  deadline: number
+  additionalHops: number
+}): SwapQuote => {
+  return {
+    path: bestTrade.path,
+    sourceTokenAddress: bestTrade.inputTokenAddress,
+    sourceTokenAmountMax: bestTrade.amountInMax,
+    paymentTokenAddress: bestTrade.outputTokenAddress,
+    paymentTokenAmount: bestTrade.amountOut,
+    deadline: bestTrade.deadline,
+    additionalHops: bestTrade.additionalHops,
+  }
+}
 
 export class UniswapV2Quoter {
   public slippage: Percent = slippageTolerance
@@ -31,37 +53,62 @@ export class UniswapV2Quoter {
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
     slippagePercentage?: number,
-  ): Promise<PayWithV2SwapArgsResult> {
+  ): Promise<PayWithSwapArgsResult> {
     if (slippagePercentage && slippagePercentage > 0) {
       this.slippage = new Percent(`${slippagePercentage * 100}`, '10000')
     }
-    const isNativeSwap = isNativeAddress(tokenAddress)
 
     const token = await getFullToken(tokenAddress, this.network, this.provider)
+    const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount, currentTime)
 
-    const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount)
-
-    const args: Parameters<SpritzPayV2['functions']['payWithSwap']> = [
-      data.path,
-      data.amountInMax,
-      data.amountOut,
+    const args: PayWithSwapArgs = [
+      data.sourceTokenAddress,
+      data.sourceTokenAmountMax,
+      data.paymentTokenAmount,
       formatPaymentReference(reference),
-      currentTime + 1800, // +30 minutes
+      data.deadline,
+      data.path,
     ]
-
-    if (isNativeSwap) {
-      args.push({
-        value: args[1],
-      })
-    }
-
-    const additionalHops = data.path.length > 2 ? data.path.length - 2 : 0
 
     return {
       args,
       data,
-      additionalHops,
-      requiredTokenInput: BigNumber.from(data.amountInMax),
+      additionalHops: data.additionalHops,
+      requiredTokenInput: BigNumber.from(data.sourceTokenAmountMax),
+    }
+  }
+
+  async getPayWithNativeSwapArgs(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+    currentTime = Math.floor(Date.now() / 1000),
+    slippagePercentage?: number,
+  ): Promise<PayWithNativeSwapArgsResult> {
+    if (slippagePercentage && slippagePercentage > 0) {
+      this.slippage = new Percent(`${slippagePercentage * 100}`, '10000')
+    }
+
+    const token = await getFullToken(tokenAddress, this.network, this.provider)
+
+    const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount, currentTime)
+
+    const args: PayWithNativeSwapArgs = [
+      data.sourceTokenAmountMax,
+      data.paymentTokenAmount,
+      formatPaymentReference(reference),
+      data.deadline, // +30 minutes
+      data.path,
+      {
+        value: data.sourceTokenAmountMax,
+      } as Overrides,
+    ]
+
+    return {
+      args,
+      data,
+      additionalHops: data.additionalHops,
+      requiredTokenInput: BigNumber.from(data.sourceTokenAmountMax),
     }
   }
 
@@ -118,7 +165,7 @@ export class UniswapV2Quoter {
     return bestTrade
   }
 
-  getBestStablecoinTradeForToken = async (tokenA: Token, fiatAmount: number | string) => {
+  getBestStablecoinTradeForToken = async (tokenA: Token, fiatAmount: number | string, currentTime: number) => {
     //get accepted stablecoins
     const stablecoins = ACCEPTED_SWAP_OUTPUTS[this.network].map(
       (t) => new Token(NETWORK_TO_CHAIN_ID[this.network], t.address, t.decimals, t.symbol, t.symbol),
@@ -138,11 +185,21 @@ export class UniswapV2Quoter {
       const amountInMax = trade.maximumAmountIn(this.slippage).raw.toString()
       const amountOut = trade.outputAmount.raw.toString()
       const path = trade.route.path.map((t) => t.address)
+      const inputTokenAddress = path[0]
+      const outputTokenAddress = path[path.length - 1]
+      const encodedPath = mergeBytesString(path)
+
+      const additionalHops = path.length > 2 ? path.length - 2 : 0
+
       return {
         trade,
         amountInMax,
         amountOut,
-        path,
+        inputTokenAddress,
+        path: encodedPath,
+        outputTokenAddress,
+        deadline: currentTime + 1800, // 30 minutes
+        additionalHops,
       }
     })
     const bestTrade = tradesWithArgs.sort((a, b) => (a.amountInMax > b.amountInMax ? 1 : -1))[0]
@@ -153,6 +210,6 @@ export class UniswapV2Quoter {
       }`,
     )
 
-    return bestTrade
+    return toSwapQuote(bestTrade)
   }
 }
