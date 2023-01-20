@@ -18,11 +18,12 @@ export type PayWithTokenArgsResult = {
   requiredTokenInput: ethers.BigNumber
 }
 
-export type ConditionalSwapArgs<T extends 'payWithV3Swap' | 'payWithSwap' | 'payWithToken'> = T extends 'payWithV3Swap'
-  ? Promise<PayWithV3SwapArgsResult>
-  : T extends 'payWithSwap'
-  ? Promise<PayWithV2SwapArgsResult>
-  : Promise<PayWithTokenArgsResult>
+export type ConditionalSwapArgs<T extends 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'> =
+  T extends 'payWithV3Swap'
+    ? Promise<PayWithV3SwapArgsResult>
+    : T extends 'payWithSwap'
+    ? Promise<PayWithV2SwapArgsResult>
+    : Promise<PayWithTokenArgsResult>
 
 interface SpritzPaySDKConstructorArgs {
   network: SupportedNetwork
