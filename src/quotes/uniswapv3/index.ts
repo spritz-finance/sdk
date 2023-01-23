@@ -5,7 +5,7 @@ import { BigNumber, ethers } from 'ethers'
 import { SpritzPayV2 } from '../../contracts/types'
 import { UniswapQuoteError } from '../../errors'
 import { getChainId, Network, SupportedNetwork } from '../../networks'
-import { NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
+import { isNonPaymentStablecoin, NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
 import { acceptedOutputTokenFor, getFullToken, isNativeAddress } from '../../tokens'
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { formatPaymentReference } from '../../utils/reference'
@@ -35,7 +35,8 @@ export type PaymentQuote = {
   additionalHops: number
 }
 
-const SLIPPAGE_TOLERANCE = new Percent(100, 10_000)
+const SLIPPAGE_TOLERANCE = new Percent(50, 10_000) // 0.5%
+const SLIPPAGE_TOLERANCE_STABLECOIN = new Percent(25, 10_000) // 0.25%
 
 export class UniswapV3Quoter {
   private router: AlphaRouter
@@ -110,10 +111,14 @@ export class UniswapV3Quoter {
 
     const { path, additionalHops } = getSwapPath(trade.routes[0] as unknown as V3Route)
 
+    const slippage = isNonPaymentStablecoin(inputToken.address, this.network)
+      ? SLIPPAGE_TOLERANCE_STABLECOIN
+      : SLIPPAGE_TOLERANCE
+
     return {
       path,
       sourceTokenAddress: inputToken.address,
-      sourceTokenAmountMax: trade.maximumAmountIn(SLIPPAGE_TOLERANCE).quotient.toString(),
+      sourceTokenAmountMax: trade.maximumAmountIn(slippage).quotient.toString(),
       paymentTokenAddress: this.paymentToken.address,
       paymentTokenAmount: amountOut,
       deadline,
