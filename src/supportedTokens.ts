@@ -26,7 +26,7 @@ export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31
 
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
-  [Network.Binance]: [BUSD_BSC],
+  [Network.Binance]: [USDC_BSC],
   [Network.Ethereum]: [USDC_MAINNET],
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
@@ -35,7 +35,7 @@ export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
-  [Network.Binance]: [BUSD_BSC],
+  [Network.Binance]: [USDC_BSC],
   [Network.Ethereum]: [USDC_MAINNET],
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
