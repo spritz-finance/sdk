@@ -19,10 +19,15 @@ export const DAI_MAINNET = { address: '0x6B175474E89094C44Da98b954EedeAC495271d0
 export const BUSD_MAINNET = { address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53', decimals: 18, symbol: 'BUSD' }
 
 export const USDC_ARBITRUM = { address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', decimals: 6, symbol: 'USDC' }
+export const USDT_ARBITRUM = { address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', decimals: 6, symbol: 'USDT' }
+export const DAI_ARBITRUM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18, symbol: 'DAI' }
 
 export const USDC_AVALANCHE = { address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', decimals: 6, symbol: 'USDC' }
+export const USDT_AVALANCHE = { address: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118', decimals: 6, symbol: 'USDT' }
 
 export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6, symbol: 'USDC' }
+export const USDT_OPTIMISM = { address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6, symbol: 'USDT' }
+export const DAI_OPTIMISM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18, symbol: 'DAI' }
 
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
@@ -40,6 +45,16 @@ export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
   [Network.Avalanche]: [USDC_AVALANCHE],
+}
+
+// for determining a lower slippage threshold in USDC swap
+export const NON_PAYMENT_STABLECOINS: Record<SupportedNetwork, TokenData[]> = {
+  [Network.Polygon]: [USDT_POLYGON, DAI_POLYGON],
+  [Network.Binance]: [BUSD_BSC, USDT_BSC],
+  [Network.Ethereum]: [USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
+  [Network.Arbitrum]: [USDT_ARBITRUM, DAI_ARBITRUM],
+  [Network.Optimism]: [USDT_OPTIMISM, DAI_OPTIMISM],
+  [Network.Avalanche]: [USDT_AVALANCHE],
 }
 
 export const BASE_TOKENS: { [chainId: number]: Token[] } = {
@@ -80,5 +95,10 @@ export const BASE_TOKENS: { [chainId: number]: Token[] } = {
 
 export const isAcceptedPaymentToken = (tokenAddress: string, network: SupportedNetwork) => {
   const addresses = ACCEPTED_PAYMENT_TOKENS[network].map((token) => token.address.toLowerCase())
+  return addresses.includes(tokenAddress.toLowerCase())
+}
+
+export const isNonPaymentStablecoin = (tokenAddress: string, network: SupportedNetwork) => {
+  const addresses = NON_PAYMENT_STABLECOINS[network].map((token) => token.address.toLowerCase())
   return addresses.includes(tokenAddress.toLowerCase())
 }
