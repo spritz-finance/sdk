@@ -11,19 +11,18 @@ import { getPaymentToken, isNativeAddress } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
 
-export type PayWithTokenArgsResult = {
+type PayWithTokenArgsResult = {
   args: Parameters<SpritzPayV3['functions']['payWithToken']>
   data: { tokenAddress: string; amount: ethers.BigNumber; reference: string }
   additionalHops: number
   requiredTokenInput: ethers.BigNumber
 }
 
-export type ConditionalSwapArgs<T extends 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'> =
-  T extends 'payWithNativeSwap'
-    ? Promise<PayWithNativeSwapArgsResult>
-    : T extends 'payWithSwap'
-    ? Promise<PayWithSwapArgsResult>
-    : Promise<PayWithTokenArgsResult>
+type ConditionalSwapArgs<T extends 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'> = T extends 'payWithNativeSwap'
+  ? Promise<PayWithNativeSwapArgsResult>
+  : T extends 'payWithSwap'
+  ? Promise<PayWithSwapArgsResult>
+  : Promise<PayWithTokenArgsResult>
 
 interface SpritzPaySDKConstructorArgs {
   network: SupportedNetwork
