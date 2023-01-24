@@ -1,5 +1,5 @@
 import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } from './uniswap-v2-sdk'
-import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
+import { ACCEPTED_SWAP_OUTPUTS, isNonPaymentStablecoin } from '../../supportedTokens'
 import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { BigNumber, ethers } from 'ethers'
 import { getFullToken, isNativeAddress, toV2Token } from '../../tokens'
@@ -15,6 +15,7 @@ export type PayWithV2SwapArgsResult = {
 
 const slippageTolerance = new Percent('50', '10000') // 50 bips, or 0.50%
 const slippageToleranceOnePercent = new Percent('100', '10000') // 100 bips, or 1%
+const slippageToleranceStablecoin = new Percent('25', '10000') // 25 bips, or 0.25%
 
 export class UniswapV2Quoter {
   public slippage: Percent = slippageTolerance
@@ -35,6 +36,10 @@ export class UniswapV2Quoter {
     if (slippagePercentage && slippagePercentage > 0) {
       this.slippage = new Percent(`${slippagePercentage * 100}`, '10000')
     }
+    if (isNonPaymentStablecoin(tokenAddress, this.network)) {
+      this.slippage = slippageToleranceStablecoin
+    }
+
     const isNativeSwap = isNativeAddress(tokenAddress)
 
     const token = await getFullToken(tokenAddress, this.network, this.provider)
