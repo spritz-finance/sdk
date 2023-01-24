@@ -4,6 +4,7 @@ import { AlphaRouter, V3Route } from '@uniswap/smart-order-router'
 import { BigNumber, ethers, Overrides } from 'ethers'
 import { UniswapQuoteError } from '../../errors'
 import { getChainId, SupportedNetwork } from '../../networks'
+import { isNonPaymentStablecoin } from '../../supportedTokens'
 import { acceptedOutputTokenFor, getFullToken } from '../../tokens'
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { formatPaymentReference } from '../../utils/reference'
@@ -31,7 +32,8 @@ type SwapRouteProps = {
   currencyOut: CurrencyAmount<Currency>
 }
 
-const SLIPPAGE_TOLERANCE = new Percent(100, 10_000)
+const SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
+const SLIPPAGE_TOLERANCE_STABLECOIN = new Percent(25, 10_000) // 0.25%
 
 export class UniswapV3Quoter {
   private router: AlphaRouter
@@ -125,10 +127,14 @@ export class UniswapV3Quoter {
 
     const { path, additionalHops } = getSwapPath(trade.routes[0] as unknown as V3Route)
 
+    const slippage = isNonPaymentStablecoin(inputToken.address, this.network)
+      ? SLIPPAGE_TOLERANCE_STABLECOIN
+      : SLIPPAGE_TOLERANCE
+
     return {
       path,
       sourceTokenAddress: inputToken.address,
-      sourceTokenAmountMax: trade.maximumAmountIn(SLIPPAGE_TOLERANCE).quotient.toString(),
+      sourceTokenAmountMax: trade.maximumAmountIn(slippage).quotient.toString(),
       paymentTokenAddress: this.paymentToken.address,
       paymentTokenAmount: amountOut,
       deadline,

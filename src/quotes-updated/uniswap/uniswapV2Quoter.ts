@@ -9,6 +9,7 @@ import { Fetcher, Pair, Percent, Route, Token, TokenAmount, Trade, TradeType } f
 
 const slippageTolerance = new Percent('50', '10000') // 50 bips, or 0.50%
 const slippageToleranceOnePercent = new Percent('100', '10000') // 100 bips, or 1%
+const slippageToleranceStablecoin = new Percent('25', '10000') // 25 bips, or 0.25%
 
 const mergeBytesString = (string: string[]) => {
   return string.reduce((acc, curr, index) => {

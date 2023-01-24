@@ -31,11 +31,7 @@ export class UniswapV2Quoter {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
-    slippagePercentage?: number,
   ): Promise<PayWithV2SwapArgsResult> {
-    if (slippagePercentage && slippagePercentage > 0) {
-      this.slippage = new Percent(`${slippagePercentage * 100}`, '10000')
-    }
     if (isNonPaymentStablecoin(tokenAddress, this.network)) {
       this.slippage = slippageToleranceStablecoin
     }

@@ -79,7 +79,6 @@ export class SpritzPaySDK {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
-    slippagePercentage?: number,
   ): ConditionalSwapArgs<Method> {
     if (method === 'payWithSwap')
       return this.getV2SwapPaymentData(
@@ -87,7 +86,6 @@ export class SpritzPaySDK {
         fiatAmount,
         reference,
         currentTime,
-        slippagePercentage,
       ) as unknown as ConditionalSwapArgs<Method>
     if (method === 'payWithV3Swap')
       return this.getV3SwapPaymentData(
@@ -105,10 +103,9 @@ export class SpritzPaySDK {
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
-    slippagePercentage?: number,
   ) {
     const uniswapQuoter = new UniswapV2Quoter(this.network, this.provider)
-    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime, slippagePercentage)
+    return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
 
   public getV3SwapPaymentData(
