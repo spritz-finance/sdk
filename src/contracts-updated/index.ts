@@ -1,12 +1,18 @@
 import { Contract, ethers } from 'ethers'
-import { getContractAddress } from '../addresses'
+import { getContractAddress, getSmartPayContractAddress } from '../addresses'
 import { Network, SupportedNetwork } from '../networks'
-import { SpritzPay_V3_ABI } from './abi'
-import { SpritzPayV1 as Contract_V1, SpritzPayV2 as Contract_V2, SpritzPayV3 as Contract_V3 } from './types'
+import { SpritzPay_V3_ABI, SpritzSmartPay_ABI } from './abi'
+import {
+  SpritzPayV1 as Contract_V1,
+  SpritzPayV2 as Contract_V2,
+  SpritzPayV3 as Contract_V3,
+  SpritzSmartPay as SpritzSmartPayContract,
+} from './types'
 
 export type SpritzPay_V1 = Contract_V1
 export type SpritzPay_V2 = Contract_V2
 export type SpritzPay_V3 = Contract_V3
+export type SpritzSmartPay = SpritzSmartPayContract
 
 const SpritzInterface = new ethers.utils.Interface(SpritzPay_V3_ABI)
 const spritzContract = (address: string) => new Contract(address, SpritzInterface) as SpritzPay_V3
@@ -16,6 +22,15 @@ export const getSpritzContract = (network: SupportedNetwork = Network.Polygon, s
   return spritzContract(address)
 }
 
+const SmartPayInterface = new ethers.utils.Interface(SpritzSmartPay_ABI)
+const smartPayContract = (address: string) => new Contract(address, SmartPayInterface) as SpritzSmartPay
+
+export const getSmartPayContract = (network: SupportedNetwork = Network.Polygon, staging = false) => {
+  const address = getSmartPayContractAddress(network, staging)
+  return smartPayContract(address)
+}
+
 export type SpritzPayMethod = 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'
 
 export { SpritzPayV3__factory } from './types'
+export { SpritzSmartPay__factory } from './types'

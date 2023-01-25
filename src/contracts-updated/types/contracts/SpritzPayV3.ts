@@ -42,7 +42,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "getRoleMember(bytes32,uint256)": FunctionFragment;
     "getRoleMemberCount(bytes32)": FunctionFragment;
-    "grantPaymentDelegate(address)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "initialize(address,address,address,address,address[])": FunctionFragment;
@@ -54,7 +53,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
     "paymentRecipient()": FunctionFragment;
     "removePaymentToken(address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
-    "revokePaymentDelegate(address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setPaymentRecipient(address)": FunctionFragment;
     "setSwapModule(address)": FunctionFragment;
@@ -77,7 +75,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
       | "getRoleAdmin"
       | "getRoleMember"
       | "getRoleMemberCount"
-      | "grantPaymentDelegate"
       | "grantRole"
       | "hasRole"
       | "initialize"
@@ -89,7 +86,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
       | "paymentRecipient"
       | "removePaymentToken"
       | "renounceRole"
-      | "revokePaymentDelegate"
       | "revokeRole"
       | "setPaymentRecipient"
       | "setSwapModule"
@@ -154,10 +150,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "grantPaymentDelegate",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "grantRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
@@ -217,10 +209,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "renounceRole",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "revokePaymentDelegate",
-    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "revokeRole",
@@ -292,10 +280,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
     functionFragment: "getRoleMemberCount",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "grantPaymentDelegate",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
@@ -323,10 +307,6 @@ export interface SpritzPayV3Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "revokePaymentDelegate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
@@ -558,11 +538,6 @@ export interface SpritzPayV3 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    grantPaymentDelegate(
-      delegate: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     grantRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -626,11 +601,6 @@ export interface SpritzPayV3 extends BaseContract {
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    revokePaymentDelegate(
-      delegate: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -714,11 +684,6 @@ export interface SpritzPayV3 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  grantPaymentDelegate(
-    delegate: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   grantRole(
     role: PromiseOrValue<BytesLike>,
     account: PromiseOrValue<string>,
@@ -782,11 +747,6 @@ export interface SpritzPayV3 extends BaseContract {
   renounceRole(
     role: PromiseOrValue<BytesLike>,
     account: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  revokePaymentDelegate(
-    delegate: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -870,11 +830,6 @@ export interface SpritzPayV3 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    grantPaymentDelegate(
-      delegate: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     grantRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -936,11 +891,6 @@ export interface SpritzPayV3 extends BaseContract {
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    revokePaymentDelegate(
-      delegate: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1103,11 +1053,6 @@ export interface SpritzPayV3 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    grantPaymentDelegate(
-      delegate: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     grantRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -1171,11 +1116,6 @@ export interface SpritzPayV3 extends BaseContract {
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    revokePaymentDelegate(
-      delegate: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1266,11 +1206,6 @@ export interface SpritzPayV3 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    grantPaymentDelegate(
-      delegate: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     grantRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
@@ -1334,11 +1269,6 @@ export interface SpritzPayV3 extends BaseContract {
     renounceRole(
       role: PromiseOrValue<BytesLike>,
       account: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    revokePaymentDelegate(
-      delegate: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

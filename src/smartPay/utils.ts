@@ -1,28 +1,10 @@
-import { TypedDataDomain, TypedDataField } from 'ethers'
+import { ethers, TypedDataDomain, TypedDataField } from 'ethers'
+import { getSmartPayContractAddress } from '../addresses'
 import { getChainId, SupportedNetwork } from '../networks'
+import { roundNumber } from '../utils/format'
+import { SignatureParams } from './types'
 
-export enum SubscriptionType {
-  DIRECT,
-  SWAP,
-}
-
-export enum Cadence {
-  Monthly,
-  Weekly,
-  Daily,
-}
-
-type SubscriptionData = {
-  paymentToken: string
-  paymentAmountMax: string
-  startTime: number
-  totalPayments: number
-  paymentReference: string
-  cadence: Cadence
-  subscriptionType: SubscriptionType
-}
-
-const subscriptionMessageData = (verifyingContract: string, chainId: number, subscriptionData: SubscriptionData) => {
+const subscriptionMessageData = (verifyingContract: string, chainId: number, subscriptionData: SignatureParams) => {
   const subscription = [
     { name: 'paymentToken', type: 'address' },
     { name: 'paymentAmountMax', type: 'uint256' },
@@ -50,12 +32,13 @@ const subscriptionMessageData = (verifyingContract: string, chainId: number, sub
 }
 
 export const getSubscriptionSignatureData = (
-  contractAddress: string,
   network: SupportedNetwork,
-  subscriptionData: SubscriptionData,
+  subscriptionData: SignatureParams,
+  staging: boolean,
 ) => {
   const chainId = getChainId(network)
-  return subscriptionMessageData(contractAddress, chainId, subscriptionData)
+  const contractAddress = getSmartPayContractAddress(network, staging)
+  return subscriptionMessageData(contractAddress.toLowerCase(), chainId, subscriptionData)
 }
 
 export const extractSignatureFromMessage = (signedMessage: string) => {
@@ -69,4 +52,9 @@ export const extractSignatureFromMessage = (signedMessage: string) => {
     s,
     v,
   }
+}
+
+export const fiatAmountToTokenInputMax = (amount: number, feePercentage: number, tokenDecimals: number) => {
+  const usdPaymentAmount = roundNumber(amount * (1 + Math.round(feePercentage) / 100)).toString()
+  return ethers.utils.parseUnits(usdPaymentAmount, tokenDecimals).toString()
 }
