@@ -1,7 +1,7 @@
 import { BigNumber, ethers, Overrides } from 'ethers'
 import { Network, NETWORK_TO_CHAIN_ID, SupportedNetwork } from '../../networks'
 import { ACCEPTED_SWAP_OUTPUTS } from '../../supportedTokens'
-import { getFullToken, toV2Token } from '../../tokens'
+import { getFullToken, toUpdatedV2Token, toV2Token } from '../../tokens'
 import { formatPaymentReference } from '../../utils/reference'
 import { PayWithNativeSwapArgs, PayWithSwapArgs, SwapQuote } from '../types'
 import { PayWithNativeSwapArgsResult, PayWithSwapArgsResult } from '../uniswapv3'
@@ -60,7 +60,7 @@ export class UniswapV2Quoter {
     }
 
     const token = await getFullToken(tokenAddress, this.network, this.provider)
-    const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount, currentTime)
+    const data = await this.getBestStablecoinTradeForToken(toUpdatedV2Token(token), fiatAmount, currentTime)
 
     const args: PayWithSwapArgs = [
       data.sourceTokenAddress,
@@ -92,7 +92,7 @@ export class UniswapV2Quoter {
 
     const token = await getFullToken(tokenAddress, this.network, this.provider)
 
-    const data = await this.getBestStablecoinTradeForToken(toV2Token(token), fiatAmount, currentTime)
+    const data = await this.getBestStablecoinTradeForToken(toUpdatedV2Token(token), fiatAmount, currentTime)
 
     const args: PayWithNativeSwapArgs = [
       data.sourceTokenAmountMax,

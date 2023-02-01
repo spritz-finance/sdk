@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import { UnsupportedPaymentTokenError } from './errors'
 import { getChainId, SupportedNetwork } from './networks'
 import { Token as V2Token } from './quotes/uniswap/uniswap-v2-sdk'
+import { Token as UpdatedV2Token } from './quotes-updated/uniswap/uniswap-v2-sdk'
 import {
   ACCEPTED_PAYMENT_TOKENS,
   ACCEPTED_SWAP_OUTPUTS,
@@ -51,6 +52,8 @@ export const getFullToken = async (
 }
 
 export const toV2Token = (token: Token) => new V2Token(token.chainId, token.address, token.decimals, token.symbol)
+export const toUpdatedV2Token = (token: Token) =>
+  new UpdatedV2Token(token.chainId, token.address, token.decimals, token.symbol)
 
 const tokenFromAddress = async (
   address: string,
