@@ -52,6 +52,7 @@ export const getContractAddress = (network: SupportedNetwork, staging = false) =
 
 // Polygon
 export const SMARTPAY_STAGING_POLYGON_ADDRESS = '0xe4eb1e80aaf7bc8dc16c712561f1fe12dd896fac'
+export const SMARTPAY_PRODUCTION_POLYGON_ADDRESS = '0x496ff741135284433742293bEBc41dD6fA1F0f0C'
 
 const SMARTPAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Polygon]: SMARTPAY_STAGING_POLYGON_ADDRESS,
@@ -62,6 +63,15 @@ const SMARTPAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Avalanche]: '',
 }
 
+const SMARTPAY_CONTRACT_PRODUCTION_ADDRESS: Record<SupportedNetwork, string> = {
+  [Network.Polygon]: SMARTPAY_PRODUCTION_POLYGON_ADDRESS,
+  [Network.Binance]: '',
+  [Network.Ethereum]: '',
+  [Network.Arbitrum]: '',
+  [Network.Optimism]: '',
+  [Network.Avalanche]: '',
+}
+
 export const getSmartPayContractAddress = (network: SupportedNetwork, staging = false) => {
-  return staging ? SMARTPAY_CONTRACT_STAGING_ADDRESS[network] : SMARTPAY_CONTRACT_STAGING_ADDRESS[network]
+  return staging ? SMARTPAY_CONTRACT_STAGING_ADDRESS[network] : SMARTPAY_CONTRACT_PRODUCTION_ADDRESS[network]
 }
