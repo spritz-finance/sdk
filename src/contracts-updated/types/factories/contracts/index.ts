@@ -6,5 +6,6 @@ export * as legacy from "./legacy";
 export * as lib from "./lib";
 export * as swapModules from "./swapModules";
 export * as test from "./test";
+export * as utility from "./utility";
 export { SpritzPayV3__factory } from "./SpritzPayV3__factory";
 export { SpritzSmartPay__factory } from "./SpritzSmartPay__factory";

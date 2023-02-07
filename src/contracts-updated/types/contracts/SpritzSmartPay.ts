@@ -42,6 +42,34 @@ export declare namespace SpritzSmartPay {
     s: string;
   };
 
+  export type SubscriptionParamsStruct = {
+    paymentToken: PromiseOrValue<string>;
+    paymentAmountMax: PromiseOrValue<BigNumberish>;
+    startTime: PromiseOrValue<BigNumberish>;
+    totalPayments: PromiseOrValue<BigNumberish>;
+    paymentReference: PromiseOrValue<BytesLike>;
+    cadence: PromiseOrValue<BigNumberish>;
+    subscriptionType: PromiseOrValue<BigNumberish>;
+  };
+
+  export type SubscriptionParamsStructOutput = [
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    string,
+    number,
+    number
+  ] & {
+    paymentToken: string;
+    paymentAmountMax: BigNumber;
+    startTime: BigNumber;
+    totalPayments: BigNumber;
+    paymentReference: string;
+    cadence: number;
+    subscriptionType: number;
+  };
+
   export type SwapParamsStruct = {
     sourceTokenAmountMax: PromiseOrValue<BigNumberish>;
     paymentTokenAmount: PromiseOrValue<BigNumberish>;
@@ -77,8 +105,9 @@ export interface SpritzSmartPayInterface extends utils.Interface {
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
     "hashSubscription(address,address,uint256,uint256,uint256,bytes32,uint8,uint8)": FunctionFragment;
-    "processSwapPayment(address,address,uint256,uint256,uint256,bytes32,uint8,uint8,(uint256,uint256,uint256,bytes))": FunctionFragment;
-    "processTokenPayment(address,uint256,address,uint256,uint256,uint256,bytes32,uint8,uint8)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
+    "processSwapPayment(address,(address,uint256,uint256,uint256,bytes32,uint8,uint8),(uint256,uint256,uint256,bytes),bytes32)": FunctionFragment;
+    "processTokenPayment(address,uint256,(address,uint256,uint256,uint256,bytes32,uint8,uint8),bytes32)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokePaymentProcessor(address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
@@ -102,6 +131,7 @@ export interface SpritzSmartPayInterface extends utils.Interface {
       | "grantRole"
       | "hasRole"
       | "hashSubscription"
+      | "initialize"
       | "processSwapPayment"
       | "processTokenPayment"
       | "renounceRole"
@@ -192,17 +222,20 @@ export interface SpritzSmartPayInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "processSwapPayment",
+    functionFragment: "initialize",
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      SpritzSmartPay.SwapParamsStruct
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "processSwapPayment",
+    values: [
+      PromiseOrValue<string>,
+      SpritzSmartPay.SubscriptionParamsStruct,
+      SpritzSmartPay.SwapParamsStruct,
+      PromiseOrValue<BytesLike>
     ]
   ): string;
   encodeFunctionData(
@@ -210,13 +243,8 @@ export interface SpritzSmartPayInterface extends utils.Interface {
     values: [
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<string>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      SpritzSmartPay.SubscriptionParamsStruct,
+      PromiseOrValue<BytesLike>
     ]
   ): string;
   encodeFunctionData(
@@ -287,6 +315,7 @@ export interface SpritzSmartPayInterface extends utils.Interface {
     functionFragment: "hashSubscription",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "processSwapPayment",
     data: BytesLike
@@ -315,6 +344,7 @@ export interface SpritzSmartPayInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
+    "Initialized(uint8)": EventFragment;
     "PaymentProcessed(address,bytes32)": EventFragment;
     "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
     "RoleGranted(bytes32,address,address)": EventFragment;
@@ -323,6 +353,7 @@ export interface SpritzSmartPayInterface extends utils.Interface {
     "SubscriptionDeleted(bytes32)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "PaymentProcessed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
@@ -330,6 +361,13 @@ export interface SpritzSmartPayInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "SubscriptionCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubscriptionDeleted"): EventFragment;
 }
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface PaymentProcessedEventObject {
   subscriber: string;
@@ -527,29 +565,26 @@ export interface SpritzSmartPay extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     processSwapPayment(
       subscriber: PromiseOrValue<string>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
       swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     processTokenPayment(
       subscriber: PromiseOrValue<string>,
       paymentAmount: PromiseOrValue<BigNumberish>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmountMax: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -669,29 +704,26 @@ export interface SpritzSmartPay extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  initialize(
+    admin: PromiseOrValue<string>,
+    _spritzPay: PromiseOrValue<string>,
+    paymentBot: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   processSwapPayment(
     subscriber: PromiseOrValue<string>,
-    paymentToken: PromiseOrValue<string>,
-    paymentAmount: PromiseOrValue<BigNumberish>,
-    startTime: PromiseOrValue<BigNumberish>,
-    totalPayments: PromiseOrValue<BigNumberish>,
-    paymentReference: PromiseOrValue<BytesLike>,
-    cadence: PromiseOrValue<BigNumberish>,
-    subscriptionType: PromiseOrValue<BigNumberish>,
+    params: SpritzSmartPay.SubscriptionParamsStruct,
     swapParams: SpritzSmartPay.SwapParamsStruct,
+    externalPaymentReference: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   processTokenPayment(
     subscriber: PromiseOrValue<string>,
     paymentAmount: PromiseOrValue<BigNumberish>,
-    paymentToken: PromiseOrValue<string>,
-    paymentAmountMax: PromiseOrValue<BigNumberish>,
-    startTime: PromiseOrValue<BigNumberish>,
-    totalPayments: PromiseOrValue<BigNumberish>,
-    paymentReference: PromiseOrValue<BytesLike>,
-    cadence: PromiseOrValue<BigNumberish>,
-    subscriptionType: PromiseOrValue<BigNumberish>,
+    params: SpritzSmartPay.SubscriptionParamsStruct,
+    externalPaymentReference: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -811,29 +843,26 @@ export interface SpritzSmartPay extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     processSwapPayment(
       subscriber: PromiseOrValue<string>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
       swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     processTokenPayment(
       subscriber: PromiseOrValue<string>,
       paymentAmount: PromiseOrValue<BigNumberish>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmountMax: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -874,6 +903,9 @@ export interface SpritzSmartPay extends BaseContract {
   };
 
   filters: {
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     "PaymentProcessed(address,bytes32)"(
       subscriber?: PromiseOrValue<string> | null,
       subscriptionId?: PromiseOrValue<BytesLike> | null
@@ -1028,29 +1060,26 @@ export interface SpritzSmartPay extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     processSwapPayment(
       subscriber: PromiseOrValue<string>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
       swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     processTokenPayment(
       subscriber: PromiseOrValue<string>,
       paymentAmount: PromiseOrValue<BigNumberish>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmountMax: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1171,29 +1200,26 @@ export interface SpritzSmartPay extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     processSwapPayment(
       subscriber: PromiseOrValue<string>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
       swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     processTokenPayment(
       subscriber: PromiseOrValue<string>,
       paymentAmount: PromiseOrValue<BigNumberish>,
-      paymentToken: PromiseOrValue<string>,
-      paymentAmountMax: PromiseOrValue<BigNumberish>,
-      startTime: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
-      paymentReference: PromiseOrValue<BytesLike>,
-      cadence: PromiseOrValue<BigNumberish>,
-      subscriptionType: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

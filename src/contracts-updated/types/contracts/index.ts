@@ -8,6 +8,7 @@ import type * as legacy from "./legacy";
 import type * as lib from "./lib";
 import type * as swapModules from "./swapModules";
 import type * as test from "./test";
+import type * as utility from "./utility";
 
 export type { interfaces };
 
@@ -18,5 +19,7 @@ export type { lib };
 export type { swapModules };
 
 export type { test };
+
+export type { utility };
 export type { SpritzPayV3 } from "./SpritzPayV3";
 export type { SpritzSmartPay } from "./SpritzSmartPay";

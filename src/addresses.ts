@@ -45,3 +45,23 @@ const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
 export const getContractAddress = (network: SupportedNetwork, staging = false) => {
   return staging ? SPRITZ_PAY_CONTRACT_STAGING_ADDRESS[network] : SPRITZ_PAY_CONTRACT_ADDRESS[network]
 }
+
+/**
+ * SMARTPAY
+ */
+
+// Polygon
+export const SMARTPAY_STAGING_POLYGON_ADDRESS = '0xe4eb1e80aaf7bc8dc16c712561f1fe12dd896fac'
+
+const SMARTPAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
+  [Network.Polygon]: SMARTPAY_STAGING_POLYGON_ADDRESS,
+  [Network.Binance]: '',
+  [Network.Ethereum]: '',
+  [Network.Arbitrum]: '',
+  [Network.Optimism]: '',
+  [Network.Avalanche]: '',
+}
+
+export const getSmartPayContractAddress = (network: SupportedNetwork, staging = false) => {
+  return staging ? SMARTPAY_CONTRACT_STAGING_ADDRESS[network] : SMARTPAY_CONTRACT_STAGING_ADDRESS[network]
+}

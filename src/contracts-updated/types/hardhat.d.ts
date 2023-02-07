@@ -53,6 +53,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ContextUpgradeable__factory>;
     getContractFactory(
+      name: "EIP712Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.EIP712Upgradeable__factory>;
+    getContractFactory(
       name: "ERC165Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC165Upgradeable__factory>;
@@ -125,13 +129,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ISwapRouter__factory>;
     getContractFactory(
-      name: "ISpritzSwapModule",
+      name: "IAnyswapV4Router",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.ISpritzSwapModule__factory>;
+    ): Promise<Contracts.IAnyswapV4Router__factory>;
     getContractFactory(
       name: "IWETH9",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IWETH9__factory>;
+    getContractFactory(
+      name: "SwapModule",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SwapModule__factory>;
     getContractFactory(
       name: "SpritzPayV1",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -161,13 +169,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SpritzSmartPay__factory>;
     getContractFactory(
-      name: "SpritzV2SwapModule",
+      name: "UniswapV2Module",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SpritzV2SwapModule__factory>;
+    ): Promise<Contracts.UniswapV2Module__factory>;
     getContractFactory(
-      name: "SpritzV3SwapModule",
+      name: "UniswapV3Module",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SpritzV3SwapModule__factory>;
+    ): Promise<Contracts.UniswapV3Module__factory>;
     getContractFactory(
       name: "BytesAddressLibTest",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -184,6 +192,10 @@ declare module "hardhat/types/runtime" {
       name: "WETH9",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.WETH9__factory>;
+    getContractFactory(
+      name: "SpritzBridge",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SpritzBridge__factory>;
 
     getContractAt(
       name: "AccessControlEnumerableUpgradeable",
@@ -235,6 +247,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.ContextUpgradeable>;
+    getContractAt(
+      name: "EIP712Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.EIP712Upgradeable>;
     getContractAt(
       name: "ERC165Upgradeable",
       address: string,
@@ -326,15 +343,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ISwapRouter>;
     getContractAt(
-      name: "ISpritzSwapModule",
+      name: "IAnyswapV4Router",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.ISpritzSwapModule>;
+    ): Promise<Contracts.IAnyswapV4Router>;
     getContractAt(
       name: "IWETH9",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IWETH9>;
+    getContractAt(
+      name: "SwapModule",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SwapModule>;
     getContractAt(
       name: "SpritzPayV1",
       address: string,
@@ -371,15 +393,15 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.SpritzSmartPay>;
     getContractAt(
-      name: "SpritzV2SwapModule",
+      name: "UniswapV2Module",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.SpritzV2SwapModule>;
+    ): Promise<Contracts.UniswapV2Module>;
     getContractAt(
-      name: "SpritzV3SwapModule",
+      name: "UniswapV3Module",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.SpritzV3SwapModule>;
+    ): Promise<Contracts.UniswapV3Module>;
     getContractAt(
       name: "BytesAddressLibTest",
       address: string,
@@ -400,6 +422,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.WETH9>;
+    getContractAt(
+      name: "SpritzBridge",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SpritzBridge>;
 
     // default types
     getContractFactory(
