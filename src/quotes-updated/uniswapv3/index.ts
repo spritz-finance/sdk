@@ -87,7 +87,6 @@ export class UniswapV3Quoter {
 
     const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime)
     const args: PayWithNativeSwapArgs = [
-      data.sourceTokenAmountMax,
       data.paymentTokenAmount,
       formatPaymentReference(reference),
       data.deadline,

@@ -95,7 +95,6 @@ export class UniswapV2Quoter {
     const data = await this.getBestStablecoinTradeForToken(toUpdatedV2Token(token), fiatAmount, currentTime)
 
     const args: PayWithNativeSwapArgs = [
-      data.sourceTokenAmountMax,
       data.paymentTokenAmount,
       formatPaymentReference(reference),
       data.deadline, // +30 minutes
