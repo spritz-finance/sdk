@@ -30,21 +30,21 @@ export const USDT_OPTIMISM = { address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58
 export const DAI_OPTIMISM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18, symbol: 'DAI' }
 
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
-  [Network.Polygon]: [USDC_POLYGON],
-  [Network.Binance]: [USDC_BSC],
-  [Network.Ethereum]: [USDC_MAINNET],
-  [Network.Arbitrum]: [USDC_ARBITRUM],
-  [Network.Optimism]: [USDC_OPTIMISM],
-  [Network.Avalanche]: [USDC_AVALANCHE],
+  [Network.Polygon]: [USDT_POLYGON],
+  [Network.Binance]: [USDT_BSC],
+  [Network.Ethereum]: [USDT_MAINNET],
+  [Network.Arbitrum]: [USDT_ARBITRUM],
+  [Network.Optimism]: [USDT_OPTIMISM],
+  [Network.Avalanche]: [USDT_AVALANCHE],
 }
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
-  [Network.Polygon]: [USDC_POLYGON],
-  [Network.Binance]: [USDC_BSC],
-  [Network.Ethereum]: [USDC_MAINNET],
-  [Network.Arbitrum]: [USDC_ARBITRUM],
-  [Network.Optimism]: [USDC_OPTIMISM],
-  [Network.Avalanche]: [USDC_AVALANCHE],
+  [Network.Polygon]: [USDT_POLYGON],
+  [Network.Binance]: [USDT_BSC],
+  [Network.Ethereum]: [USDT_MAINNET],
+  [Network.Arbitrum]: [USDT_ARBITRUM],
+  [Network.Optimism]: [USDT_OPTIMISM],
+  [Network.Avalanche]: [USDT_AVALANCHE],
 }
 
 // for determining a lower slippage threshold in USDC swap
