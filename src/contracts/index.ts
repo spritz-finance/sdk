@@ -1,5 +1,6 @@
 import { Contract, ethers } from 'ethers'
 import { getContractAddress } from '../addresses'
+import { SpritzPay_V3_ABI } from '../contracts-updated/abi'
 import { Network, SupportedNetwork } from '../networks'
 import { SpritzPay_V2_ABI } from './abi'
 import { SpritzPayV1 as Contract_V1, SpritzPayV2 as Contract_V2 } from './types'
@@ -21,3 +22,6 @@ export type SpritzPayMethod = Exclude<
 >
 
 export { SpritzPayV2__factory } from './types'
+
+export const SpritzV2Interface = SpritzInterface
+export const SpritzV3Interface = new ethers.utils.Interface(SpritzPay_V3_ABI)
