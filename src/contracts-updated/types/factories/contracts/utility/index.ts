@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export { SpritzBridge__factory } from "./SpritzBridge__factory";
+export { SpritzBridgeV2__factory } from './SpritzBridgeV2__factory'

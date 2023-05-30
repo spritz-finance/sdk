@@ -2,3 +2,4 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { SpritzBridge } from "./SpritzBridge";
+export type { SpritzBridgeV2 } from "./SpritzBridgeV2"
