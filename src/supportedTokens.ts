@@ -18,7 +18,7 @@ export const USDT_MAINNET = { address: '0xdAC17F958D2ee523a2206206994597C13D831e
 export const DAI_MAINNET = { address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', decimals: 18, symbol: 'DAI' }
 export const BUSD_MAINNET = { address: '0x4Fabb145d64652a948d72533023f6E7A623C7C53', decimals: 18, symbol: 'BUSD' }
 
-export const USDC_ARBITRUM = { address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', decimals: 6, symbol: 'USDC' }
+export const USDC_ARBITRUM = { address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831', decimals: 6, symbol: 'USDC' }
 export const USDT_ARBITRUM = { address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', decimals: 6, symbol: 'USDT' }
 export const DAI_ARBITRUM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18, symbol: 'DAI' }
 
