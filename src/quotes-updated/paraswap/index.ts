@@ -96,10 +96,11 @@ export class ParaswapQuoter {
     inputToken: Token,
     fiatAmount: FiatValue,
     currentTime: number,
+    swapperAddress?: string,
   ): Promise<SwapQuote> {
     const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount), currentTime)
 
-    const swapModuleAddress = await getSwapModuleAddress(this.network, this.provider, this.staging)
+    const swapModuleAddress = swapperAddress ?? (await getSwapModuleAddress(this.network, this.provider, this.staging))
 
     const maxSlippage = isNonPaymentStablecoin(inputToken.address, this.network)
       ? SLIPPAGE_TOLERANCE_STABLECOIN
@@ -134,5 +135,32 @@ export class ParaswapQuoter {
 
     const deadline = currentTime + 1800 // 30 minutes
     return { amountOut, deadline }
+  }
+
+  public async getPayWithSwapArgsWithSwapper(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+    swapperAddress: string,
+    currentTime = Math.floor(Date.now() / 1000),
+  ): Promise<PayWithSwapArgsResult> {
+    const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
+
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime, swapperAddress)
+    const args: PayWithSwapArgs = [
+      inputToken.address,
+      data.sourceTokenAmountMax,
+      data.paymentTokenAmount,
+      formatPaymentReference(reference),
+      data.deadline,
+      data.path,
+    ]
+
+    return {
+      args,
+      data,
+      additionalHops: data.additionalHops,
+      requiredTokenInput: BigNumber.from(data.sourceTokenAmountMax),
+    }
   }
 }
