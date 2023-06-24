@@ -6,10 +6,11 @@ import { SupportedNetwork } from '../networks'
 import { UniswapV2Quoter } from '../quotes-updated/uniswap/uniswapV2Quoter'
 import { PayWithNativeSwapArgsResult, PayWithSwapArgsResult, UniswapV3Quoter } from '../quotes-updated/uniswapv3'
 import { isAcceptedPaymentToken } from '../supportedTokens'
-import { isV3SwapNetwork } from '../swaps'
+import { isParaswapNetwork, isV3SwapNetwork } from '../swaps'
 import { getPaymentToken, isNativeAddress } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
+import { ParaswapQuoter } from '../quotes-updated/paraswap'
 
 type PayWithTokenArgsResult = {
   args: Parameters<SpritzPayV3['functions']['payWithToken']>
@@ -107,9 +108,11 @@ export class SpritzPayV3SDK {
     currentTime: number,
     slippagePercentage?: number,
   ) {
+    const isParaswap = isParaswapNetwork(this.network, this.staging)
     const v3 = isV3SwapNetwork(this.network)
-    const Quoter = v3 ? UniswapV3Quoter : UniswapV2Quoter
-    const uniswapQuoter = new Quoter(this.network, this.provider)
+
+    const Quoter = isParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
     return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime, slippagePercentage)
   }
 
@@ -119,9 +122,11 @@ export class SpritzPayV3SDK {
     reference: string,
     currentTime: number,
   ) {
+    const isParaswap = isParaswapNetwork(this.network, this.staging)
     const v3 = isV3SwapNetwork(this.network)
-    const Quoter = v3 ? UniswapV3Quoter : UniswapV2Quoter
-    const uniswapQuoter = new Quoter(this.network, this.provider)
+
+    const Quoter = isParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
     return uniswapQuoter.getPayWithNativeSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
 }
