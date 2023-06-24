@@ -129,4 +129,9 @@ export class SpritzPayV3SDK {
     const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
     return uniswapQuoter.getPayWithNativeSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
+
+  public async getParaswapQuote(sourceTokenAddress: string, fiatAmount: string | number, reference: string) {
+    const quoter = new ParaswapQuoter(this.network, this.provider, this.staging)
+    return quoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference)
+  }
 }
