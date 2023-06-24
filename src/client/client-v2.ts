@@ -80,6 +80,7 @@ export class SpritzPayV3SDK {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
+    useParaswap?: boolean,
     slippagePercentage?: number,
   ): ConditionalSwapArgs<Method> {
     if (method === 'payWithSwap')
@@ -88,6 +89,7 @@ export class SpritzPayV3SDK {
         fiatAmount,
         reference,
         currentTime,
+        useParaswap,
         slippagePercentage,
       ) as unknown as ConditionalSwapArgs<Method>
     if (method === 'payWithNativeSwap')
@@ -96,6 +98,8 @@ export class SpritzPayV3SDK {
         fiatAmount,
         reference,
         currentTime,
+        useParaswap,
+        slippagePercentage,
       ) as unknown as ConditionalSwapArgs<Method>
 
     return this.getTokenPaymentData(sourceTokenAddress, fiatAmount, reference) as unknown as ConditionalSwapArgs<Method>
@@ -106,12 +110,15 @@ export class SpritzPayV3SDK {
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
+    useParaswap?: boolean,
     slippagePercentage?: number,
   ) {
     const isParaswap = isParaswapNetwork(this.network, this.staging)
     const v3 = isV3SwapNetwork(this.network)
 
-    const Quoter = isParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const shouldUseParaswap = useParaswap || isParaswap
+
+    const Quoter = shouldUseParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
     const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
     return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime, slippagePercentage)
   }
@@ -121,13 +128,23 @@ export class SpritzPayV3SDK {
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
+    useParaswap?: boolean,
+    slippagePercentage?: number,
   ) {
     const isParaswap = isParaswapNetwork(this.network, this.staging)
     const v3 = isV3SwapNetwork(this.network)
 
-    const Quoter = isParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const shouldUseParaswap = useParaswap || isParaswap
+
+    const Quoter = shouldUseParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
     const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
-    return uniswapQuoter.getPayWithNativeSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
+    return uniswapQuoter.getPayWithNativeSwapArgs(
+      sourceTokenAddress,
+      fiatAmount,
+      reference,
+      currentTime,
+      slippagePercentage,
+    )
   }
 
   public async getParaswapQuote(
