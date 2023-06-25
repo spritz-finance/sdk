@@ -6,10 +6,11 @@ import { SupportedNetwork } from '../networks'
 import { UniswapV2Quoter } from '../quotes-updated/uniswap/uniswapV2Quoter'
 import { PayWithNativeSwapArgsResult, PayWithSwapArgsResult, UniswapV3Quoter } from '../quotes-updated/uniswapv3'
 import { isAcceptedPaymentToken } from '../supportedTokens'
-import { isV3SwapNetwork } from '../swaps'
+import { isParaswapNetwork, isV3SwapNetwork } from '../swaps'
 import { getPaymentToken, isNativeAddress } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
+import { ParaswapQuoter } from '../quotes-updated/paraswap'
 
 type PayWithTokenArgsResult = {
   args: Parameters<SpritzPayV3['functions']['payWithToken']>
@@ -79,6 +80,7 @@ export class SpritzPayV3SDK {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
+    useParaswap?: boolean,
     slippagePercentage?: number,
   ): ConditionalSwapArgs<Method> {
     if (method === 'payWithSwap')
@@ -87,6 +89,7 @@ export class SpritzPayV3SDK {
         fiatAmount,
         reference,
         currentTime,
+        useParaswap,
         slippagePercentage,
       ) as unknown as ConditionalSwapArgs<Method>
     if (method === 'payWithNativeSwap')
@@ -95,6 +98,8 @@ export class SpritzPayV3SDK {
         fiatAmount,
         reference,
         currentTime,
+        useParaswap,
+        slippagePercentage,
       ) as unknown as ConditionalSwapArgs<Method>
 
     return this.getTokenPaymentData(sourceTokenAddress, fiatAmount, reference) as unknown as ConditionalSwapArgs<Method>
@@ -105,11 +110,16 @@ export class SpritzPayV3SDK {
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
+    useParaswap?: boolean,
     slippagePercentage?: number,
   ) {
+    const isParaswap = isParaswapNetwork(this.network, this.staging)
     const v3 = isV3SwapNetwork(this.network)
-    const Quoter = v3 ? UniswapV3Quoter : UniswapV2Quoter
-    const uniswapQuoter = new Quoter(this.network, this.provider)
+
+    const shouldUseParaswap = useParaswap || isParaswap
+
+    const Quoter = shouldUseParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
     return uniswapQuoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime, slippagePercentage)
   }
 
@@ -118,10 +128,32 @@ export class SpritzPayV3SDK {
     fiatAmount: string | number,
     reference: string,
     currentTime: number,
+    useParaswap?: boolean,
+    slippagePercentage?: number,
   ) {
+    const isParaswap = isParaswapNetwork(this.network, this.staging)
     const v3 = isV3SwapNetwork(this.network)
-    const Quoter = v3 ? UniswapV3Quoter : UniswapV2Quoter
-    const uniswapQuoter = new Quoter(this.network, this.provider)
-    return uniswapQuoter.getPayWithNativeSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
+
+    const shouldUseParaswap = useParaswap || isParaswap
+
+    const Quoter = shouldUseParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : UniswapV2Quoter
+    const uniswapQuoter = new Quoter(this.network, this.provider, this.staging)
+    return uniswapQuoter.getPayWithNativeSwapArgs(
+      sourceTokenAddress,
+      fiatAmount,
+      reference,
+      currentTime,
+      slippagePercentage,
+    )
+  }
+
+  public async getParaswapQuote(
+    sourceTokenAddress: string,
+    fiatAmount: string | number,
+    swapper: string,
+    reference: string,
+  ) {
+    const quoter = new ParaswapQuoter(this.network, this.provider, this.staging)
+    return quoter.getPayWithSwapArgsWithSwapper(sourceTokenAddress, fiatAmount, reference, swapper)
   }
 }
