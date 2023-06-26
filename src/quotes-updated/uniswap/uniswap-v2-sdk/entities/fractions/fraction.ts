@@ -1,7 +1,7 @@
 import invariant from 'tiny-invariant'
 import JSBI from 'jsbi'
 import _Decimal from 'decimal.js-light'
-import _Big, { RoundingMode } from 'big.js'
+import _Big from 'big.js'
 import toFormat from 'toformat'
 
 import { BigintIsh, Rounding } from '../../constants'
@@ -14,13 +14,35 @@ const Big = toFormat(_Big)
 const toSignificantRounding = {
   [Rounding.ROUND_DOWN]: Decimal.ROUND_DOWN,
   [Rounding.ROUND_HALF_UP]: Decimal.ROUND_HALF_UP,
-  [Rounding.ROUND_UP]: Decimal.ROUND_UP
+  [Rounding.ROUND_UP]: Decimal.ROUND_UP,
 }
 
 const toFixedRounding = {
   [Rounding.ROUND_DOWN]: RoundingMode.RoundDown,
   [Rounding.ROUND_HALF_UP]: RoundingMode.RoundHalfUp,
-  [Rounding.ROUND_UP]: RoundingMode.RoundUp
+  [Rounding.ROUND_UP]: RoundingMode.RoundUp,
+}
+
+const enum RoundingMode {
+  /**
+   * Rounds towards zero.
+   * I.e. truncate, no rounding.
+   */
+  RoundDown = 0,
+  /**
+   * Rounds towards nearest neighbour.
+   * If equidistant, rounds away from zero.
+   */
+  RoundHalfUp = 1,
+  /**
+   * Rounds towards nearest neighbour.
+   * If equidistant, rounds towards even neighbour.
+   */
+  RoundHalfEven = 2,
+  /**
+   * Rounds away from zero.
+   */
+  RoundUp = 3,
 }
 
 export class Fraction {
@@ -54,9 +76,9 @@ export class Fraction {
     return new Fraction(
       JSBI.add(
         JSBI.multiply(this.numerator, otherParsed.denominator),
-        JSBI.multiply(otherParsed.numerator, this.denominator)
+        JSBI.multiply(otherParsed.numerator, this.denominator),
       ),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      JSBI.multiply(this.denominator, otherParsed.denominator),
     )
   }
 
@@ -68,9 +90,9 @@ export class Fraction {
     return new Fraction(
       JSBI.subtract(
         JSBI.multiply(this.numerator, otherParsed.denominator),
-        JSBI.multiply(otherParsed.numerator, this.denominator)
+        JSBI.multiply(otherParsed.numerator, this.denominator),
       ),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      JSBI.multiply(this.denominator, otherParsed.denominator),
     )
   }
 
@@ -78,7 +100,7 @@ export class Fraction {
     const otherParsed = other instanceof Fraction ? other : new Fraction(parseBigintIsh(other))
     return JSBI.lessThan(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+      JSBI.multiply(otherParsed.numerator, this.denominator),
     )
   }
 
@@ -86,7 +108,7 @@ export class Fraction {
     const otherParsed = other instanceof Fraction ? other : new Fraction(parseBigintIsh(other))
     return JSBI.equal(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+      JSBI.multiply(otherParsed.numerator, this.denominator),
     )
   }
 
@@ -94,7 +116,7 @@ export class Fraction {
     const otherParsed = other instanceof Fraction ? other : new Fraction(parseBigintIsh(other))
     return JSBI.greaterThan(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(otherParsed.numerator, this.denominator)
+      JSBI.multiply(otherParsed.numerator, this.denominator),
     )
   }
 
@@ -102,7 +124,7 @@ export class Fraction {
     const otherParsed = other instanceof Fraction ? other : new Fraction(parseBigintIsh(other))
     return new Fraction(
       JSBI.multiply(this.numerator, otherParsed.numerator),
-      JSBI.multiply(this.denominator, otherParsed.denominator)
+      JSBI.multiply(this.denominator, otherParsed.denominator),
     )
   }
 
@@ -110,14 +132,14 @@ export class Fraction {
     const otherParsed = other instanceof Fraction ? other : new Fraction(parseBigintIsh(other))
     return new Fraction(
       JSBI.multiply(this.numerator, otherParsed.denominator),
-      JSBI.multiply(this.denominator, otherParsed.numerator)
+      JSBI.multiply(this.denominator, otherParsed.numerator),
     )
   }
 
   public toSignificant(
     significantDigits: number,
     format: object = { groupSeparator: '' },
-    rounding: Rounding = Rounding.ROUND_HALF_UP
+    rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
     invariant(Number.isInteger(significantDigits), `${significantDigits} is not an integer.`)
     invariant(significantDigits > 0, `${significantDigits} is not positive.`)
@@ -132,7 +154,7 @@ export class Fraction {
   public toFixed(
     decimalPlaces: number,
     format: object = { groupSeparator: '' },
-    rounding: Rounding = Rounding.ROUND_HALF_UP
+    rounding: Rounding = Rounding.ROUND_HALF_UP,
   ): string {
     invariant(Number.isInteger(decimalPlaces), `${decimalPlaces} is not an integer.`)
     invariant(decimalPlaces >= 0, `${decimalPlaces} is negative.`)

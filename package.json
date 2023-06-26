@@ -1,6 +1,6 @@
 {
   "name": "@spritz-finance/sdk",
-  "version": "0.1.57",
+  "version": "0.1.61",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
   "main": "dist/spritz-sdk.js",
   "module": "dist/spritz-sdk.mjs",
@@ -24,6 +24,8 @@
     "typechain:generate": "yarn typechain --target=ethers-v5 ./src/contracts/**/abi/*.json --out-dir=./src/contracts/types"
   },
   "devDependencies": {
+    "@aave/math-utils": "^1.17.8",
+    "@paraswap/sdk": "^6.2.1",
     "@rollup/plugin-json": "^6.0.0",
     "@typechain/ethers-v5": "^10.1.0",
     "@types/big.js": "^4.0.5",
@@ -47,7 +49,6 @@
     "typescript": "^4.7.4"
   },
   "dependencies": {
-    "@aave/math-utils": "^1.17.8",
     "@ethersproject/providers": "^5.7.2",
     "@uniswap/sdk-core": "^3.1.0",
     "@uniswap/smart-order-router": "^3.0.3",
@@ -57,8 +58,6 @@
     "ethereum-multicall": "^2.15.0",
     "ethers": "^5.7.2",
     "jsbi": "^3.1.1",
-    "paraswap": "^5.2.0",
-    "paraswap-core": "^1.0.2",
     "tiny-invariant": "^1.1.0",
     "tiny-warning": "^1.0.3",
     "toformat": "^2.0.0"

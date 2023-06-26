@@ -13,7 +13,7 @@ export default [
       esbuild({
         target: 'esnext',
         optimizeDeps: {
-          include: [],
+          include: ['@aave/math-utils', 'ethereum-multicall', '@paraswap/sdk'],
         },
         minify: true,
       }),
@@ -22,14 +22,14 @@ export default [
     output: [
       {
         file: `dist/spritz-sdk.js`,
-        format: 'es',
+        format: 'cjs',
       },
       {
         file: `dist/spritz-sdk.mjs`,
         format: 'es',
       },
     ],
-    external: [],
+    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'big.js', 'ethers'],
   }),
   bundle({
     plugins: [dts()],

@@ -1,8 +1,8 @@
-import { BigNumberZeroDecimal } from '@aave/math-utils'
+import mathUtils from '@aave/math-utils'
 import { utils } from 'ethers'
-import { NetworkID, ParaSwap } from 'paraswap'
-import { OptimalRate, SwapSide } from 'paraswap-core'
+import { constructSimpleSDK } from '@paraswap/sdk'
 import { NETWORK_TO_CHAIN_ID, Network } from '../../networks'
+import axios from 'axios'
 
 const PARTNER = 'spritzfinance'
 const MAX_SLIPPAGE = 0.5 // 0.5%
@@ -10,6 +10,67 @@ const MAX_SLIPPAGE = 0.5 // 0.5%
 type SwapRateParams = {
   inputAmount: string
   outputAmount: string
+}
+
+type OptimalSwapExchange<T> = {
+  exchange: string
+  srcAmount: NumberAsString
+  destAmount: NumberAsString
+  percent: number
+  data?: T
+  poolAddresses?: Array<Address>
+}
+
+enum SwapSide {
+  BUY = 'BUY',
+  SELL = 'SELL',
+}
+
+type OptimalRoute = {
+  percent: number
+  swaps: OptimalSwap[]
+}
+type OptimalSwap = {
+  srcToken: Address
+  srcDecimals: number
+  destToken: Address
+  destDecimals: number
+  swapExchanges: OptimalSwapExchange<any>[]
+}
+
+type OptionalRate = {
+  exchange: string
+  srcAmount: NumberAsString
+  destAmount: NumberAsString
+  unit?: NumberAsString
+  data?: any
+}
+
+type OptimalRate = {
+  blockNumber: number
+  network: number
+  srcToken: Address
+  srcDecimals: number
+  srcAmount: NumberAsString
+  srcUSD: NumberAsString
+  destToken: Address
+  destDecimals: number
+  destAmount: NumberAsString
+  destUSD: NumberAsString
+  bestRoute: OptimalRoute[]
+  gasCostUSD: NumberAsString
+  gasCost: NumberAsString
+  others?: OptionalRate[]
+  side: SwapSide
+  contractMethod: string
+  tokenTransferProxy: Address
+  contractAddress: Address
+  maxImpact?: number
+  maxUSDImpact?: number
+  maxImpactReached?: boolean
+  partner?: string
+  partnerFee: number
+  hmac: string
 }
 
 export type SwapTransactionParams = SwapRateParams & {
@@ -61,7 +122,8 @@ interface Swapper {
 }
 
 const ExactOutSwapper = (network: Network) => {
-  const paraswap = new ParaSwap(NETWORK_TO_CHAIN_ID[network] as NetworkID)
+  const paraswap = constructSimpleSDK({ chainId: NETWORK_TO_CHAIN_ID[network], axios })
+  // const paraswap = new Paraswap.ParaSwap( as Paraswap.NetworkID)
 
   const getRate: Swapper['getRate'] = async ({
     srcToken,
@@ -71,20 +133,16 @@ const ExactOutSwapper = (network: Network) => {
     amount,
     userAddress,
   }) => {
-    const priceRouteOrError = await paraswap.getRate(
+    const priceRouteOrError = await paraswap.swap.getRate({
       srcToken,
       destToken,
       amount,
       userAddress,
-      SwapSide.BUY,
-      { partner: PARTNER },
+      side: SwapSide.BUY,
+      options: { partner: PARTNER },
       srcDecimals,
       destDecimals,
-    )
-
-    if ('message' in priceRouteOrError) {
-      throw new Error(priceRouteOrError.message)
-    }
+    })
 
     return priceRouteOrError
   }
@@ -99,32 +157,26 @@ const ExactOutSwapper = (network: Network) => {
     maxSlippage,
     deadline,
   }) => {
-    const srcAmountWithSlippage = new BigNumberZeroDecimal(priceRoute.srcAmount)
+    const srcAmountWithSlippage = new mathUtils.BigNumberZeroDecimal(priceRoute.srcAmount)
       .multipliedBy(100 + maxSlippage)
       .dividedBy(100)
       .toFixed(0)
 
-    const transactionRequestOrError = await paraswap.buildTx(
-      srcToken,
-      destToken,
-      srcAmountWithSlippage,
-      priceRoute.destAmount,
-      priceRoute,
-      user,
-      PARTNER,
-      undefined,
-      undefined,
-      undefined,
+    const transactionRequestOrError = await paraswap.swap.buildTx(
+      {
+        srcToken,
+        destToken,
+        srcAmount: srcAmountWithSlippage,
+        destAmount: priceRoute.destAmount,
+        priceRoute,
+        userAddress: user,
+        partner: PARTNER,
+        srcDecimals,
+        destDecimals,
+        deadline: deadline.toString(),
+      },
       { ignoreChecks: true },
-      srcDecimals,
-      destDecimals,
-      undefined,
-      deadline.toString(),
     )
-
-    if ('message' in transactionRequestOrError) {
-      throw new Error(transactionRequestOrError.message)
-    }
 
     const callDataEncoded = utils.defaultAbiCoder.encode(
       ['bytes', 'address', 'address', 'address'],
