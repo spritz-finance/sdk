@@ -1,5 +1,4 @@
 import { Token } from '@uniswap/sdk-core'
-import { Erc20__factory } from '@uniswap/smart-order-router/build/main/types/other/factories/Erc20__factory'
 import { ethers } from 'ethers'
 import { UnsupportedPaymentTokenError } from './errors'
 import { getChainId, SupportedNetwork } from './networks'
@@ -11,6 +10,7 @@ import {
   USDC_POLYGON,
 } from './supportedTokens'
 import { getWrappedNativeToken } from './wrappedNativeTokens'
+import { ERC20__factory } from './contracts/types'
 
 export const isNativeAddress = (address: string) => [NATIVE_ZERO_ADDRESS, NATIVE_ADDRESS_OTHER].includes(address)
 
@@ -60,7 +60,7 @@ const tokenFromAddress = async (
     return getWrappedNativeToken(network)
   }
 
-  const contract = Erc20__factory.connect(address, provider)
+  const contract = ERC20__factory.connect(address, provider)
 
   const [decimals, symbol, name] = await Promise.all([contract.decimals(), contract.symbol(), contract.name()])
 

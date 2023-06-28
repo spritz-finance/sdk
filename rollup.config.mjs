@@ -29,7 +29,7 @@ export default [
         format: 'es',
       },
     ],
-    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'ethers'],
+    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'ethers', 'axios'],
   }),
   bundle({
     plugins: [dts()],
