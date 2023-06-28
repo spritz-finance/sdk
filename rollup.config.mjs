@@ -13,7 +13,7 @@ export default [
       esbuild({
         target: 'esnext',
         optimizeDeps: {
-          include: ['@aave/math-utils', 'ethereum-multicall', '@paraswap/sdk'],
+          include: ['@aave/math-utils', '@paraswap/sdk'],
         },
         minify: true,
       }),
@@ -29,7 +29,7 @@ export default [
         format: 'es',
       },
     ],
-    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'big.js', 'ethers'],
+    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'ethers'],
   }),
   bundle({
     plugins: [dts()],

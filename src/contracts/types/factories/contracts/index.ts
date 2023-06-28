@@ -2,9 +2,10 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as interfaces from "./interfaces";
+export * as legacy from "./legacy";
 export * as lib from "./lib";
+export * as swapModules from "./swapModules";
 export * as test from "./test";
-export { SmartPay__factory } from "./SmartPay__factory";
-export { SpritzPayV1__factory } from "./SpritzPayV1__factory";
-export { SpritzPayV2__factory } from "./SpritzPayV2__factory";
+export * as utility from "./utility";
+export { SpritzPayV3__factory } from "./SpritzPayV3__factory";
 export { SpritzSmartPay__factory } from "./SpritzSmartPay__factory";

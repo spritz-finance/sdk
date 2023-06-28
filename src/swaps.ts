@@ -1,12 +1,11 @@
 import { ethers } from 'ethers'
 import { Network, SupportedNetwork } from './networks'
-import { SpritzPayV3__factory } from './contracts-updated'
+import { SpritzPayV3__factory } from './contracts'
 import { getContractAddress } from './addresses'
 
-const V3_SWAP_NETWORKS = [Network.Ethereum, Network.Arbitrum, Network.Optimism]
+const V3_SWAP_NETWORKS = [Network.Ethereum]
 
 export const isV3SwapNetwork = (network: Network) => V3_SWAP_NETWORKS.includes(network)
-export const isParaswapNetwork = (network: Network, staging: boolean) => false
 
 export async function getSwapModuleAddress(
   network: SupportedNetwork,

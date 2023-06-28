@@ -3,3 +3,4 @@
 /* eslint-disable */
 export type { SpritzPayStorage } from "./SpritzPayStorage";
 export type { SpritzPayStorageV2 } from "./SpritzPayStorageV2";
+export type { SpritzPayStorageV3 } from "./SpritzPayStorageV3";

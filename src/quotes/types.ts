@@ -1,4 +1,4 @@
-import { SpritzPayV3 } from '../contracts-updated/types'
+import { SpritzPayV3 } from '../contracts/types'
 
 export type PayWithSwapArgs = Parameters<SpritzPayV3['functions']['payWithSwap']>
 export type PayWithNativeSwapArgs = Parameters<SpritzPayV3['functions']['payWithNativeSwap']>

@@ -30,143 +30,255 @@ import type {
 } from "ethers";
 
 export declare namespace SpritzSmartPay {
-  export type SubscriptionStruct = {
-    cadence: PromiseOrValue<BigNumberish>;
-    paymentAmount: PromiseOrValue<BigNumberish>;
-    paymentCount: PromiseOrValue<BigNumberish>;
-    totalPayments: PromiseOrValue<BigNumberish>;
-    owner: PromiseOrValue<string>;
-    paymentToken: PromiseOrValue<string>;
-    startTime: PromiseOrValue<BigNumberish>;
-    lastPaymentTimestamp: PromiseOrValue<BigNumberish>;
-    paymentReference: PromiseOrValue<BytesLike>;
+  export type SignatureStruct = {
+    v: PromiseOrValue<BigNumberish>;
+    r: PromiseOrValue<BytesLike>;
+    s: PromiseOrValue<BytesLike>;
   };
 
-  export type SubscriptionStructOutput = [
-    number,
-    number,
+  export type SignatureStructOutput = [number, string, string] & {
+    v: number;
+    r: string;
+    s: string;
+  };
+
+  export type SubscriptionParamsStruct = {
+    paymentToken: PromiseOrValue<string>;
+    paymentAmountMax: PromiseOrValue<BigNumberish>;
+    startTime: PromiseOrValue<BigNumberish>;
+    totalPayments: PromiseOrValue<BigNumberish>;
+    paymentReference: PromiseOrValue<BytesLike>;
+    cadence: PromiseOrValue<BigNumberish>;
+    subscriptionType: PromiseOrValue<BigNumberish>;
+  };
+
+  export type SubscriptionParamsStructOutput = [
+    string,
+    BigNumber,
     BigNumber,
     BigNumber,
     string,
-    string,
+    number,
+    number
+  ] & {
+    paymentToken: string;
+    paymentAmountMax: BigNumber;
+    startTime: BigNumber;
+    totalPayments: BigNumber;
+    paymentReference: string;
+    cadence: number;
+    subscriptionType: number;
+  };
+
+  export type SwapParamsStruct = {
+    sourceTokenAmountMax: PromiseOrValue<BigNumberish>;
+    paymentTokenAmount: PromiseOrValue<BigNumberish>;
+    deadline: PromiseOrValue<BigNumberish>;
+    swapData: PromiseOrValue<BytesLike>;
+  };
+
+  export type SwapParamsStructOutput = [
+    BigNumber,
     BigNumber,
     BigNumber,
     string
   ] & {
-    cadence: number;
-    paymentAmount: number;
-    paymentCount: BigNumber;
-    totalPayments: BigNumber;
-    owner: string;
-    paymentToken: string;
-    startTime: BigNumber;
-    lastPaymentTimestamp: BigNumber;
-    paymentReference: string;
+    sourceTokenAmountMax: BigNumber;
+    paymentTokenAmount: BigNumber;
+    deadline: BigNumber;
+    swapData: string;
   };
 }
 
 export interface SpritzSmartPayInterface extends utils.Interface {
   functions: {
-    "canChargeSubscription(bytes32)": FunctionFragment;
-    "createSubscription(uint32,uint128,address,uint256,bytes32,uint8)": FunctionFragment;
-    "deactivateSubscription(bytes32)": FunctionFragment;
-    "getActiveUsers()": FunctionFragment;
-    "getSubscription(bytes32)": FunctionFragment;
-    "getUserSubscriptionCount(address)": FunctionFragment;
-    "getUserSubscriptions(address)": FunctionFragment;
-    "owner()": FunctionFragment;
-    "pause()": FunctionFragment;
-    "paused()": FunctionFragment;
-    "processPayment(bytes32)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "subscriptionNonce(address)": FunctionFragment;
+    "DEFAULT_ADMIN_ROLE()": FunctionFragment;
+    "PAYMENT_PROCESSOR_ROLE()": FunctionFragment;
+    "SUBSCRIPTION_TYPEHASH()": FunctionFragment;
+    "createSubscription(address,uint256,uint256,uint256,bytes32,uint8,uint8)": FunctionFragment;
+    "createSubscriptionBySignature(address,address,uint256,uint256,uint256,bytes32,uint8,uint8,(uint8,bytes32,bytes32))": FunctionFragment;
+    "deleteSubscription(bytes32)": FunctionFragment;
+    "getRoleAdmin(bytes32)": FunctionFragment;
+    "getRoleMember(bytes32,uint256)": FunctionFragment;
+    "getRoleMemberCount(bytes32)": FunctionFragment;
+    "grantPaymentProcessor(address)": FunctionFragment;
+    "grantRole(bytes32,address)": FunctionFragment;
+    "hasRole(bytes32,address)": FunctionFragment;
+    "hashSubscription(address,address,uint256,uint256,uint256,bytes32,uint8,uint8)": FunctionFragment;
+    "initialize(address,address,address)": FunctionFragment;
+    "processSwapPayment(address,(address,uint256,uint256,uint256,bytes32,uint8,uint8),(uint256,uint256,uint256,bytes),bytes32)": FunctionFragment;
+    "processTokenPayment(address,uint256,(address,uint256,uint256,uint256,bytes32,uint8,uint8),bytes32)": FunctionFragment;
+    "renounceRole(bytes32,address)": FunctionFragment;
+    "revokePaymentProcessor(address)": FunctionFragment;
+    "revokeRole(bytes32,address)": FunctionFragment;
     "subscriptions(bytes32)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
-    "unpause()": FunctionFragment;
+    "supportsInterface(bytes4)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "canChargeSubscription"
+      | "DEFAULT_ADMIN_ROLE"
+      | "PAYMENT_PROCESSOR_ROLE"
+      | "SUBSCRIPTION_TYPEHASH"
       | "createSubscription"
-      | "deactivateSubscription"
-      | "getActiveUsers"
-      | "getSubscription"
-      | "getUserSubscriptionCount"
-      | "getUserSubscriptions"
-      | "owner"
-      | "pause"
-      | "paused"
-      | "processPayment"
-      | "renounceOwnership"
-      | "subscriptionNonce"
+      | "createSubscriptionBySignature"
+      | "deleteSubscription"
+      | "getRoleAdmin"
+      | "getRoleMember"
+      | "getRoleMemberCount"
+      | "grantPaymentProcessor"
+      | "grantRole"
+      | "hasRole"
+      | "hashSubscription"
+      | "initialize"
+      | "processSwapPayment"
+      | "processTokenPayment"
+      | "renounceRole"
+      | "revokePaymentProcessor"
+      | "revokeRole"
       | "subscriptions"
-      | "transferOwnership"
-      | "unpause"
+      | "supportsInterface"
+      | "version"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "canChargeSubscription",
-    values: [PromiseOrValue<BytesLike>]
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "PAYMENT_PROCESSOR_ROLE",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "SUBSCRIPTION_TYPEHASH",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "createSubscription",
     values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<string>,
       PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "deactivateSubscription",
+    functionFragment: "createSubscriptionBySignature",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      SpritzSmartPay.SignatureStruct
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "deleteSubscription",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getActiveUsers",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getSubscription",
+    functionFragment: "getRoleAdmin",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getUserSubscriptionCount",
-    values: [PromiseOrValue<string>]
+    functionFragment: "getRoleMember",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
-    functionFragment: "getUserSubscriptions",
-    values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
-  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "processPayment",
+    functionFragment: "getRoleMemberCount",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
+    functionFragment: "grantPaymentProcessor",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "subscriptionNonce",
+    functionFragment: "grantRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hasRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "hashSubscription",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "processSwapPayment",
+    values: [
+      PromiseOrValue<string>,
+      SpritzSmartPay.SubscriptionParamsStruct,
+      SpritzSmartPay.SwapParamsStruct,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "processTokenPayment",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      SpritzSmartPay.SubscriptionParamsStruct,
+      PromiseOrValue<BytesLike>
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "renounceRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokePaymentProcessor",
     values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revokeRole",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "subscriptions",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [PromiseOrValue<string>]
+    functionFragment: "supportsInterface",
+    values: [PromiseOrValue<BytesLike>]
   ): string;
-  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
   decodeFunctionResult(
-    functionFragment: "canChargeSubscription",
+    functionFragment: "DEFAULT_ADMIN_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "PAYMENT_PROCESSOR_ROLE",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "SUBSCRIPTION_TYPEHASH",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -174,123 +286,177 @@ export interface SpritzSmartPayInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "deactivateSubscription",
+    functionFragment: "createSubscriptionBySignature",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getActiveUsers",
+    functionFragment: "deleteSubscription",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getSubscription",
+    functionFragment: "getRoleAdmin",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUserSubscriptionCount",
+    functionFragment: "getRoleMember",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getUserSubscriptions",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "processPayment",
+    functionFragment: "getRoleMemberCount",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "renounceOwnership",
+    functionFragment: "grantPaymentProcessor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "hashSubscription",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "processSwapPayment",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "subscriptionNonce",
+    functionFragment: "processTokenPayment",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceRole",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "revokePaymentProcessor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "revokeRole", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "subscriptions",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "transferOwnership",
+    functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
-    "OwnershipTransferred(address,address)": EventFragment;
-    "Paused(address)": EventFragment;
-    "SubscriptionCreated(address,bytes32)": EventFragment;
-    "SubscriptionDeactivated(address,bytes32)": EventFragment;
-    "Unpaused(address)": EventFragment;
-    "UserActivated(address)": EventFragment;
+    "Initialized(uint8)": EventFragment;
+    "PaymentProcessed(address,bytes32)": EventFragment;
+    "RoleAdminChanged(bytes32,bytes32,bytes32)": EventFragment;
+    "RoleGranted(bytes32,address,address)": EventFragment;
+    "RoleRevoked(bytes32,address,address)": EventFragment;
+    "SubscriptionCreated(address,bytes32,address,uint256,uint256,uint256,bytes32,uint8,uint8)": EventFragment;
+    "SubscriptionDeleted(bytes32)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "PaymentProcessed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleAdminChanged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleGranted"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "RoleRevoked"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "SubscriptionCreated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SubscriptionDeactivated"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "UserActivated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "SubscriptionDeleted"): EventFragment;
 }
 
-export interface OwnershipTransferredEventObject {
-  previousOwner: string;
-  newOwner: string;
+export interface InitializedEventObject {
+  version: number;
 }
-export type OwnershipTransferredEvent = TypedEvent<
-  [string, string],
-  OwnershipTransferredEventObject
->;
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
-export type OwnershipTransferredEventFilter =
-  TypedEventFilter<OwnershipTransferredEvent>;
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
-export interface PausedEventObject {
-  account: string;
-}
-export type PausedEvent = TypedEvent<[string], PausedEventObject>;
-
-export type PausedEventFilter = TypedEventFilter<PausedEvent>;
-
-export interface SubscriptionCreatedEventObject {
-  user: string;
+export interface PaymentProcessedEventObject {
+  subscriber: string;
   subscriptionId: string;
 }
-export type SubscriptionCreatedEvent = TypedEvent<
+export type PaymentProcessedEvent = TypedEvent<
   [string, string],
+  PaymentProcessedEventObject
+>;
+
+export type PaymentProcessedEventFilter =
+  TypedEventFilter<PaymentProcessedEvent>;
+
+export interface RoleAdminChangedEventObject {
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
+}
+export type RoleAdminChangedEvent = TypedEvent<
+  [string, string, string],
+  RoleAdminChangedEventObject
+>;
+
+export type RoleAdminChangedEventFilter =
+  TypedEventFilter<RoleAdminChangedEvent>;
+
+export interface RoleGrantedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleGrantedEvent = TypedEvent<
+  [string, string, string],
+  RoleGrantedEventObject
+>;
+
+export type RoleGrantedEventFilter = TypedEventFilter<RoleGrantedEvent>;
+
+export interface RoleRevokedEventObject {
+  role: string;
+  account: string;
+  sender: string;
+}
+export type RoleRevokedEvent = TypedEvent<
+  [string, string, string],
+  RoleRevokedEventObject
+>;
+
+export type RoleRevokedEventFilter = TypedEventFilter<RoleRevokedEvent>;
+
+export interface SubscriptionCreatedEventObject {
+  subscriber: string;
+  subscriptionId: string;
+  paymentToken: string;
+  paymentAmountMax: BigNumber;
+  startTime: BigNumber;
+  totalPayments: BigNumber;
+  paymentReference: string;
+  cadence: number;
+  subscriptionType: number;
+}
+export type SubscriptionCreatedEvent = TypedEvent<
+  [
+    string,
+    string,
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    string,
+    number,
+    number
+  ],
   SubscriptionCreatedEventObject
 >;
 
 export type SubscriptionCreatedEventFilter =
   TypedEventFilter<SubscriptionCreatedEvent>;
 
-export interface SubscriptionDeactivatedEventObject {
-  user: string;
+export interface SubscriptionDeletedEventObject {
   subscriptionId: string;
 }
-export type SubscriptionDeactivatedEvent = TypedEvent<
-  [string, string],
-  SubscriptionDeactivatedEventObject
+export type SubscriptionDeletedEvent = TypedEvent<
+  [string],
+  SubscriptionDeletedEventObject
 >;
 
-export type SubscriptionDeactivatedEventFilter =
-  TypedEventFilter<SubscriptionDeactivatedEvent>;
-
-export interface UnpausedEventObject {
-  account: string;
-}
-export type UnpausedEvent = TypedEvent<[string], UnpausedEventObject>;
-
-export type UnpausedEventFilter = TypedEventFilter<UnpausedEvent>;
-
-export interface UserActivatedEventObject {
-  user: string;
-}
-export type UserActivatedEvent = TypedEvent<[string], UserActivatedEventObject>;
-
-export type UserActivatedEventFilter = TypedEventFilter<UserActivatedEvent>;
+export type SubscriptionDeletedEventFilter =
+  TypedEventFilter<SubscriptionDeletedEvent>;
 
 export interface SpritzSmartPay extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -319,388 +485,619 @@ export interface SpritzSmartPay extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    canChargeSubscription(
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    PAYMENT_PROCESSOR_ROLE(overrides?: CallOverrides): Promise<[string]>;
+
+    SUBSCRIPTION_TYPEHASH(overrides?: CallOverrides): Promise<[string]>;
+
+    createSubscription(
+      paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    createSubscriptionBySignature(
+      _subscriber: PromiseOrValue<string>,
+      paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      signature: SpritzSmartPay.SignatureStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    deleteSubscription(
       subscriptionId: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    grantPaymentProcessor(
+      processor: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    createSubscription(
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
+    hashSubscription(
+      subscriber: PromiseOrValue<string>,
       paymentToken: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       cadence: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    deactivateSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    getActiveUsers(overrides?: CallOverrides): Promise<[string[]]>;
-
-    getSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[SpritzSmartPay.SubscriptionStructOutput]>;
+    ): Promise<[string]>;
 
-    getUserSubscriptionCount(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
-    getUserSubscriptions(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[string[]]>;
-
-    owner(overrides?: CallOverrides): Promise<[string]>;
-
-    pause(
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    paused(overrides?: CallOverrides): Promise<[boolean]>;
-
-    processPayment(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    processSwapPayment(
+      subscriber: PromiseOrValue<string>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    renounceOwnership(
+    processTokenPayment(
+      subscriber: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    subscriptionNonce(
-      arg0: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    revokePaymentProcessor(
+      processor: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     subscriptions(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<
-      [
-        number,
-        number,
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        BigNumber,
-        BigNumber,
-        string
-      ] & {
-        cadence: number;
-        paymentAmount: number;
+      [BigNumber, BigNumber, BigNumber] & {
         paymentCount: BigNumber;
-        totalPayments: BigNumber;
-        owner: string;
-        paymentToken: string;
         startTime: BigNumber;
         lastPaymentTimestamp: BigNumber;
-        paymentReference: string;
       }
     >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
 
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
+    version(overrides?: CallOverrides): Promise<[string]>;
   };
 
-  canChargeSubscription(
+  DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  PAYMENT_PROCESSOR_ROLE(overrides?: CallOverrides): Promise<string>;
+
+  SUBSCRIPTION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+  createSubscription(
+    paymentToken: PromiseOrValue<string>,
+    paymentAmountMax: PromiseOrValue<BigNumberish>,
+    startTime: PromiseOrValue<BigNumberish>,
+    totalPayments: PromiseOrValue<BigNumberish>,
+    paymentReference: PromiseOrValue<BytesLike>,
+    cadence: PromiseOrValue<BigNumberish>,
+    subscriptionType: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  createSubscriptionBySignature(
+    _subscriber: PromiseOrValue<string>,
+    paymentToken: PromiseOrValue<string>,
+    paymentAmountMax: PromiseOrValue<BigNumberish>,
+    startTime: PromiseOrValue<BigNumberish>,
+    totalPayments: PromiseOrValue<BigNumberish>,
+    paymentReference: PromiseOrValue<BytesLike>,
+    cadence: PromiseOrValue<BigNumberish>,
+    subscriptionType: PromiseOrValue<BigNumberish>,
+    signature: SpritzSmartPay.SignatureStruct,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  deleteSubscription(
     subscriptionId: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  getRoleAdmin(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getRoleMember(
+    role: PromiseOrValue<BytesLike>,
+    index: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  getRoleMemberCount(
+    role: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  grantPaymentProcessor(
+    processor: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  grantRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  hasRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  createSubscription(
-    paymentAmount: PromiseOrValue<BigNumberish>,
-    totalPayments: PromiseOrValue<BigNumberish>,
+  hashSubscription(
+    subscriber: PromiseOrValue<string>,
     paymentToken: PromiseOrValue<string>,
+    paymentAmount: PromiseOrValue<BigNumberish>,
     startTime: PromiseOrValue<BigNumberish>,
+    totalPayments: PromiseOrValue<BigNumberish>,
     paymentReference: PromiseOrValue<BytesLike>,
     cadence: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  deactivateSubscription(
-    subscriptionId: PromiseOrValue<BytesLike>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  getActiveUsers(overrides?: CallOverrides): Promise<string[]>;
-
-  getSubscription(
-    subscriptionId: PromiseOrValue<BytesLike>,
+    subscriptionType: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
-  ): Promise<SpritzSmartPay.SubscriptionStructOutput>;
+  ): Promise<string>;
 
-  getUserSubscriptionCount(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  getUserSubscriptions(
-    user: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<string[]>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  pause(
+  initialize(
+    admin: PromiseOrValue<string>,
+    _spritzPay: PromiseOrValue<string>,
+    paymentBot: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  paused(overrides?: CallOverrides): Promise<boolean>;
-
-  processPayment(
-    subscriptionId: PromiseOrValue<BytesLike>,
+  processSwapPayment(
+    subscriber: PromiseOrValue<string>,
+    params: SpritzSmartPay.SubscriptionParamsStruct,
+    swapParams: SpritzSmartPay.SwapParamsStruct,
+    externalPaymentReference: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  renounceOwnership(
+  processTokenPayment(
+    subscriber: PromiseOrValue<string>,
+    paymentAmount: PromiseOrValue<BigNumberish>,
+    params: SpritzSmartPay.SubscriptionParamsStruct,
+    externalPaymentReference: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  subscriptionNonce(
-    arg0: PromiseOrValue<string>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  renounceRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revokePaymentProcessor(
+    processor: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revokeRole(
+    role: PromiseOrValue<BytesLike>,
+    account: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   subscriptions(
     arg0: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<
-    [
-      number,
-      number,
-      BigNumber,
-      BigNumber,
-      string,
-      string,
-      BigNumber,
-      BigNumber,
-      string
-    ] & {
-      cadence: number;
-      paymentAmount: number;
+    [BigNumber, BigNumber, BigNumber] & {
       paymentCount: BigNumber;
-      totalPayments: BigNumber;
-      owner: string;
-      paymentToken: string;
       startTime: BigNumber;
       lastPaymentTimestamp: BigNumber;
-      paymentReference: string;
     }
   >;
 
-  transferOwnership(
-    newOwner: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  supportsInterface(
+    interfaceId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
 
-  unpause(
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
+  version(overrides?: CallOverrides): Promise<string>;
 
   callStatic: {
-    canChargeSubscription(
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    PAYMENT_PROCESSOR_ROLE(overrides?: CallOverrides): Promise<string>;
+
+    SUBSCRIPTION_TYPEHASH(overrides?: CallOverrides): Promise<string>;
+
+    createSubscription(
+      paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    createSubscriptionBySignature(
+      _subscriber: PromiseOrValue<string>,
+      paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      signature: SpritzSmartPay.SignatureStruct,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    deleteSubscription(
       subscriptionId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    grantPaymentProcessor(
+      processor: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    createSubscription(
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
+    hashSubscription(
+      subscriber: PromiseOrValue<string>,
       paymentToken: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    deactivateSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    processSwapPayment(
+      subscriber: PromiseOrValue<string>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getActiveUsers(overrides?: CallOverrides): Promise<string[]>;
-
-    getSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<SpritzSmartPay.SubscriptionStructOutput>;
-
-    getUserSubscriptionCount(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getUserSubscriptions(
-      user: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string[]>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    pause(overrides?: CallOverrides): Promise<void>;
-
-    paused(overrides?: CallOverrides): Promise<boolean>;
-
-    processPayment(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    processTokenPayment(
+      subscriber: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    subscriptionNonce(
-      arg0: PromiseOrValue<string>,
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    ): Promise<void>;
+
+    revokePaymentProcessor(
+      processor: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     subscriptions(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<
-      [
-        number,
-        number,
-        BigNumber,
-        BigNumber,
-        string,
-        string,
-        BigNumber,
-        BigNumber,
-        string
-      ] & {
-        cadence: number;
-        paymentAmount: number;
+      [BigNumber, BigNumber, BigNumber] & {
         paymentCount: BigNumber;
-        totalPayments: BigNumber;
-        owner: string;
-        paymentToken: string;
         startTime: BigNumber;
         lastPaymentTimestamp: BigNumber;
-        paymentReference: string;
       }
     >;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<boolean>;
 
-    unpause(overrides?: CallOverrides): Promise<void>;
+    version(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
-    "OwnershipTransferred(address,address)"(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
-    OwnershipTransferred(
-      previousOwner?: PromiseOrValue<string> | null,
-      newOwner?: PromiseOrValue<string> | null
-    ): OwnershipTransferredEventFilter;
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
-    "Paused(address)"(account?: null): PausedEventFilter;
-    Paused(account?: null): PausedEventFilter;
-
-    "SubscriptionCreated(address,bytes32)"(
-      user?: PromiseOrValue<string> | null,
+    "PaymentProcessed(address,bytes32)"(
+      subscriber?: PromiseOrValue<string> | null,
       subscriptionId?: PromiseOrValue<BytesLike> | null
+    ): PaymentProcessedEventFilter;
+    PaymentProcessed(
+      subscriber?: PromiseOrValue<string> | null,
+      subscriptionId?: PromiseOrValue<BytesLike> | null
+    ): PaymentProcessedEventFilter;
+
+    "RoleAdminChanged(bytes32,bytes32,bytes32)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+    RoleAdminChanged(
+      role?: PromiseOrValue<BytesLike> | null,
+      previousAdminRole?: PromiseOrValue<BytesLike> | null,
+      newAdminRole?: PromiseOrValue<BytesLike> | null
+    ): RoleAdminChangedEventFilter;
+
+    "RoleGranted(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+    RoleGranted(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleGrantedEventFilter;
+
+    "RoleRevoked(bytes32,address,address)"(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+    RoleRevoked(
+      role?: PromiseOrValue<BytesLike> | null,
+      account?: PromiseOrValue<string> | null,
+      sender?: PromiseOrValue<string> | null
+    ): RoleRevokedEventFilter;
+
+    "SubscriptionCreated(address,bytes32,address,uint256,uint256,uint256,bytes32,uint8,uint8)"(
+      subscriber?: PromiseOrValue<string> | null,
+      subscriptionId?: PromiseOrValue<BytesLike> | null,
+      paymentToken?: PromiseOrValue<string> | null,
+      paymentAmountMax?: null,
+      startTime?: null,
+      totalPayments?: null,
+      paymentReference?: null,
+      cadence?: null,
+      subscriptionType?: null
     ): SubscriptionCreatedEventFilter;
     SubscriptionCreated(
-      user?: PromiseOrValue<string> | null,
-      subscriptionId?: PromiseOrValue<BytesLike> | null
+      subscriber?: PromiseOrValue<string> | null,
+      subscriptionId?: PromiseOrValue<BytesLike> | null,
+      paymentToken?: PromiseOrValue<string> | null,
+      paymentAmountMax?: null,
+      startTime?: null,
+      totalPayments?: null,
+      paymentReference?: null,
+      cadence?: null,
+      subscriptionType?: null
     ): SubscriptionCreatedEventFilter;
 
-    "SubscriptionDeactivated(address,bytes32)"(
-      user?: PromiseOrValue<string> | null,
+    "SubscriptionDeleted(bytes32)"(
       subscriptionId?: PromiseOrValue<BytesLike> | null
-    ): SubscriptionDeactivatedEventFilter;
-    SubscriptionDeactivated(
-      user?: PromiseOrValue<string> | null,
+    ): SubscriptionDeletedEventFilter;
+    SubscriptionDeleted(
       subscriptionId?: PromiseOrValue<BytesLike> | null
-    ): SubscriptionDeactivatedEventFilter;
-
-    "Unpaused(address)"(account?: null): UnpausedEventFilter;
-    Unpaused(account?: null): UnpausedEventFilter;
-
-    "UserActivated(address)"(
-      user?: PromiseOrValue<string> | null
-    ): UserActivatedEventFilter;
-    UserActivated(
-      user?: PromiseOrValue<string> | null
-    ): UserActivatedEventFilter;
+    ): SubscriptionDeletedEventFilter;
   };
 
   estimateGas: {
-    canChargeSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+    DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    PAYMENT_PROCESSOR_ROLE(overrides?: CallOverrides): Promise<BigNumber>;
+
+    SUBSCRIPTION_TYPEHASH(overrides?: CallOverrides): Promise<BigNumber>;
 
     createSubscription(
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
       paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    deactivateSubscription(
+    createSubscriptionBySignature(
+      _subscriber: PromiseOrValue<string>,
+      paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      signature: SpritzSmartPay.SignatureStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    deleteSubscription(
       subscriptionId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    getActiveUsers(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUserSubscriptionCount(
-      user: PromiseOrValue<string>,
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getUserSubscriptions(
-      user: PromiseOrValue<string>,
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    pause(
+    grantPaymentProcessor(
+      processor: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    paused(overrides?: CallOverrides): Promise<BigNumber>;
-
-    processPayment(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    subscriptionNonce(
-      arg0: PromiseOrValue<string>,
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    hashSubscription(
+      subscriber: PromiseOrValue<string>,
+      paymentToken: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    processSwapPayment(
+      subscriber: PromiseOrValue<string>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    processTokenPayment(
+      subscriber: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revokePaymentProcessor(
+      processor: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     subscriptions(
@@ -708,74 +1105,139 @@ export interface SpritzSmartPay extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
+    version(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    canChargeSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    DEFAULT_ADMIN_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    PAYMENT_PROCESSOR_ROLE(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    SUBSCRIPTION_TYPEHASH(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     createSubscription(
-      paymentAmount: PromiseOrValue<BigNumberish>,
-      totalPayments: PromiseOrValue<BigNumberish>,
       paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
       startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
       paymentReference: PromiseOrValue<BytesLike>,
       cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    deactivateSubscription(
+    createSubscriptionBySignature(
+      _subscriber: PromiseOrValue<string>,
+      paymentToken: PromiseOrValue<string>,
+      paymentAmountMax: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      signature: SpritzSmartPay.SignatureStruct,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    deleteSubscription(
       subscriptionId: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    getActiveUsers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getSubscription(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    getRoleAdmin(
+      role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getUserSubscriptionCount(
-      user: PromiseOrValue<string>,
+    getRoleMember(
+      role: PromiseOrValue<BytesLike>,
+      index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getUserSubscriptions(
-      user: PromiseOrValue<string>,
+    getRoleMemberCount(
+      role: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    pause(
+    grantPaymentProcessor(
+      processor: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    processPayment(
-      subscriptionId: PromiseOrValue<BytesLike>,
+    grantRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    renounceOwnership(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    subscriptionNonce(
-      arg0: PromiseOrValue<string>,
+    hasRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    hashSubscription(
+      subscriber: PromiseOrValue<string>,
+      paymentToken: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
+      startTime: PromiseOrValue<BigNumberish>,
+      totalPayments: PromiseOrValue<BigNumberish>,
+      paymentReference: PromiseOrValue<BytesLike>,
+      cadence: PromiseOrValue<BigNumberish>,
+      subscriptionType: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      admin: PromiseOrValue<string>,
+      _spritzPay: PromiseOrValue<string>,
+      paymentBot: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    processSwapPayment(
+      subscriber: PromiseOrValue<string>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      swapParams: SpritzSmartPay.SwapParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    processTokenPayment(
+      subscriber: PromiseOrValue<string>,
+      paymentAmount: PromiseOrValue<BigNumberish>,
+      params: SpritzSmartPay.SubscriptionParamsStruct,
+      externalPaymentReference: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    renounceRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokePaymentProcessor(
+      processor: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revokeRole(
+      role: PromiseOrValue<BytesLike>,
+      account: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     subscriptions(
@@ -783,13 +1245,11 @@ export interface SpritzSmartPay extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    transferOwnership(
-      newOwner: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    supportsInterface(
+      interfaceId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    unpause(
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

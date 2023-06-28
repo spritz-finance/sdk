@@ -1,21 +1,28 @@
-import { Percent, Token, TradeType, Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Protocol } from '@uniswap/router-sdk'
-import { AlphaRouter, SwapRoute, SwapType, V3Route } from '@uniswap/smart-order-router'
-import { BigNumber, ethers } from 'ethers'
-import { SpritzPayV2 } from '../../contracts/types'
+import { Currency, CurrencyAmount, Percent, Token, TradeType } from '@uniswap/sdk-core'
+import { AlphaRouter, V3Route } from '@uniswap/smart-order-router'
+import { BigNumber, ethers, Overrides } from 'ethers'
 import { UniswapQuoteError } from '../../errors'
-import { getChainId, Network, SupportedNetwork } from '../../networks'
-import { isNonPaymentStablecoin, NATIVE_ZERO_ADDRESS } from '../../supportedTokens'
-import { acceptedOutputTokenFor, getFullToken, isNativeAddress } from '../../tokens'
+import { getChainId, SupportedNetwork } from '../../networks'
+import { isNonPaymentStablecoin } from '../../supportedTokens'
+import { acceptedOutputTokenFor, getFullToken } from '../../tokens'
 import { fiatNumber, FiatValue, roundNumber } from '../../utils/format'
 import { formatPaymentReference } from '../../utils/reference'
+import { PayWithNativeSwapArgs, PayWithSwapArgs, SwapQuote } from '../types'
 import { computeRoutes, transformRoutesToTrade } from './bestRoute'
 import { getSwapPath } from './path'
 import { transformQuote } from './transformQuote'
 
-export type PayWithV3SwapArgsResult = {
-  args: Parameters<SpritzPayV2['functions']['payWithV3Swap']>
-  data: PaymentQuote
+export type PayWithSwapArgsResult = {
+  args: PayWithSwapArgs
+  data: SwapQuote
+  additionalHops: number
+  requiredTokenInput: BigNumber
+}
+
+export type PayWithNativeSwapArgsResult = {
+  args: PayWithNativeSwapArgs
+  data: SwapQuote
   additionalHops: number
   requiredTokenInput: BigNumber
 }
@@ -25,17 +32,7 @@ type SwapRouteProps = {
   currencyOut: CurrencyAmount<Currency>
 }
 
-export type PaymentQuote = {
-  path: string
-  sourceTokenAddress: string
-  sourceTokenAmountMax: string
-  paymentTokenAddress: string
-  paymentTokenAmount: string
-  deadline: number
-  additionalHops: number
-}
-
-const SLIPPAGE_TOLERANCE = new Percent(50, 10_000) // 0.5%
+const SLIPPAGE_TOLERANCE = new Percent(50, 10_000)
 const SLIPPAGE_TOLERANCE_STABLECOIN = new Percent(25, 10_000) // 0.25%
 
 export class UniswapV3Quoter {
@@ -59,27 +56,45 @@ export class UniswapV3Quoter {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
-  ): Promise<PayWithV3SwapArgsResult> {
-    const isNativeSwap = isNativeAddress(tokenAddress)
-
+  ): Promise<PayWithSwapArgsResult> {
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
     const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime)
-    const args: Parameters<SpritzPayV2['functions']['payWithV3Swap']> = [
-      data.path,
+    const args: PayWithSwapArgs = [
       inputToken.address,
       data.sourceTokenAmountMax,
-      data.paymentTokenAddress,
       data.paymentTokenAmount,
       formatPaymentReference(reference),
       data.deadline,
+      data.path,
     ]
 
-    if (isNativeSwap) {
-      args.push({
-        value: data.sourceTokenAmountMax,
-      })
+    return {
+      args,
+      data,
+      additionalHops: data.additionalHops,
+      requiredTokenInput: BigNumber.from(data.sourceTokenAmountMax),
     }
+  }
+
+  public async getPayWithNativeSwapArgs(
+    tokenAddress: string,
+    fiatAmount: string | number,
+    reference: string,
+    currentTime = Math.floor(Date.now() / 1000),
+  ): Promise<PayWithNativeSwapArgsResult> {
+    const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
+
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime)
+    const args: PayWithNativeSwapArgs = [
+      data.paymentTokenAmount,
+      formatPaymentReference(reference),
+      data.deadline,
+      data.path,
+      {
+        value: data.sourceTokenAmountMax,
+      } as Overrides,
+    ]
 
     return {
       args,
@@ -93,7 +108,7 @@ export class UniswapV3Quoter {
     inputToken: Token,
     fiatAmount: FiatValue,
     currentTime: number,
-  ): Promise<PaymentQuote> {
+  ): Promise<SwapQuote> {
     const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount), currentTime)
 
     const currencyOut = CurrencyAmount.fromRawAmount(this.paymentToken, amountOut.toString())
