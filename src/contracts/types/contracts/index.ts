@@ -4,15 +4,22 @@
 
 /* eslint-disable */
 import type * as interfaces from "./interfaces";
+import type * as legacy from "./legacy";
 import type * as lib from "./lib";
+import type * as swapModules from "./swapModules";
 import type * as test from "./test";
+import type * as utility from "./utility";
 
 export type { interfaces };
 
+export type { legacy };
+
 export type { lib };
 
+export type { swapModules };
+
 export type { test };
-export type { SmartPay } from "./SmartPay";
-export type { SpritzPayV1 } from "./SpritzPayV1";
-export type { SpritzPayV2 } from "./SpritzPayV2";
+
+export type { utility };
+export type { SpritzPayV3 } from "./SpritzPayV3";
 export type { SpritzSmartPay } from "./SpritzSmartPay";

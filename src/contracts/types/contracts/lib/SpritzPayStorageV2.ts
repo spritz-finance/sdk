@@ -44,6 +44,7 @@ export interface SpritzPayStorageV2Interface extends utils.Interface {
     "revokeRole(bytes32,address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "swapTarget()": FunctionFragment;
+    "v3SwapTarget()": FunctionFragment;
   };
 
   getFunction(
@@ -61,6 +62,7 @@ export interface SpritzPayStorageV2Interface extends utils.Interface {
       | "revokeRole"
       | "supportsInterface"
       | "swapTarget"
+      | "v3SwapTarget"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -115,6 +117,10 @@ export interface SpritzPayStorageV2Interface extends utils.Interface {
     functionFragment: "swapTarget",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "v3SwapTarget",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "DEFAULT_ADMIN_ROLE",
@@ -156,6 +162,10 @@ export interface SpritzPayStorageV2Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "swapTarget", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "v3SwapTarget",
+    data: BytesLike
+  ): Result;
 
   events: {
     "Initialized(uint8)": EventFragment;
@@ -335,6 +345,8 @@ export interface SpritzPayStorageV2 extends BaseContract {
     ): Promise<[boolean]>;
 
     swapTarget(overrides?: CallOverrides): Promise<[string]>;
+
+    v3SwapTarget(overrides?: CallOverrides): Promise<[string]>;
   };
 
   DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
@@ -392,6 +404,8 @@ export interface SpritzPayStorageV2 extends BaseContract {
 
   swapTarget(overrides?: CallOverrides): Promise<string>;
 
+  v3SwapTarget(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
     DEFAULT_ADMIN_ROLE(overrides?: CallOverrides): Promise<string>;
 
@@ -447,6 +461,8 @@ export interface SpritzPayStorageV2 extends BaseContract {
     ): Promise<boolean>;
 
     swapTarget(overrides?: CallOverrides): Promise<string>;
+
+    v3SwapTarget(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -559,6 +575,8 @@ export interface SpritzPayStorageV2 extends BaseContract {
     ): Promise<BigNumber>;
 
     swapTarget(overrides?: CallOverrides): Promise<BigNumber>;
+
+    v3SwapTarget(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -620,5 +638,7 @@ export interface SpritzPayStorageV2 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     swapTarget(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    v3SwapTarget(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

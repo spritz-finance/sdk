@@ -1,11 +1,9 @@
-import { SpritzPaySDK } from './index'
-import { Network } from '../networks'
-import { ethers } from 'ethers'
-
 import { config as dotenvConfig } from 'dotenv'
+import { ethers } from 'ethers'
 import { resolve } from 'path'
+import { Network, getChainId } from '../networks'
 import { NATIVE_ZERO_ADDRESS } from '../supportedTokens'
-import { ChainId } from '../quotes/uniswap/uniswap-v2-sdk'
+import { SpritzPaySDK } from './index'
 
 dotenvConfig({ path: resolve(__dirname, '../../.env') })
 
@@ -18,7 +16,7 @@ describe('SpritzPaySDK', () => {
       network: Network.Polygon,
       provider: new ethers.providers.JsonRpcProvider(
         `https://polygon-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_POLYGON_MAINNET_KEY}`,
-        ChainId.POLYGON,
+        getChainId(Network.Polygon),
       ),
       staging: true,
     })
@@ -34,7 +32,7 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithNativeSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })
@@ -46,7 +44,7 @@ describe('SpritzPaySDK', () => {
       network: Network.Binance,
       provider: new ethers.providers.JsonRpcProvider(
         `https://alien-multi-field.bsc.quiknode.pro/${process.env.QUICKNODE_BSC_KEY}/`,
-        ChainId.BINANCE,
+        getChainId(Network.Binance),
       ),
       staging: true,
     })
@@ -57,7 +55,7 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithNativeSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })
@@ -69,7 +67,7 @@ describe('SpritzPaySDK', () => {
       network: Network.Ethereum,
       provider: new ethers.providers.JsonRpcProvider(
         `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_MAINNET_KEY}`,
-        ChainId.MAINNET,
+        getChainId(Network.Ethereum),
       ),
       staging: true,
     })
@@ -80,7 +78,7 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithNativeSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })
@@ -92,7 +90,7 @@ describe('SpritzPaySDK', () => {
       network: Network.Avalanche,
       provider: new ethers.providers.JsonRpcProvider(
         `https://avalanche-mainnet.infura.io/v3/${process.env.INFURA_API_KEY}`,
-        ChainId.AVALANCHE,
+        getChainId(Network.Avalanche),
       ),
       staging: true,
     })
@@ -113,7 +111,7 @@ describe('SpritzPaySDK', () => {
     })
 
     it('should provide native swap quote', async () => {
-      const args = await sdk.getPaymentArgs('payWithSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
+      const args = await sdk.getPaymentArgs('payWithNativeSwap', NATIVE_ZERO_ADDRESS, 100, 'abcdef1234')
       console.log(args)
     })
   })

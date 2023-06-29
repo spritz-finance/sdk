@@ -1,3 +1,4 @@
 export * from './utils'
 export * from './types'
-export { getSmartPayContract, SpritzSmartPay, SpritzSmartPay__factory } from '../contracts-updated/index'
+export type { SpritzSmartPay } from '../contracts/index'
+export { getSmartPayContract, SpritzSmartPay__factory } from '../contracts/index'

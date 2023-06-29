@@ -53,6 +53,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ContextUpgradeable__factory>;
     getContractFactory(
+      name: "EIP712Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.EIP712Upgradeable__factory>;
+    getContractFactory(
       name: "ERC165Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC165Upgradeable__factory>;
@@ -60,6 +64,22 @@ declare module "hardhat/types/runtime" {
       name: "IERC165Upgradeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC165Upgradeable__factory>;
+    getContractFactory(
+      name: "AccessControl",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessControl__factory>;
+    getContractFactory(
+      name: "AccessControlEnumerable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.AccessControlEnumerable__factory>;
+    getContractFactory(
+      name: "IAccessControl",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAccessControl__factory>;
+    getContractFactory(
+      name: "IAccessControlEnumerable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAccessControlEnumerable__factory>;
     getContractFactory(
       name: "Ownable",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -69,13 +89,29 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Pausable__factory>;
     getContractFactory(
+      name: "ERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC20__factory>;
+    getContractFactory(
       name: "IERC20Permit",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20Permit__factory>;
     getContractFactory(
+      name: "IERC20Metadata",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20Metadata__factory>;
+    getContractFactory(
       name: "IERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20__factory>;
+    getContractFactory(
+      name: "ERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165__factory>;
+    getContractFactory(
+      name: "IERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC165__factory>;
     getContractFactory(
       name: "IUniswapV2Router01",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -93,21 +129,17 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ISwapRouter__factory>;
     getContractFactory(
+      name: "IAnyswapV4Router",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAnyswapV4Router__factory>;
+    getContractFactory(
       name: "IWETH9",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IWETH9__factory>;
     getContractFactory(
-      name: "SpritzPayStorage",
+      name: "SwapModule",
       signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SpritzPayStorage__factory>;
-    getContractFactory(
-      name: "SpritzPayStorageV2",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SpritzPayStorageV2__factory>;
-    getContractFactory(
-      name: "SmartPay",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.SmartPay__factory>;
+    ): Promise<Contracts.SwapModule__factory>;
     getContractFactory(
       name: "SpritzPayV1",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -117,13 +149,53 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SpritzPayV2__factory>;
     getContractFactory(
+      name: "SpritzPayStorage",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SpritzPayStorage__factory>;
+    getContractFactory(
+      name: "SpritzPayStorageV2",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SpritzPayStorageV2__factory>;
+    getContractFactory(
+      name: "SpritzPayStorageV3",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SpritzPayStorageV3__factory>;
+    getContractFactory(
+      name: "SpritzPayV3",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SpritzPayV3__factory>;
+    getContractFactory(
       name: "SpritzSmartPay",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SpritzSmartPay__factory>;
     getContractFactory(
+      name: "UniswapV2Module",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UniswapV2Module__factory>;
+    getContractFactory(
+      name: "UniswapV3Module",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UniswapV3Module__factory>;
+    getContractFactory(
+      name: "BytesAddressLibTest",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BytesAddressLibTest__factory>;
+    getContractFactory(
+      name: "MockToken",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MockToken__factory>;
+    getContractFactory(
       name: "TestDateValidation",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.TestDateValidation__factory>;
+    getContractFactory(
+      name: "WETH9",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.WETH9__factory>;
+    getContractFactory(
+      name: "SpritzBridge",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.SpritzBridge__factory>;
 
     getContractAt(
       name: "AccessControlEnumerableUpgradeable",
@@ -176,6 +248,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ContextUpgradeable>;
     getContractAt(
+      name: "EIP712Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.EIP712Upgradeable>;
+    getContractAt(
       name: "ERC165Upgradeable",
       address: string,
       signer?: ethers.Signer
@@ -185,6 +262,26 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165Upgradeable>;
+    getContractAt(
+      name: "AccessControl",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControl>;
+    getContractAt(
+      name: "AccessControlEnumerable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.AccessControlEnumerable>;
+    getContractAt(
+      name: "IAccessControl",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControl>;
+    getContractAt(
+      name: "IAccessControlEnumerable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAccessControlEnumerable>;
     getContractAt(
       name: "Ownable",
       address: string,
@@ -196,15 +293,35 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Pausable>;
     getContractAt(
+      name: "ERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC20>;
+    getContractAt(
       name: "IERC20Permit",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20Permit>;
     getContractAt(
+      name: "IERC20Metadata",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20Metadata>;
+    getContractAt(
       name: "IERC20",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC20>;
+    getContractAt(
+      name: "ERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165>;
+    getContractAt(
+      name: "IERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165>;
     getContractAt(
       name: "IUniswapV2Router01",
       address: string,
@@ -226,25 +343,20 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ISwapRouter>;
     getContractAt(
+      name: "IAnyswapV4Router",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAnyswapV4Router>;
+    getContractAt(
       name: "IWETH9",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IWETH9>;
     getContractAt(
-      name: "SpritzPayStorage",
+      name: "SwapModule",
       address: string,
       signer?: ethers.Signer
-    ): Promise<Contracts.SpritzPayStorage>;
-    getContractAt(
-      name: "SpritzPayStorageV2",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SpritzPayStorageV2>;
-    getContractAt(
-      name: "SmartPay",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.SmartPay>;
+    ): Promise<Contracts.SwapModule>;
     getContractAt(
       name: "SpritzPayV1",
       address: string,
@@ -256,15 +368,65 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.SpritzPayV2>;
     getContractAt(
+      name: "SpritzPayStorage",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SpritzPayStorage>;
+    getContractAt(
+      name: "SpritzPayStorageV2",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SpritzPayStorageV2>;
+    getContractAt(
+      name: "SpritzPayStorageV3",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SpritzPayStorageV3>;
+    getContractAt(
+      name: "SpritzPayV3",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SpritzPayV3>;
+    getContractAt(
       name: "SpritzSmartPay",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.SpritzSmartPay>;
     getContractAt(
+      name: "UniswapV2Module",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UniswapV2Module>;
+    getContractAt(
+      name: "UniswapV3Module",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UniswapV3Module>;
+    getContractAt(
+      name: "BytesAddressLibTest",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BytesAddressLibTest>;
+    getContractAt(
+      name: "MockToken",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MockToken>;
+    getContractAt(
       name: "TestDateValidation",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.TestDateValidation>;
+    getContractAt(
+      name: "WETH9",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.WETH9>;
+    getContractAt(
+      name: "SpritzBridge",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.SpritzBridge>;
 
     // default types
     getContractFactory(

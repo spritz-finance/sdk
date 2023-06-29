@@ -2,8 +2,6 @@ import { Token } from '@uniswap/sdk-core'
 import { ethers } from 'ethers'
 import { UnsupportedPaymentTokenError } from './errors'
 import { getChainId, SupportedNetwork } from './networks'
-import { Token as V2Token } from './quotes/uniswap/uniswap-v2-sdk'
-import { Token as UpdatedV2Token } from './quotes-updated/uniswap/uniswap-v2-sdk'
 import {
   ACCEPTED_PAYMENT_TOKENS,
   ACCEPTED_SWAP_OUTPUTS,
@@ -12,7 +10,7 @@ import {
   USDC_POLYGON,
 } from './supportedTokens'
 import { getWrappedNativeToken } from './wrappedNativeTokens'
-import { Erc20__factory } from '@uniswap/smart-order-router/build/main/types/other/factories/Erc20__factory'
+import { ERC20__factory } from './contracts/types'
 
 export const isNativeAddress = (address: string) => [NATIVE_ZERO_ADDRESS, NATIVE_ADDRESS_OTHER].includes(address)
 
@@ -51,10 +49,6 @@ export const getFullToken = async (
   return (await tokenFromAddress(address, network, provider)) as Token
 }
 
-export const toV2Token = (token: Token) => new V2Token(token.chainId, token.address, token.decimals, token.symbol)
-export const toUpdatedV2Token = (token: Token) =>
-  new UpdatedV2Token(token.chainId, token.address, token.decimals, token.symbol)
-
 const tokenFromAddress = async (
   address: string,
   network: SupportedNetwork,
@@ -66,7 +60,7 @@ const tokenFromAddress = async (
     return getWrappedNativeToken(network)
   }
 
-  const contract = Erc20__factory.connect(address, provider)
+  const contract = ERC20__factory.connect(address, provider)
 
   const [decimals, symbol, name] = await Promise.all([contract.decimals(), contract.symbol(), contract.name()])
 
