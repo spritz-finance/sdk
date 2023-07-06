@@ -7,7 +7,7 @@ import { SpritzPayV3 as Contract_V3, SpritzSmartPay as SpritzSmartPayContract } 
 export type SpritzPay_V3 = Contract_V3
 export type SpritzSmartPay = SpritzSmartPayContract
 
-const SpritzInterface = new ethers.utils.Interface(SpritzPay_V3_ABI)
+export const SpritzInterface = new ethers.utils.Interface(SpritzPay_V3_ABI)
 const spritzContract = (address: string) => new Contract(address, SpritzInterface) as SpritzPay_V3
 
 export const getSpritzContract = (network: SupportedNetwork = Network.Polygon, staging = false) => {

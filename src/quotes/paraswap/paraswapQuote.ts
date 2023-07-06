@@ -1,8 +1,31 @@
 import mathUtils from '@aave/math-utils'
-import { utils } from 'ethers'
-import { constructSimpleSDK } from '@paraswap/sdk'
-import { NETWORK_TO_CHAIN_ID, Network } from '../../networks'
+import { BuildTxInput, constructSimpleSDK } from '@paraswap/sdk'
+import { GetRateInput } from '@paraswap/sdk/dist/methods/swap/rates'
 import axios from 'axios'
+import { utils } from 'ethers'
+import { NETWORK_TO_CHAIN_ID, Network } from '../../networks'
+
+export class SwapRateError extends Error {
+  public details: GetRateInput | undefined
+
+  constructor(message?: string, details?: GetRateInput) {
+    super(message)
+    this.details = details
+
+    Object.setPrototypeOf(this, SwapRateError.prototype)
+  }
+}
+
+export class TransactionError extends Error {
+  public details: BuildTxInput | undefined
+
+  constructor(message?: string, details?: BuildTxInput) {
+    super(message)
+    this.details = details
+
+    Object.setPrototypeOf(this, TransactionError.prototype)
+  }
+}
 
 const PARTNER = 'spritzfinance'
 const MAX_SLIPPAGE = 0.5 // 0.5%
@@ -30,6 +53,7 @@ type OptimalRoute = {
   percent: number
   swaps: OptimalSwap[]
 }
+
 type OptimalSwap = {
   srcToken: Address
   srcDecimals: number
@@ -122,8 +146,11 @@ interface Swapper {
 }
 
 const ExactOutSwapper = (network: Network) => {
-  const paraswap = constructSimpleSDK({ chainId: NETWORK_TO_CHAIN_ID[network], axios })
-  // const paraswap = new Paraswap.ParaSwap( as Paraswap.NetworkID)
+  const paraswap = constructSimpleSDK({
+    chainId: NETWORK_TO_CHAIN_ID[network],
+    axios,
+    apiURL: 'https://apiv5.paraswap.io',
+  })
 
   const getRate: Swapper['getRate'] = async ({
     srcToken,
@@ -133,7 +160,7 @@ const ExactOutSwapper = (network: Network) => {
     amount,
     userAddress,
   }) => {
-    const priceRouteOrError = await paraswap.swap.getRate({
+    const config = {
       srcToken,
       destToken,
       amount,
@@ -142,9 +169,16 @@ const ExactOutSwapper = (network: Network) => {
       options: { partner: PARTNER, excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'] },
       srcDecimals,
       destDecimals,
-    })
+    }
 
-    return priceRouteOrError
+    try {
+      const priceRouteOrError = await paraswap.swap.getRate(config)
+      return priceRouteOrError
+    } catch (e: any) {
+      const error = e.message
+      const message = error ? `Failed to get swap rate with error: ${error}` : 'Failed to get swap rate'
+      throw new SwapRateError(message, config)
+    }
   }
 
   const getTransactionParams: Swapper['getTransactionParams'] = async ({
@@ -162,35 +196,40 @@ const ExactOutSwapper = (network: Network) => {
       .dividedBy(100)
       .toFixed(0)
 
-    const transactionRequestOrError = await paraswap.swap.buildTx(
-      {
-        srcToken,
-        destToken,
-        srcAmount: srcAmountWithSlippage,
-        destAmount: priceRoute.destAmount,
-        priceRoute,
-        userAddress: user,
-        partner: PARTNER,
-        srcDecimals,
-        destDecimals,
-        deadline: deadline.toString(),
-      },
-      { ignoreChecks: true },
-    )
+    const config = {
+      srcToken,
+      destToken,
+      srcAmount: srcAmountWithSlippage,
+      destAmount: priceRoute.destAmount,
+      priceRoute,
+      userAddress: user,
+      partner: PARTNER,
+      srcDecimals,
+      destDecimals,
+      deadline: deadline.toString(),
+    }
 
-    const callDataEncoded = utils.defaultAbiCoder.encode(
-      ['bytes', 'address', 'address', 'address'],
-      [
-        (transactionRequestOrError as TransactionParams).data,
-        (transactionRequestOrError as TransactionParams).to,
-        srcToken,
-        destToken,
-      ],
-    )
+    try {
+      const transactionRequestOrError = await paraswap.swap.buildTx(config, { ignoreChecks: true })
 
-    return {
-      swapCallData: callDataEncoded,
-      requiredInput: srcAmountWithSlippage,
+      const callDataEncoded = utils.defaultAbiCoder.encode(
+        ['bytes', 'address', 'address', 'address'],
+        [
+          (transactionRequestOrError as TransactionParams).data,
+          (transactionRequestOrError as TransactionParams).to,
+          srcToken,
+          destToken,
+        ],
+      )
+
+      return {
+        swapCallData: callDataEncoded,
+        requiredInput: srcAmountWithSlippage,
+      }
+    } catch (e: any) {
+      const error = e.message
+      const message = error ? `Failed to build transaction with error: ${error}` : 'Failed to build transaction'
+      throw new TransactionError(message, config)
     }
   }
 
