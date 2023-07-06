@@ -9,6 +9,8 @@ import { PayWithNativeSwapArgs, PayWithSwapArgs, SwapQuote } from '../types'
 import { getParaswapTransactionData } from './paraswapQuote'
 import { getSwapModuleAddress } from '../../swaps'
 
+export { SwapRateError, TransactionError } from './paraswapQuote'
+
 export type PayWithSwapArgsResult = {
   args: PayWithSwapArgs
   data: SwapQuote

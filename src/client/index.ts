@@ -11,6 +11,8 @@ import { getPaymentToken, isNativeAddress } from '../tokens'
 import { fiatString } from '../utils/format'
 import { formatPaymentReference } from '../utils/reference'
 
+export { SwapRateError, TransactionError } from '../quotes/paraswap'
+
 type PayWithTokenArgsResult = {
   args: Parameters<SpritzPayV3['functions']['payWithToken']>
   data: { tokenAddress: string; amount: ethers.BigNumber; reference: string }
