@@ -1,6 +1,6 @@
 {
   "name": "@spritz-finance/sdk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
   "main": "dist/spritz-sdk.js",
   "module": "dist/spritz-sdk.mjs",
@@ -24,7 +24,6 @@
     "typechain:generate": "yarn typechain --target=ethers-v5 ./src/contracts/**/abi/*.json --out-dir=./src/contracts/types"
   },
   "devDependencies": {
-    "@aave/math-utils": "^1.17.8",
     "@paraswap/sdk": "^6.2.1",
     "@rollup/plugin-json": "^6.0.0",
     "@typechain/ethers-v5": "^10.1.0",

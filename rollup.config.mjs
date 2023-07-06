@@ -13,7 +13,7 @@ export default [
       esbuild({
         target: 'esnext',
         optimizeDeps: {
-          include: ['@aave/math-utils', '@paraswap/sdk'],
+          include: ['@paraswap/sdk'],
         },
         minify: true,
       }),

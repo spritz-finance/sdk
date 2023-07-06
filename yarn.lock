@@ -2,11 +2,6 @@
 # yarn lockfile v1
 
 
-"@aave/math-utils@^1.17.8":
-  version "1.17.8"
-  resolved "https://registry.yarnpkg.com/@aave/math-utils/-/math-utils-1.17.8.tgz#9817265ca064eef20e2c25dbe5425a5c5554b87f"
-  integrity sha512-5GfJze0iu9aH+p1G6O40zJESfOejQFrjG9R9GHZ13GgdGFCfWfjz50F6cB7acVLH8/6qr7ptpBNGLexXb4960g==
-
 "@ampproject/remapping@^2.1.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.2.0.tgz#56c133824780de3174aed5ab6834f3026790154d"

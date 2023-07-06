@@ -1,8 +1,7 @@
-import mathUtils from '@aave/math-utils'
 import { BuildTxInput, constructSimpleSDK } from '@paraswap/sdk'
 import { GetRateInput } from '@paraswap/sdk/dist/methods/swap/rates'
 import axios from 'axios'
-import { utils } from 'ethers'
+import { BigNumber, utils } from 'ethers'
 import { NETWORK_TO_CHAIN_ID, Network } from '../../networks'
 
 export class SwapRateError extends Error {
@@ -101,6 +100,14 @@ export type SwapTransactionParams = SwapRateParams & {
   swapCallData: string
 }
 
+function increaseByPercentage(amount: BigNumber, percentageIncrease: number, decimals: number): string {
+  const increaseFactor = utils.parseUnits((1 + percentageIncrease / 100).toString(), decimals)
+
+  const increasedAmount = amount.mul(increaseFactor).div(BigNumber.from(10).pow(decimals))
+
+  return increasedAmount.toString()
+}
+
 /**
  * @type ethereum address
  */
@@ -191,10 +198,8 @@ const ExactOutSwapper = (network: Network) => {
     maxSlippage,
     deadline,
   }) => {
-    const srcAmountWithSlippage = new mathUtils.BigNumberZeroDecimal(priceRoute.srcAmount)
-      .multipliedBy(100 + maxSlippage)
-      .dividedBy(100)
-      .toFixed(0)
+    const srcAmountWithSlippage = increaseByPercentage(BigNumber.from(priceRoute.srcAmount), maxSlippage, srcDecimals)
+    console.log({ src: priceRoute.srcAmount, srcAmountWithSlippage })
 
     const config = {
       srcToken,
@@ -227,6 +232,7 @@ const ExactOutSwapper = (network: Network) => {
         requiredInput: srcAmountWithSlippage,
       }
     } catch (e: any) {
+      console.log(e)
       const error = e.message
       const message = error ? `Failed to build transaction with error: ${error}` : 'Failed to build transaction'
       throw new TransactionError(message, config)
