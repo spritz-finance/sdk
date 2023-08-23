@@ -25,4 +25,5 @@ export const getSmartPayContract = (network: SupportedNetwork = Network.Polygon,
 
 export type SpritzPayMethod = 'payWithNativeSwap' | 'payWithSwap' | 'payWithToken'
 
-export { SpritzPayV3__factory, SpritzSmartPay__factory } from './types'
+export { SpritzPayV3__factory, SpritzSmartPay__factory, ERC20__factory } from './types'
+export { SpritzBridgeV2__factory } from './types/factories/contracts/utility'
