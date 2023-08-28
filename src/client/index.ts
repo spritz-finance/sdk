@@ -136,13 +136,13 @@ export class SpritzPaySDK {
     return quoter.getPayWithNativeSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
   }
 
-  public async getParaswapQuote(
+  public async getParaswapExactInQuote(
     sourceTokenAddress: string,
-    fiatAmount: string | number,
+    inputAmount: string,
     swapper: string,
     reference: string,
   ) {
     const quoter = new ParaswapQuoter(this.network, this.provider, this.staging)
-    return quoter.getPayWithSwapArgsWithSwapper(sourceTokenAddress, fiatAmount, reference, swapper)
+    return quoter.getPayWithExactInputArgs(sourceTokenAddress, inputAmount, reference, swapper)
   }
 }

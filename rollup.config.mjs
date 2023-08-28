@@ -13,7 +13,7 @@ export default [
       esbuild({
         target: 'esnext',
         optimizeDeps: {
-          include: ['@paraswap/sdk'],
+          include: [],
         },
         minify: true,
       }),
@@ -29,7 +29,7 @@ export default [
         format: 'es',
       },
     ],
-    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'ethers', 'axios'],
+    external: ['@uniswap/sdk-core', '@uniswap/smart-order-router', 'ethers', 'axios', '@paraswap/sdk'],
   }),
   bundle({
     plugins: [dts()],

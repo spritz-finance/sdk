@@ -108,6 +108,14 @@ function increaseByPercentage(amount: BigNumber, percentageIncrease: number, dec
   return increasedAmount.toString()
 }
 
+function decreaseByPercentage(amount: BigNumber, percentageDecrease: number, decimals: number): string {
+  const decreaseFactor = utils.parseUnits((1 - percentageDecrease / 100).toString(), decimals)
+
+  const decreasedAmount = amount.mul(decreaseFactor).div(BigNumber.from(10).pow(decimals))
+
+  return decreasedAmount.toString()
+}
+
 /**
  * @type ethereum address
  */
@@ -149,6 +157,7 @@ interface Swapper {
   }): Promise<{
     swapCallData: string
     requiredInput: string
+    expectedOutput: string
   }>
 }
 
@@ -221,7 +230,6 @@ const ExactOutSwapper = (network: Network) => {
     deadline,
   }) => {
     const srcAmountWithSlippage = increaseByPercentage(BigNumber.from(priceRoute.srcAmount), maxSlippage, srcDecimals)
-    console.log({ src: priceRoute.srcAmount, srcAmountWithSlippage })
 
     const config = {
       srcToken,
@@ -252,6 +260,122 @@ const ExactOutSwapper = (network: Network) => {
       return {
         swapCallData: callDataEncoded,
         requiredInput: srcAmountWithSlippage,
+        expectedOutput: priceRoute.destAmount,
+      }
+    } catch (e: any) {
+      console.log(e)
+      const error = e.message
+      const message = error ? `Failed to build transaction with error: ${error}` : 'Failed to build transaction'
+      throw new TransactionError(message, config)
+    }
+  }
+
+  return {
+    getRate,
+    getTransactionParams,
+  }
+}
+
+const ExactInSwapper = (network: Network) => {
+  const paraswap = constructSimpleSDK({
+    chainId: NETWORK_TO_CHAIN_ID[network],
+    axios,
+    apiURL: 'https://apiv5.paraswap.io',
+  })
+
+  const getRate: Swapper['getRate'] = async ({
+    srcToken,
+    srcDecimals,
+    destToken,
+    destDecimals,
+    amount,
+    userAddress,
+  }) => {
+    const config = {
+      srcToken,
+      destToken,
+      amount,
+      userAddress,
+      side: SwapSide.SELL,
+      options: {
+        partner: PARTNER,
+        includeDexes: [
+          'Uniswap',
+          'Kyber',
+          '0x',
+          'MultiPath',
+          'MegaPath',
+          'Curve',
+          'Curve3',
+          'Saddle',
+          'UniswapV2',
+          'Balancer',
+          'SushiSwap',
+          'PancakeSwap',
+          'PancakeSwapV2',
+          'QuickSwap',
+          'UniswapV3',
+          'OneInchLP',
+          'CurveV2',
+        ],
+        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders', 'Hashflow'],
+      },
+      srcDecimals,
+      destDecimals,
+    }
+
+    try {
+      const priceRouteOrError = await paraswap.swap.getRate(config)
+      return priceRouteOrError
+    } catch (e: any) {
+      const error = e.message
+      const message = error ? `Failed to get swap rate with error: ${error}` : 'Failed to get swap rate'
+      throw new SwapRateError(message, config)
+    }
+  }
+
+  const getTransactionParams: Swapper['getTransactionParams'] = async ({
+    srcToken,
+    srcDecimals,
+    destToken,
+    destDecimals,
+    user,
+    priceRoute,
+    maxSlippage,
+    deadline,
+  }) => {
+    const destAmountWithSlippage = decreaseByPercentage(BigNumber.from(priceRoute.destAmount), maxSlippage, srcDecimals)
+
+    const config = {
+      srcToken,
+      destToken,
+      srcAmount: priceRoute.srcAmount,
+      destAmount: destAmountWithSlippage,
+      priceRoute,
+      userAddress: user,
+      partner: PARTNER,
+      srcDecimals,
+      destDecimals,
+      deadline: deadline.toString(),
+    }
+
+    try {
+      const transactionRequestOrError = await paraswap.swap.buildTx(config, { ignoreChecks: true })
+
+      const callDataEncoded = utils.defaultAbiCoder.encode(
+        ['bytes', 'address', 'address', 'address'],
+        [
+          (transactionRequestOrError as TransactionParams).data,
+          (transactionRequestOrError as TransactionParams).to,
+          srcToken,
+          destToken,
+        ],
+      )
+
+      return {
+        swapCallData: callDataEncoded,
+        requiredInput: priceRoute.srcAmount,
+        expectedOutput: destAmountWithSlippage,
       }
     } catch (e: any) {
       console.log(e)
@@ -297,6 +421,36 @@ async function fetchExactOutTxParams(
   }
 }
 
+async function fetchExactInTxParams(
+  priceRoute: OptimalRate,
+  srcToken: string,
+  srcDecimals: number,
+  destToken: string,
+  destDecimals: number,
+  network: Network,
+  callerAddress: string,
+  maxSlippage: number,
+  deadline: number,
+): Promise<SwapTransactionParams> {
+  const swapper = ExactInSwapper(network)
+  const { swapCallData, requiredInput, expectedOutput } = await swapper.getTransactionParams({
+    srcToken,
+    srcDecimals,
+    destToken,
+    destDecimals,
+    user: callerAddress,
+    priceRoute,
+    maxSlippage,
+    deadline,
+  })
+
+  return {
+    swapCallData,
+    inputAmount: requiredInput,
+    outputAmount: expectedOutput,
+  }
+}
+
 async function fetchExactOutRate(
   amount: string,
   srcToken: string,
@@ -307,6 +461,27 @@ async function fetchExactOutRate(
   userAddress: string,
 ): Promise<OptimalRate> {
   const swapper = ExactOutSwapper(network)
+
+  return await swapper.getRate({
+    srcToken,
+    srcDecimals,
+    destToken,
+    destDecimals,
+    amount,
+    userAddress,
+  })
+}
+
+async function fetchExactInRate(
+  amount: string,
+  srcToken: string,
+  srcDecimals: number,
+  destToken: string,
+  destDecimals: number,
+  network: Network,
+  userAddress: string,
+): Promise<OptimalRate> {
+  const swapper = ExactInSwapper(network)
 
   return await swapper.getRate({
     srcToken,
@@ -341,6 +516,41 @@ export async function getParaswapTransactionData({
 }) {
   const route = await fetchExactOutRate(amountOut, srcToken, srcDecimals, destToken, destDecimals, network, userAddress)
   return fetchExactOutTxParams(
+    route,
+    srcToken,
+    srcDecimals,
+    destToken,
+    destDecimals,
+    network,
+    userAddress,
+    maxSlippage,
+    deadline,
+  )
+}
+
+export async function getParaswapExactInTransactionData({
+  amountIn,
+  srcToken,
+  srcDecimals,
+  destToken,
+  destDecimals,
+  network,
+  userAddress,
+  deadline,
+  maxSlippage = MAX_SLIPPAGE,
+}: {
+  amountIn: string
+  srcToken: string
+  srcDecimals: number
+  destToken: string
+  destDecimals: number
+  network: Network
+  userAddress: string
+  deadline: number
+  maxSlippage?: number
+}) {
+  const route = await fetchExactInRate(amountIn, srcToken, srcDecimals, destToken, destDecimals, network, userAddress)
+  return fetchExactInTxParams(
     route,
     srcToken,
     srcDecimals,
