@@ -13,6 +13,7 @@ export enum Network {
   Celo = 'celo',
   Harmony = 'harmony',
   Moonriver = 'moonriver',
+  Tron = 'tron'
 }
 
 export const SUPPORTED_NETWORK_CHAIN_ID: Record<SupportedNetwork, number> = {
@@ -22,11 +23,11 @@ export const SUPPORTED_NETWORK_CHAIN_ID: Record<SupportedNetwork, number> = {
   [Network.Optimism]: 10,
   [Network.Arbitrum]: 42161,
   [Network.Avalanche]: 43114,
+  [Network.Tron]: 728126428
 }
 
 export const NETWORK_TO_CHAIN_ID: Record<Network, number> = {
   ...SUPPORTED_NETWORK_CHAIN_ID,
-  [Network.Avalanche]: 43114,
   [Network.Gnosis]: 100,
   [Network.Fantom]: 250,
   [Network.Celo]: 42220,
@@ -46,6 +47,7 @@ export const NETWORK_TO_CHAIN_ID_STRING: Record<Network, string> = {
   [Network.Celo]: '0xa4ec',
   [Network.Harmony]: '0x63564c40',
   [Network.Moonriver]: '0x505',
+  [Network.Tron]: '0x2b6653dc'
 }
 
 export const SUPPORTED_NETWORKS = [
@@ -55,6 +57,7 @@ export const SUPPORTED_NETWORKS = [
   Network.Optimism,
   Network.Arbitrum,
   Network.Avalanche,
+  Network.Tron
 ] as const
 export const CHAIN_ID_TO_NETWORK = invert<Network, number>(NETWORK_TO_CHAIN_ID)
 
