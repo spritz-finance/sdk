@@ -156,10 +156,8 @@ export class ParaswapQuoter {
     })
 
     return {
-      data: txn.swapCallData,
-      sourceTokenAddress: inputToken.address,
+      swapData: txn.swapCallData,
       sourceTokenAmount: txn.inputAmount,
-      paymentTokenAddress: this.paymentToken.address,
       paymentTokenAmountMin: txn.outputAmount,
       deadline,
     }
@@ -204,21 +202,13 @@ export class ParaswapQuoter {
     tokenAddress: string,
     inputAmount: string,
     user: string,
-    reference: string,
     currentTime = Math.floor(Date.now() / 1000),
   ) {
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
     const data = await this.getExactInputQuote(inputToken, inputAmount, currentTime, user)
 
-    const args = [
-      inputToken.address,
-      data.sourceTokenAmount,
-      data.paymentTokenAmountMin,
-      formatPaymentReference(reference),
-      data.deadline,
-      data.data,
-    ]
+    const args = [data.sourceTokenAmount, data.paymentTokenAmountMin, data.deadline, data.swapData]
 
     return {
       args,

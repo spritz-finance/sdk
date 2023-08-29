@@ -14,10 +14,8 @@ export type SwapQuote = {
 }
 
 export type ExactInQuote = {
-  data: string
-  sourceTokenAddress: string
+  swapData: string
   sourceTokenAmount: string
-  paymentTokenAddress: string
   paymentTokenAmountMin: string
   deadline: number
 }
