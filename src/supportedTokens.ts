@@ -24,7 +24,12 @@ export const DAI_ARBITRUM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000d
 export const USDC_AVALANCHE = { address: '0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E', decimals: 6, symbol: 'USDC' }
 export const USDT_AVALANCHE = { address: '0xc7198437980c041c805A1EDcbA50c1Ce5db95118', decimals: 6, symbol: 'USDT' }
 
-export const USDC_OPTIMISM = { address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607', decimals: 6, symbol: 'USDC' }
+export const USDC_OPTIMISM = { address: '0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85', decimals: 6, symbol: 'USDC' }
+export const USDC_OPTIMISM_BRIDGED = {
+  address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+  decimals: 6,
+  symbol: 'USDC',
+}
 export const USDT_OPTIMISM = { address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6, symbol: 'USDT' }
 export const DAI_OPTIMISM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18, symbol: 'DAI' }
 
@@ -52,7 +57,7 @@ export const NON_PAYMENT_STABLECOINS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Binance]: [BUSD_BSC, USDT_BSC],
   [Network.Ethereum]: [USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
   [Network.Arbitrum]: [USDT_ARBITRUM, DAI_ARBITRUM],
-  [Network.Optimism]: [USDT_OPTIMISM, DAI_OPTIMISM],
+  [Network.Optimism]: [USDT_OPTIMISM, DAI_OPTIMISM, USDC_OPTIMISM_BRIDGED],
   [Network.Avalanche]: [USDT_AVALANCHE],
 }
 
