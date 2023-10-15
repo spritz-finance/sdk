@@ -33,6 +33,9 @@ export const USDC_OPTIMISM_BRIDGED = {
 export const USDT_OPTIMISM = { address: '0x94b008aA00579c1307B0EF2c499aD98a8ce58e58', decimals: 6, symbol: 'USDT' }
 export const DAI_OPTIMISM = { address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', decimals: 18, symbol: 'DAI' }
 
+export const USDC_BASE = { address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913', decimals: 6, symbol: 'USDC' }
+export const DAI_BASE = { address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb', decimals: 18, symbol: 'DAI' }
+
 export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Polygon]: [USDC_POLYGON],
   [Network.Binance]: [USDC_BSC],
@@ -40,6 +43,7 @@ export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
   [Network.Avalanche]: [USDC_AVALANCHE],
+  // [Network.Base]: [USDC_BASE],
 }
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
@@ -49,6 +53,7 @@ export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
   [Network.Avalanche]: [USDC_AVALANCHE],
+  // [Network.Base]: [USDC_BASE],
 }
 
 // for determining a lower slippage threshold in USDC swap
@@ -59,6 +64,7 @@ export const NON_PAYMENT_STABLECOINS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDT_ARBITRUM, DAI_ARBITRUM],
   [Network.Optimism]: [USDT_OPTIMISM, DAI_OPTIMISM, USDC_OPTIMISM_BRIDGED],
   [Network.Avalanche]: [USDT_AVALANCHE],
+  // [Network.Base]: [DAI_BASE],
 }
 
 export const isAcceptedPaymentToken = (tokenAddress: string, network: SupportedNetwork) => {

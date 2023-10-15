@@ -26,6 +26,12 @@ export const WETH_OPTIMISM = {
   symbol: 'WETH',
   name: 'Wrapped ETH',
 }
+export const WETH_BASE = {
+  address: '0x4200000000000000000000000000000000000006',
+  decimals: 18,
+  symbol: 'WETH',
+  name: 'Wrapped ETH',
+}
 export const WBNB_BSC = {
   address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
   decimals: 18,
@@ -46,6 +52,7 @@ const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Arbitrum]: WETH_ARBITRUM,
   [Network.Optimism]: WETH_OPTIMISM,
   [Network.Avalanche]: WAVAX_AVALANCHE,
+  // [Network.Base]: WETH_BASE,
 }
 
 export const getWrappedNativeToken = (network: SupportedNetwork) => {

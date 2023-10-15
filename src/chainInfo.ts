@@ -80,6 +80,14 @@ const CHAIN_INFO: Record<SupportedNetwork, ChainInfo> = {
     getExplorerAddressLink: (address: string) => `https://snowtrace.io/address/${address}`,
     getExplorerTransactionLink: (tx: string) => `https://snowtrace.io/tx/${tx}`,
   },
+  // [Network.Base]: {
+  //   chainId: getChainId(Network.Base),
+  //   blockExplorerUrl: 'https://basescan.org/',
+  //   name: 'Base',
+  //   nativeCurrency: { name: 'Base', symbol: 'ETH', decimals: 18 },
+  //   getExplorerAddressLink: (address: string) => `https://basescan.org/address/${address}`,
+  //   getExplorerTransactionLink: (tx: string) => `https://basescan.org/tx/${tx}`,
+  // },
 }
 
 export function getChainInfo(network: SupportedNetwork): ChainInfo {

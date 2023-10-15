@@ -24,6 +24,10 @@ export const SPRITZPAY_STAGING_ARBITRUM_ADDRESS = '0x841F6cdEd88EDb3fBe1320ef563
 export const SPRITZPAY_AVALANCHE_ADDRESS = '0x1D26ebaf6AD7BAab6D94dD8d9841f960FAF2dEe2'
 export const SPRITZPAY_STAGING_AVALANCHE_ADDRESS = '0x61cd72AeA6760573f08B7eE02a10a840E51C45DF'
 
+// Base
+export const SPRITZPAY_BASE_STAGING_ADDRESS = '0x9114080c6477a92Eae4792A3f0118a159247F896'
+export const SPRITZPAY_BASE_ADDRESS = '0x652A545E3eBb5d1a81C7F03Fed19804f15AAbc3a'
+
 const SPRITZ_PAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Polygon]: SPRITZPAY_STAGING_POLYGON_ADDRESS,
   [Network.Binance]: SPRITZPAY_STAGING_BSC_ADDRESS,
@@ -31,6 +35,7 @@ const SPRITZ_PAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Arbitrum]: SPRITZPAY_STAGING_ARBITRUM_ADDRESS,
   [Network.Optimism]: SPRITZPAY_STAGING_OPTIMISM_ADDRESS,
   [Network.Avalanche]: SPRITZPAY_STAGING_AVALANCHE_ADDRESS,
+  // [Network.Base]: SPRITZPAY_BASE_STAGING_ADDRESS,
 }
 
 const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
@@ -40,6 +45,7 @@ const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Optimism]: SPRITZPAY_OPTIMISM_ADDRESS,
   [Network.Arbitrum]: SPRITZPAY_ARBITRUM_ADDRESS,
   [Network.Avalanche]: SPRITZPAY_AVALANCHE_ADDRESS,
+  // [Network.Base]: SPRITZPAY_BASE_ADDRESS,
 }
 
 export const getContractAddress = (network: SupportedNetwork, staging = false) => {
