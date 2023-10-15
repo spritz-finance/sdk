@@ -23,12 +23,12 @@ export const SUPPORTED_NETWORK_CHAIN_ID: Record<SupportedNetwork, number> = {
   [Network.Optimism]: 10,
   [Network.Arbitrum]: 42161,
   [Network.Avalanche]: 43114,
+  [Network.Base]: 8453,
 }
 
 export const NETWORK_TO_CHAIN_ID: Record<Network, number> = {
   ...SUPPORTED_NETWORK_CHAIN_ID,
   [Network.Avalanche]: 43114,
-  [Network.Base]: 8453,
   [Network.Gnosis]: 100,
   [Network.Fantom]: 250,
   [Network.Celo]: 42220,
@@ -58,6 +58,7 @@ export const SUPPORTED_NETWORKS = [
   Network.Optimism,
   Network.Arbitrum,
   Network.Avalanche,
+  Network.Base,
 ] as const
 export const CHAIN_ID_TO_NETWORK = invert<Network, number>(NETWORK_TO_CHAIN_ID)
 

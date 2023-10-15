@@ -35,7 +35,7 @@ const SPRITZ_PAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Arbitrum]: SPRITZPAY_STAGING_ARBITRUM_ADDRESS,
   [Network.Optimism]: SPRITZPAY_STAGING_OPTIMISM_ADDRESS,
   [Network.Avalanche]: SPRITZPAY_STAGING_AVALANCHE_ADDRESS,
-  // [Network.Base]: SPRITZPAY_BASE_STAGING_ADDRESS,
+  [Network.Base]: SPRITZPAY_BASE_STAGING_ADDRESS,
 }
 
 const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
@@ -45,7 +45,7 @@ const SPRITZ_PAY_CONTRACT_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Optimism]: SPRITZPAY_OPTIMISM_ADDRESS,
   [Network.Arbitrum]: SPRITZPAY_ARBITRUM_ADDRESS,
   [Network.Avalanche]: SPRITZPAY_AVALANCHE_ADDRESS,
-  // [Network.Base]: SPRITZPAY_BASE_ADDRESS,
+  [Network.Base]: SPRITZPAY_BASE_ADDRESS,
 }
 
 export const getContractAddress = (network: SupportedNetwork, staging = false) => {
@@ -67,6 +67,7 @@ const SMARTPAY_CONTRACT_STAGING_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Arbitrum]: '',
   [Network.Optimism]: '',
   [Network.Avalanche]: '',
+  [Network.Base]: '',
 }
 
 const SMARTPAY_CONTRACT_PRODUCTION_ADDRESS: Record<SupportedNetwork, string> = {
@@ -76,6 +77,7 @@ const SMARTPAY_CONTRACT_PRODUCTION_ADDRESS: Record<SupportedNetwork, string> = {
   [Network.Arbitrum]: '',
   [Network.Optimism]: '',
   [Network.Avalanche]: '',
+  [Network.Base]: '',
 }
 
 export const getSmartPayContractAddress = (network: SupportedNetwork, staging = false) => {

@@ -43,7 +43,7 @@ export const ACCEPTED_PAYMENT_TOKENS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
   [Network.Avalanche]: [USDC_AVALANCHE],
-  // [Network.Base]: [USDC_BASE],
+  [Network.Base]: [USDC_BASE],
 }
 
 export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
@@ -53,7 +53,7 @@ export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDC_ARBITRUM],
   [Network.Optimism]: [USDC_OPTIMISM],
   [Network.Avalanche]: [USDC_AVALANCHE],
-  // [Network.Base]: [USDC_BASE],
+  [Network.Base]: [USDC_BASE],
 }
 
 // for determining a lower slippage threshold in USDC swap
@@ -64,7 +64,7 @@ export const NON_PAYMENT_STABLECOINS: Record<SupportedNetwork, TokenData[]> = {
   [Network.Arbitrum]: [USDT_ARBITRUM, DAI_ARBITRUM],
   [Network.Optimism]: [USDT_OPTIMISM, DAI_OPTIMISM, USDC_OPTIMISM_BRIDGED],
   [Network.Avalanche]: [USDT_AVALANCHE],
-  // [Network.Base]: [DAI_BASE],
+  [Network.Base]: [DAI_BASE],
 }
 
 export const isAcceptedPaymentToken = (tokenAddress: string, network: SupportedNetwork) => {
