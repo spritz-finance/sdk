@@ -1,6 +1,6 @@
 {
   "name": "@spritz-finance/sdk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
   "main": "dist/spritz-sdk.js",
   "module": "dist/spritz-sdk.mjs",

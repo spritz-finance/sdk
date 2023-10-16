@@ -52,7 +52,7 @@ const NETWORK_NATIVE_TOKEN: Record<SupportedNetwork, TokenData> = {
   [Network.Arbitrum]: WETH_ARBITRUM,
   [Network.Optimism]: WETH_OPTIMISM,
   [Network.Avalanche]: WAVAX_AVALANCHE,
-  // [Network.Base]: WETH_BASE,
+  [Network.Base]: WETH_BASE,
 }
 
 export const getWrappedNativeToken = (network: SupportedNetwork) => {
