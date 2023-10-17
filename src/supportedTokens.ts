@@ -5,7 +5,12 @@ export const NATIVE_ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const NATIVE_ADDRESS_OTHER = '0x0000000000000000000000000000000000001010' //wat
 
 export const USDT_POLYGON = { address: '0xc2132D05D31c914a87C6611C10748AEb04B58e8F', decimals: 6, symbol: 'USDT' }
-export const USDC_POLYGON = { address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', decimals: 6, symbol: 'USDC' }
+export const USDC_POLYGON = { address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359', decimals: 6, symbol: 'USDC' }
+export const USDC_BRIDGED_POLYGON = {
+  address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+  decimals: 6,
+  symbol: 'USDC',
+}
 export const DAI_POLYGON = { address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', decimals: 18, symbol: 'DAI' }
 
 export const BUSD_BSC = { address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', decimals: 18, symbol: 'BUSD' }
@@ -58,7 +63,7 @@ export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
 
 // for determining a lower slippage threshold in USDC swap
 export const NON_PAYMENT_STABLECOINS: Record<SupportedNetwork, TokenData[]> = {
-  [Network.Polygon]: [USDT_POLYGON, DAI_POLYGON],
+  [Network.Polygon]: [USDT_POLYGON, DAI_POLYGON, USDC_BRIDGED_POLYGON],
   [Network.Binance]: [BUSD_BSC, USDT_BSC],
   [Network.Ethereum]: [USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
   [Network.Arbitrum]: [USDT_ARBITRUM, DAI_ARBITRUM],
