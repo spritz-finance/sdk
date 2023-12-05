@@ -68,7 +68,7 @@ export const ACCEPTED_SWAP_OUTPUTS: Record<SupportedNetwork, TokenData[]> = {
 
 // for determining a lower slippage threshold in USDC swap
 export const NON_PAYMENT_STABLECOINS: Record<SupportedNetwork, TokenData[]> = {
-  [Network.Polygon]: [USDT_POLYGON, DAI_POLYGON, USDC_BRIDGED_POLYGON],
+  [Network.Polygon]: [USDT_POLYGON, DAI_POLYGON],
   [Network.Binance]: [BUSD_BSC, USDC_BSC],
   [Network.Ethereum]: [USDT_MAINNET, DAI_MAINNET, BUSD_MAINNET],
   [Network.Arbitrum]: [USDT_ARBITRUM, DAI_ARBITRUM, USDC_ARBITRUM_BRIDGED],
