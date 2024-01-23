@@ -215,6 +215,7 @@ export class ParaswapQuoter {
       data,
       requiredTokenInput: BigNumber.from(data.sourceTokenAmount),
       outputTokenMin: BigNumber.from(data.paymentTokenAmountMin),
+      outputTokenDecimals: this.paymentToken.decimals,
     }
   }
 }
