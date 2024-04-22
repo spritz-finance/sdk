@@ -1,6 +1,6 @@
 import { Token } from '@uniswap/sdk-core'
 import { BigNumber, Overrides, ethers } from 'ethers'
-import { SupportedNetwork } from '../../networks'
+import { Network, SupportedNetwork } from '../../networks'
 import { isNonPaymentStablecoin } from '../../supportedTokens'
 import { acceptedOutputTokenFor, getFullToken } from '../../tokens'
 import { FiatValue, fiatNumber, roundNumber } from '../../utils/format'
@@ -104,9 +104,10 @@ export class ParaswapQuoter {
 
     const swapModuleAddress = swapperAddress ?? (await getSwapModuleAddress(this.network, this.provider, this.staging))
 
-    const maxSlippage = isNonPaymentStablecoin(inputToken.address, this.network)
-      ? SLIPPAGE_TOLERANCE_STABLECOIN
-      : SLIPPAGE_TOLERANCE
+    const maxSlippage =
+      isNonPaymentStablecoin(inputToken.address, this.network) && this.network !== Network.Binance
+        ? SLIPPAGE_TOLERANCE_STABLECOIN
+        : SLIPPAGE_TOLERANCE
 
     const txn = await getParaswapTransactionData({
       amountOut,
