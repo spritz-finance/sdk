@@ -56,10 +56,11 @@ export class UniswapV3Quoter {
     fiatAmount: string | number,
     reference: string,
     currentTime = Math.floor(Date.now() / 1000),
+    slippagePercentage?: number,
   ): Promise<PayWithSwapArgsResult> {
     const inputToken = await getFullToken(tokenAddress, this.network, this.provider)
 
-    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime)
+    const data = await this.getTokenPaymentQuote(inputToken, fiatAmount, currentTime, slippagePercentage)
     const args: PayWithSwapArgs = [
       inputToken.address,
       data.sourceTokenAmountMax,
@@ -108,6 +109,7 @@ export class UniswapV3Quoter {
     inputToken: Token,
     fiatAmount: FiatValue,
     currentTime: number,
+    slippagePercentage?: number,
   ): Promise<SwapQuote> {
     const { amountOut, deadline } = this.getQuoteParams(fiatNumber(fiatAmount), currentTime)
 
@@ -126,7 +128,9 @@ export class UniswapV3Quoter {
 
     const { path, additionalHops } = getSwapPath(trade.routes[0] as unknown as V3Route)
 
-    const slippage = isNonPaymentStablecoin(inputToken.address, this.network)
+    const slippage = slippagePercentage
+      ? new Percent(slippagePercentage * 100, 10_000)
+      : isNonPaymentStablecoin(inputToken.address, this.network)
       ? SLIPPAGE_TOLERANCE_STABLECOIN
       : SLIPPAGE_TOLERANCE
 

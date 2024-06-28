@@ -112,13 +112,13 @@ export class SpritzPaySDK {
     reference: string,
     currentTime: number,
     useParaswap?: boolean,
-    _slippagePercentage?: number,
+    slippagePercentage?: number,
   ) {
     const v3 = isV3SwapNetwork(this.network)
 
     const Quoter = useParaswap ? ParaswapQuoter : v3 ? UniswapV3Quoter : ParaswapQuoter
     const quoter = new Quoter(this.network, this.provider, this.staging)
-    return quoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime)
+    return quoter.getPayWithSwapArgs(sourceTokenAddress, fiatAmount, reference, currentTime, slippagePercentage)
   }
 
   public getNativeSwapPaymentData(
