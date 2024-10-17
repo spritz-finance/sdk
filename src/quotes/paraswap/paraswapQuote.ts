@@ -105,10 +105,11 @@ interface Swapper {
 }
 
 const ExactOutSwapper = (network: Network) => {
+  const version = network === Network.Binance ? '6.2' : '5'
   const paraswap = constructSimpleSDK({
     chainId: NETWORK_TO_CHAIN_ID[network],
     axios,
-    version: '6.2',
+    version,
   })
 
   const getRate: Swapper['getRate'] = async ({
@@ -155,6 +156,14 @@ const ExactOutSwapper = (network: Network) => {
   }) => {
     const srcAmountWithSlippage = increaseByPercentage(BigNumber.from(priceRoute.srcAmount), maxSlippage, srcDecimals)
 
+    const fee =
+      network === Network.Binance
+        ? {}
+        : {
+            takeSurplus: true,
+            partnerAddress: '0xA5aE594CD0356B5F684bAE31Aa8Bc22B848b8cb2', // Laurence Hot Wallet
+            partnerFeeBps: 25,
+          }
     const config = {
       srcToken,
       destToken,
@@ -166,9 +175,7 @@ const ExactOutSwapper = (network: Network) => {
       srcDecimals,
       destDecimals,
       deadline: deadline.toString(),
-      takeSurplus: true,
-      partnerAddress: '0xA5aE594CD0356B5F684bAE31Aa8Bc22B848b8cb2', // Laurence Hot Wallet
-      partnerFeeBps: 25,
+      ...fee,
     }
 
     try {
