@@ -1,4 +1,4 @@
-import { BuildTxInput, constructSimpleSDK } from '@paraswap/sdk'
+import { BuildTxInput, OptimalRate, constructSimpleSDK } from '@paraswap/sdk'
 import { GetRateInput } from '@paraswap/sdk/dist/methods/swap/rates'
 import axios from 'axios'
 import { BigNumber, utils } from 'ethers'
@@ -34,66 +34,9 @@ type SwapRateParams = {
   outputAmount: string
 }
 
-type OptimalSwapExchange<T> = {
-  exchange: string
-  srcAmount: NumberAsString
-  destAmount: NumberAsString
-  percent: number
-  data?: T
-  poolAddresses?: Array<Address>
-}
-
 enum SwapSide {
   BUY = 'BUY',
   SELL = 'SELL',
-}
-
-type OptimalRoute = {
-  percent: number
-  swaps: OptimalSwap[]
-}
-
-type OptimalSwap = {
-  srcToken: Address
-  srcDecimals: number
-  destToken: Address
-  destDecimals: number
-  swapExchanges: OptimalSwapExchange<any>[]
-}
-
-type OptionalRate = {
-  exchange: string
-  srcAmount: NumberAsString
-  destAmount: NumberAsString
-  unit?: NumberAsString
-  data?: any
-}
-
-type OptimalRate = {
-  blockNumber: number
-  network: number
-  srcToken: Address
-  srcDecimals: number
-  srcAmount: NumberAsString
-  srcUSD: NumberAsString
-  destToken: Address
-  destDecimals: number
-  destAmount: NumberAsString
-  destUSD: NumberAsString
-  bestRoute: OptimalRoute[]
-  gasCostUSD: NumberAsString
-  gasCost: NumberAsString
-  others?: OptionalRate[]
-  side: SwapSide
-  contractMethod: string
-  tokenTransferProxy: Address
-  contractAddress: Address
-  maxImpact?: number
-  maxUSDImpact?: number
-  maxImpactReached?: boolean
-  partner?: string
-  partnerFee: number
-  hmac: string
 }
 
 export type SwapTransactionParams = SwapRateParams & {
@@ -165,7 +108,7 @@ const ExactOutSwapper = (network: Network) => {
   const paraswap = constructSimpleSDK({
     chainId: NETWORK_TO_CHAIN_ID[network],
     axios,
-    apiURL: 'https://apiv5.paraswap.io',
+    version: '6.2',
   })
 
   const getRate: Swapper['getRate'] = async ({
@@ -184,7 +127,7 @@ const ExactOutSwapper = (network: Network) => {
       side: SwapSide.BUY,
       options: {
         partner: PARTNER,
-        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders', 'Hashflow'],
+        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'],
       },
       srcDecimals,
       destDecimals,
@@ -223,6 +166,9 @@ const ExactOutSwapper = (network: Network) => {
       srcDecimals,
       destDecimals,
       deadline: deadline.toString(),
+      takeSurplus: true,
+      partnerAddress: '0xA5aE594CD0356B5F684bAE31Aa8Bc22B848b8cb2', // Laurence Hot Wallet
+      partnerFeeBps: 25,
     }
 
     try {
@@ -261,7 +207,7 @@ const ExactInSwapper = (network: Network) => {
   const paraswap = constructSimpleSDK({
     chainId: NETWORK_TO_CHAIN_ID[network],
     axios,
-    apiURL: 'https://apiv5.paraswap.io',
+    apiURL: 'https://api.paraswap.io',
   })
 
   const getRate: Swapper['getRate'] = async ({

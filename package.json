@@ -1,6 +1,6 @@
 {
   "name": "@spritz-finance/sdk",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "🛠 An SDK for building applications on top of Spritz Finance.",
   "main": "dist/spritz-sdk.js",
   "module": "dist/spritz-sdk.mjs",
@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.2",
-    "@paraswap/sdk": "^6.3.0",
+    "@paraswap/sdk": "^6.10.0",
     "@uniswap/sdk-core": "^3.1.0",
     "@uniswap/smart-order-router": "^3.0.3",
     "@uniswap/v2-core": "^1.0.0",
