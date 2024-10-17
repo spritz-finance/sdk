@@ -105,7 +105,7 @@ interface Swapper {
 }
 
 const ExactOutSwapper = (network: Network) => {
-  const version = network === Network.Binance ? '6.2' : '5'
+  const version = network === Network.Binance ? '5' : '6.2'
   const paraswap = constructSimpleSDK({
     chainId: NETWORK_TO_CHAIN_ID[network],
     axios,
@@ -211,10 +211,11 @@ const ExactOutSwapper = (network: Network) => {
 }
 
 const ExactInSwapper = (network: Network) => {
+  const version = network === Network.Binance ? '5' : '6.2'
   const paraswap = constructSimpleSDK({
     chainId: NETWORK_TO_CHAIN_ID[network],
     axios,
-    apiURL: 'https://api.paraswap.io',
+    version,
   })
 
   const getRate: Swapper['getRate'] = async ({
@@ -233,26 +234,7 @@ const ExactInSwapper = (network: Network) => {
       side: SwapSide.SELL,
       options: {
         partner: PARTNER,
-        includeDexes: [
-          'Uniswap',
-          'Kyber',
-          '0x',
-          'MultiPath',
-          'MegaPath',
-          'Curve',
-          'Curve3',
-          'Saddle',
-          'UniswapV2',
-          'Balancer',
-          'SushiSwap',
-          'PancakeSwap',
-          'PancakeSwapV2',
-          'QuickSwap',
-          'UniswapV3',
-          'OneInchLP',
-          'CurveV2',
-        ],
-        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders', 'Hashflow'],
+        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'],
       },
       srcDecimals,
       destDecimals,
