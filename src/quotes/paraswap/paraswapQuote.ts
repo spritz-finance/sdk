@@ -128,7 +128,7 @@ const ExactOutSwapper = (network: Network) => {
       side: SwapSide.BUY,
       options: {
         partner: PARTNER,
-        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'],
+        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders', 'Cables'],
       },
       srcDecimals,
       destDecimals,
