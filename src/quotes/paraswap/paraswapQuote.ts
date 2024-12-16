@@ -156,14 +156,15 @@ const ExactOutSwapper = (network: Network) => {
   }) => {
     const srcAmountWithSlippage = increaseByPercentage(BigNumber.from(priceRoute.srcAmount), maxSlippage, srcDecimals)
 
-    const fee =
-      network === Network.Binance
-        ? {}
-        : {
-            takeSurplus: true,
-            partnerAddress: '0xA5aE594CD0356B5F684bAE31Aa8Bc22B848b8cb2', // Laurence Hot Wallet
-            partnerFeeBps: 25,
-          }
+    // const fee =
+    //   network === Network.Binance
+    //     ? {}
+    //     : {
+    //         takeSurplus: true,
+    //         partnerAddress: '0xA5aE594CD0356B5F684bAE31Aa8Bc22B848b8cb2', // Laurence Hot Wallet
+    //         partnerFeeBps: 25,
+    //       }
+    const fee = {}
     const config = {
       srcToken,
       destToken,
