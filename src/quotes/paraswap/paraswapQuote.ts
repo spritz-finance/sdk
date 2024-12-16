@@ -235,7 +235,7 @@ const ExactInSwapper = (network: Network) => {
       side: SwapSide.SELL,
       options: {
         partner: PARTNER,
-        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'],
+        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders', 'Cables'],
       },
       srcDecimals,
       destDecimals,
