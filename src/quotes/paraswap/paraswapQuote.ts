@@ -218,7 +218,7 @@ const ExactInSwapper = (network: Network) => {
     userAddress,
   }) => {
     const excludeDEXS =
-      network === Network.Polygon
+      network === Network.Polygon || network === Network.Arbitrum
         ? { includeDEXS: ['Uniswap', 'Balancer', 'UniswapV2', 'UniswapV3', 'QuickSwap'] }
         : { excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'] }
     const config = {
