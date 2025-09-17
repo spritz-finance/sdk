@@ -156,15 +156,6 @@ const ExactOutSwapper = (network: Network) => {
   }) => {
     const srcAmountWithSlippage = increaseByPercentage(BigNumber.from(priceRoute.srcAmount), maxSlippage, srcDecimals)
 
-    // const fee =
-    //   network === Network.Binance
-    //     ? {}
-    //     : {
-    //         takeSurplus: true,
-    //         partnerAddress: '0xA5aE594CD0356B5F684bAE31Aa8Bc22B848b8cb2', // Laurence Hot Wallet
-    //         partnerFeeBps: 25,
-    //       }
-    const fee = {}
     const config = {
       srcToken,
       destToken,
@@ -176,7 +167,6 @@ const ExactOutSwapper = (network: Network) => {
       srcDecimals,
       destDecimals,
       deadline: deadline.toString(),
-      ...fee,
     }
 
     try {
@@ -227,6 +217,10 @@ const ExactInSwapper = (network: Network) => {
     amount,
     userAddress,
   }) => {
+    const excludeDEXS =
+      network === Network.Polygon
+        ? { includeDEXS: ['Uniswap', 'Balancer', 'UniswapV2', 'UniswapV3', 'QuickSwap'] }
+        : { excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders'] }
     const config = {
       srcToken,
       destToken,
@@ -235,7 +229,7 @@ const ExactInSwapper = (network: Network) => {
       side: SwapSide.SELL,
       options: {
         partner: PARTNER,
-        excludeDEXS: ['ParaSwapPool', 'ParaSwapLimitOrders', 'Cables'],
+        ...excludeDEXS,
       },
       srcDecimals,
       destDecimals,
